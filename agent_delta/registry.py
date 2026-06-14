@@ -97,6 +97,12 @@ class Task:
         """'disabled' (default) or 'enabled' -> docker network none / bridge."""
         return self.spec.get("execution", {}).get("network", "disabled")
 
+    @property
+    def context_class(self) -> str:
+        """'long' if the task needs >200k tokens of context, else 'normal' (SPEC 21)."""
+        min_ctx = self.spec.get("context_requirement", {}).get("min_context_tokens", 0)
+        return "long" if min_ctx > 200000 else "normal"
+
 
 @dataclass
 class Fixture:

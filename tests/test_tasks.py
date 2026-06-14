@@ -27,6 +27,11 @@ def test_tasks_default_to_network_disabled():
         assert load_task(tid).network == "disabled"
 
 
+def test_long_context_task_classification():
+    assert load_task("task_009").context_class == "long"
+    assert load_task("task_001").context_class == "normal"
+
+
 def test_all_seven_categories_present():
     cats = {load_task(tid).category for tid in list_tasks()}
     expected = {

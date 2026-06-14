@@ -5,13 +5,15 @@ date-specific (SPEC §3, §17.3). The following limits apply to the current stat
 
 ## v0.1 slice
 
-- **Ten tasks, two fixtures, two languages.** task_001-008 on `python_package`
-  and go_task_001-002 on `go_cli` cover all seven SPEC §8.2 categories across
-  Python and Go and prove the pipeline, but this is not yet a benchmark: real
-  conclusions need the full 50-task / 4-model / 5-repetition matrix (SPEC §8.2, §9).
-- **Long-context is flagged, not exercised.** task_007 is marked long-context-
-  eligible, but the fixtures are small; a task that genuinely requires >200k
-  tokens of context (SPEC §21) needs a large fixture and is future work.
+- **Eleven tasks, three fixtures, two languages.** task_001-009 (incl. the
+  long-context task_009) and go_task_001-002 cover all seven SPEC §8.2 categories
+  and both context classes, proving the pipeline, but this is not yet a benchmark:
+  real conclusions need the full 50-task / 4-model / 5-repetition matrix (SPEC §8.2).
+- **Long-context benefits, not strictly requires.** task_009 uses a ~228k-token
+  fixture whose answer needs schema variants spread across many files. A
+  resourceful agent can grep its way there rather than holding it all in context,
+  so the long-context advantage is empirical (and is itself a good amplification
+  case: intrinsic 1M context vs agentic navigation).
 - **No real model run yet.** Every result so far is from the dry-run path or
   synthetic records; the live agent path has not been exercised.
 - **Refactor scoring is a proxy.** task_004 verifies the helper exists, is used

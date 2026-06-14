@@ -15,9 +15,10 @@ inside a Docker sandbox, with objective scoring (baseline/public/hidden tests,
 scope control) and SPEC §16 run records. The architecture is wired for the full
 50-task / 4-model benchmark and for future Codex CLI / Gemini CLI adapters.
 
-Fixtures span two languages: `python_package` (the `mathkit` library, pytest) and
-`go_cli` (the `textkit` Go module, `go test`). The scorer, builder, and task
-checker are language-aware.
+Fixtures: `python_package` (the `mathkit` library, pytest), `go_cli` (the
+`textkit` Go module, `go test`), and `long_context` (a ~228k-token multi-schema
+ledger across 220 files for long-context tasks, SPEC §21). The scorer, builder,
+and task checker are language-aware.
 
 | Task | Fixture | Category | What |
 | --- | --- | --- | --- |
@@ -31,10 +32,12 @@ checker are language-aware.
 | `task_008` | python_package | dependency_migration | Migrate `report` off the deprecated `avg` |
 | `go_task_001` | go_cli | small_bug_fix | Fix `Truncate` past the string length |
 | `go_task_002` | go_cli | medium_feature | Add a `Capitalize` function |
+| `task_009` | long_context | medium_feature (long-context) | Total a multi-schema ledger across 220 files |
 
 All seven SPEC §8.2 categories are represented. Test-writing tasks are scored by
-mutation: the agent's tests must pass on the correct code and fail on each planted
-mutant.
+mutation (the agent's tests must pass on the correct code and fail on each planted
+mutant); `task_009` is a long-context task whose correct answer requires
+discovering schema variants spread across the fixture.
 
 What works today:
 - `agentdelta list-tasks` / `validate-task`

@@ -404,6 +404,14 @@ def build_report(results_dir: Path, suite: str, baseline: str | None = None) -> 
 
     per_mode = {mode: aggregate_mode(recs, baseline) for mode, recs in by_mode.items()}
     tasks = {r["task_id"] for r in records}
+    n_long_context = 0
+    for tid in tasks:
+        try:
+            from agent_delta.registry import load_task
+            if load_task(tid).context_class == "long":
+                n_long_context += 1
+        except Exception:
+            pass
     invalid = [
         {"run_id": r["run_id"], "model_id": r["model_id"],
          "reason": r.get("execution", {}).get("invalid_reason")}
@@ -421,6 +429,7 @@ def build_report(results_dir: Path, suite: str, baseline: str | None = None) -> 
         "suite": suite,
         "agent": records[0]["agent"] if records else None,
         "n_tasks": len(tasks),
+        "n_long_context_tasks": n_long_context,
         "n_runs": len(records),
         "n_invalid": len(invalid),
         "invalid_runs": invalid,

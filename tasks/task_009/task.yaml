@@ -1,0 +1,52 @@
+id: task_009
+title: Total credits and debits across a large multi-schema ledger
+category: medium_feature
+difficulty: 4
+repo: long_context
+base_commit: HEAD
+language: python
+framework: pytest
+prompt_file: prompt.md
+
+# Long-context task (SPEC 21): the fixture is ~228k content tokens and the entry
+# schema varies across parts, so a correct total requires reading broadly.
+context_requirement:
+  min_context_tokens: 220000
+  preferred_context_tokens: 1000000
+
+execution:
+  timeout_minutes: 30
+  max_cost_usd: 6.00
+  max_agent_turns: null
+  network: disabled
+  package_install: false
+
+scope:
+  allowed_paths:
+    - src/
+    - tests/
+  forbidden_paths:
+    - pyproject.toml
+  max_files_modified: 4
+
+tests:
+  baseline:
+    - pytest -q tests/
+  public:
+    - public_tests.py
+  hidden:
+    - hidden_tests.py
+
+acceptance_criteria:
+  - A new module ledger/totals.py provides total_credits and total_debits.
+  - total_credits sums the amount of every credit entry across all parts.
+  - total_debits sums the amount of every debit entry across all parts.
+  - The implementation handles every entry-schema variant present in the data.
+  - Existing baseline tests continue to pass.
+
+scoring:
+  objective_weight: 1.0
+  review_weight: 0.0
+
+notes:
+  - Long-context: a solution that handles only one schema variant undercounts and fails.
