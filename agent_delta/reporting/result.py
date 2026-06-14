@@ -54,6 +54,11 @@ def build_run_record(
 ) -> dict[str, Any]:
     spec = log.eval
     model_id = (spec.model or "").split("/")[-1]
+    # Effort lives on the task/plan config (what the model actually ran with),
+    # not the eval-level config; fall back to the eval config if absent.
+    plan_cfg = getattr(getattr(log, "plan", None), "config", None)
+    reasoning_effort = getattr(plan_cfg, "reasoning_effort", None) or getattr(
+        spec.model_generate_config, "reasoning_effort", None)
     mode = (sample.metadata or {}).get("mode", mode)
     epoch = sample.epoch if epoch is None else epoch
     score = (sample.scores or {}).get(_SCORER_KEY)
@@ -110,9 +115,7 @@ def build_run_record(
         "agent_version": agent_version,
         "provider": "anthropic",
         "model_id": model_id,
-        "model_config": {
-            "reasoning_effort": getattr(spec.model_generate_config, "reasoning_effort", None),
-        },
+        "model_config": {"reasoning_effort": reasoning_effort},
         "mode": mode,
         "scaffolded": bool((sample.metadata or {}).get("scaffolded", False)),
         "epoch": epoch,
