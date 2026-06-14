@@ -142,6 +142,65 @@ def run_cmd(task_id: str, model_id: str, repetitions: int, suite: str, mode: str
         )
 
 
+@main.command("run-matrix")
+@click.option("--suite", required=True, help="Results suite name.")
+@click.option("--tasks", default=None, help="Comma-separated task IDs (default: all).")
+@click.option("--models", default=None, help="Comma-separated model IDs (default: included).")
+@click.option("--repetitions", default=1, type=int, help="Repetitions per task per model.")
+@click.option("--mode", default="default", help="Evaluation mode.")
+@click.option("--seed", default=12345, type=int, help="Run-order randomization seed.")
+@click.option("--randomize/--no-randomize", default=True, help="Blocked-randomize model order.")
+@click.option("--dry-run", is_flag=True, help="Apply reference solution, no API calls.")
+def run_matrix_cmd(suite, tasks, models, repetitions, mode, seed, randomize, dry_run):
+    """Run the task x model x repetition matrix with blocked randomization."""
+    from datetime import datetime, timezone
+
+    from agent_delta.matrix import run_matrix
+    from agent_delta.reproducibility import build_manifest, write_manifest
+
+    task_ids = tasks.split(",") if tasks else list_tasks()
+    model_ids = models.split(",") if models else list(config.included_models())
+    total = len(task_ids) * len(model_ids) * repetitions
+    click.secho(f"Running {total} run(s): {len(task_ids)} tasks x {len(model_ids)} "
+                f"models x {repetitions} reps (mode={mode}, seed={seed}).", fg="cyan")
+
+    def progress(rep, task_id, model_id):
+        click.echo(f"  rep {rep} | {task_id} | {model_id}")
+
+    order_log, fixtures = run_matrix(
+        suite, task_ids, model_ids, repetitions=repetitions, mode=mode, seed=seed,
+        randomize=randomize, dry_run=dry_run, on_run=progress,
+    )
+    date = datetime.now(timezone.utc).date().isoformat()
+    manifest = build_manifest(
+        suite=suite, date=date, models=model_ids, tasks=task_ids,
+        fixtures=fixtures, run_order_seed=seed if randomize else None,
+    )
+    manifest["run_order"] = order_log
+    path = write_manifest(manifest, suite)
+    click.secho(f"\nWrote reproducibility manifest: {path}", fg="green")
+    click.echo("Run `agentdelta report --suite <suite>` to aggregate.")
+
+
+@main.command("validate-reproducibility")
+@click.option("--suite", required=True, help="Suite whose reproducibility.json to check.")
+def validate_repro_cmd(suite: str) -> None:
+    """Recompute content hashes and check them against the recorded manifest."""
+    import json
+
+    from agent_delta.reproducibility import validate_manifest
+
+    path = config.RESULTS_DIR / "reports" / suite / "reproducibility.json"
+    if not path.exists():
+        raise click.UsageError(f"No reproducibility.json at {path}")
+    problems = validate_manifest(json.loads(path.read_text()))
+    if problems:
+        for p in problems:
+            click.secho(f"  drift: {p}", fg="red")
+        raise SystemExit(1)
+    click.secho(f"reproducible: content hashes match {path}", fg="green")
+
+
 @main.command("review-packets")
 @click.option("--suite", required=True, help="Suite under results/raw to build packets for.")
 def review_packets_cmd(suite: str) -> None:

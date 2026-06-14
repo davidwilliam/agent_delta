@@ -13,7 +13,25 @@ AgentDelta aims for reproducible-or-auditable runs (SPEC §5.1, §27).
 - **Scoring** - `configs/scoring/default.yaml`, frozen (see `docs/scoring.md`).
 - **Tasks** - `tasks/<id>/` with `task.yaml`, prompt, and public/hidden tests.
 
-## Known gaps to close before an official run (Phase 1)
+## Reproducibility manifest (SPEC §27)
+
+`agentdelta run-matrix` writes `results/reports/<suite>/reproducibility.json`
+(`agent_delta/reproducibility.py`): agentdelta / Inspect / inspect-swe / Python /
+Docker versions, host OS, sandbox image digests, the agent-settings hash, the
+model and task lists, the `tasks_hash`, `scoring_hash`, `hidden_tests_hash`, the
+run-order seed, and the realized run order. The hidden-test hash is a commitment
+(SPEC §8.5): publish it before evaluation so the hidden tests cannot change after
+seeing results. `agentdelta validate-reproducibility --suite <s>` recomputes the
+content hashes and flags any drift.
+
+## Run order (SPEC §12.2)
+
+`run-matrix` blocked-randomizes the model order per task and repetition from the
+seed (`agent_delta/matrix.py`), so no model runs all its repetitions before the
+next. Each repetition is recorded as a distinct epoch so paired comparisons line
+up across models.
+
+## Known gaps to close before an official run
 
 1. **Network lockdown.** The v0.1 compose leaves the default network up so the
    Claude Code CLI and any first-run download work without friction. The SPEC
@@ -23,8 +41,6 @@ AgentDelta aims for reproducible-or-auditable runs (SPEC §5.1, §27).
 2. **Pinned CLI version.** The image installs the latest `@anthropic-ai/claude-code`.
    Pin an exact version and record it.
 3. **Pinned dependency lockfiles** for each fixture.
-4. **`reproducibility.json`** emitted per report (schema in SPEC §27): Inspect /
-   inspect-swe versions, image digests, tasks hash, scoring hash, run-order seed.
 
 ## Fallback detection (SPEC §5.5)
 

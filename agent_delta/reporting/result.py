@@ -50,10 +50,12 @@ def build_run_record(
     agent: str,
     agent_version: str | None,
     mode: str = "default",
+    epoch: int | None = None,
 ) -> dict[str, Any]:
     spec = log.eval
     model_id = (spec.model or "").split("/")[-1]
     mode = (sample.metadata or {}).get("mode", mode)
+    epoch = sample.epoch if epoch is None else epoch
     score = (sample.scores or {}).get(_SCORER_KEY)
     smeta: dict[str, Any] = (score.metadata if score else {}) or {}
     components = smeta.get("components", {})
@@ -68,7 +70,7 @@ def build_run_record(
     )
 
     run_id = "_".join(
-        [_ts(sample.started_at), f"task-{sample.id}", _slug(model_id), f"rep-{sample.epoch:02d}"]
+        [_ts(sample.started_at), f"task-{sample.id}", _slug(model_id), f"rep-{epoch:02d}"]
     )
 
     # Validity (SPEC 11.4 / 5.5): served-model fallback, broken baseline, crash.
@@ -110,7 +112,7 @@ def build_run_record(
         "model_id": model_id,
         "mode": mode,
         "scaffolded": bool((sample.metadata or {}).get("scaffolded", False)),
-        "epoch": sample.epoch,
+        "epoch": epoch,
         "execution": {
             "started_at": str(sample.started_at) if sample.started_at else None,
             "completed_at": str(sample.completed_at) if sample.completed_at else None,
@@ -163,11 +165,13 @@ def write_run_records(
     agent: str = "claude_code",
     agent_version: str | None = None,
     mode: str = "default",
+    epoch: int | None = None,
     out_root: Path | None = None,
 ) -> list[Path]:
     """Write one run.json (+ final.diff) per sample/epoch. Returns the paths.
 
     `mode` is a fallback; each record prefers the mode recorded in sample metadata.
+    `epoch` overrides the sample epoch so a matrix can label repetitions distinctly.
     """
     out_root = out_root or (config.RAW_RESULTS_DIR / suite)
     out_root.mkdir(parents=True, exist_ok=True)
@@ -178,7 +182,8 @@ def write_run_records(
     for log in logs:
         for sample in log.samples or []:
             record = build_run_record(
-                log, sample, suite=suite, agent=agent, agent_version=agent_version, mode=mode
+                log, sample, suite=suite, agent=agent, agent_version=agent_version,
+                mode=mode, epoch=epoch,
             )
             run_dir = out_root / record["run_id"]
             run_dir.mkdir(parents=True, exist_ok=True)
