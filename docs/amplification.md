@@ -1,10 +1,26 @@
 # Agentic Amplification Assessment
 
-This implements SPEC-ADDENDUM.md: separating intrinsic model capability from
-gains that come from a newer model simply doing more work by default. The
-question is not only "which model produced the best output?" but "which model
-produced the best output per unit of cost, time, and agentic work, and could an
-older cheaper model match it with a better workflow?".
+This implements SPEC-ADDENDUM.md as a second-level assessment layered on top of
+the SPEC.md primary benchmark. The two levels are produced together but are kept
+distinct in both the report JSON and the Markdown.
+
+## Two levels
+
+- **Level 1 (SPEC.md): Primary Assessment.** Ranks the model-agent systems and
+  decides which Model B over Model A gains are real and material. A gain is
+  material only when success improves by at least the configured threshold (SPEC
+  14.6) and the paired McNemar test is significant (SPEC 15). This answers "which
+  performs best, and is the difference real?".
+- **Level 2 (SPEC-ADDENDUM): Agentic Amplification Assessment.** Narrows down to
+  *only* the material Level 1 gains and asks "why?": is the gain intrinsic model
+  capability, or does the newer model mainly do more work by default (more
+  tokens, time, tool calls, retries, self-review)? Non-material gains are recorded
+  as excluded and never escalated, so amplification scrutiny is spent only where
+  Level 1 found a genuine improvement.
+
+`agentdelta report --level 1` or `--level 2` renders a single level; `--level
+both` (default) renders both. The `report.json` always carries both under each
+mode as `level1` and `level2`.
 
 ## What aggregation computes
 

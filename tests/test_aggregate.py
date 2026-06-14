@@ -70,9 +70,8 @@ def test_build_report_and_render(tmp_path):
     assert set(report["models"]) == {"claude-opus-4-6", "claude-opus-4-8"}
 
     mode = report["per_mode"]["default"]
-    # opus-4-8 has higher success so it should rank first by objective score.
-    assert mode["ranking"][0] == "claude-opus-4-8"
-    # Baseline defaults to the oldest version present.
+    # Level 1: opus-4-8 has higher success so it should rank first by objective score.
+    assert mode["level1"]["ranking"][0] == "claude-opus-4-8"
     assert mode["baseline"] == "claude-opus-4-6"
 
     m8 = mode["models"]["claude-opus-4-8"]
@@ -84,15 +83,21 @@ def test_build_report_and_render(tmp_path):
     assert m6["time_efficiency"] == 1.0
     assert 0 < m8["cost_efficiency"] < 1.0
 
-    comp = mode["comparisons"][0]
-    assert comp["model_b"] == "claude-opus-4-8"
-    assert comp["ratios"]["cost_amplification"] == 4.0
-    assert comp["ratios"]["token_amplification"] == 5.0
-    # 20pp gain with material support and >=2x amplification -> amplification gain.
-    assert "Amplification" in comp["classification"]["category"]
-    assert comp["paired"]["b_only"] == 10 and comp["paired"]["a_only"] == 0
+    # Level 1 flags the opus-4-8 gain as material (20pp, McNemar p<0.05).
+    imp = {i["model_b"]: i for i in mode["level1"]["improvements"]}["claude-opus-4-8"]
+    assert imp["material"] is True
+    assert imp["paired"]["b_only"] == 10 and imp["paired"]["a_only"] == 0
+
+    # Level 2 narrows down: only the material gain is assessed.
+    assessed = {a["model_b"]: a for a in mode["level2"]["assessments"]}
+    assert "claude-opus-4-8" in assessed
+    a8 = assessed["claude-opus-4-8"]
+    assert a8["ratios"]["cost_amplification"] == 4.0
+    assert a8["ratios"]["token_amplification"] == 5.0
+    assert "Amplification" in a8["classification"]["category"]
 
     md = render(report)
-    assert "Agentic Amplification Analysis" in md
+    assert "Level 1: Primary Assessment" in md
+    assert "Level 2: Agentic Amplification Assessment" in md
     assert "Primary ranking" in md
     assert "claude-opus-4-8" in md

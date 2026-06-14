@@ -152,50 +152,12 @@ def aggregate_mode(records: list[dict], baseline: str | None = None) -> dict[str
     for i, m in enumerate(ranking, 1):
         m["rank"] = i
 
-    # Baseline for amplification = explicit, else the oldest model version present.
+    # Baseline = explicit, else the oldest model version present.
     if baseline is None or baseline not in models:
         baseline = sorted(models, key=lambda mid: (_version_key(mid), mid))[0] if models else None
 
-    materiality = config.load_scoring_config()["materiality"]
-    comparisons = []
-    if baseline:
-        a = models[baseline]
-        for mid, b in models.items():
-            if mid == baseline:
-                continue
-            a_metrics = _amp_metrics(a)
-            b_metrics = _amp_metrics(b)
-            ratios = amp.amplification_ratios(a_metrics, b_metrics)
-            delta_pp = (b["success_rate"] - a["success_rate"]) * 100.0
-            paired = _paired(a, b)
-            material = abs(delta_pp) >= materiality["task_success_delta_pp"] and (
-                paired.p_value < 0.05 if paired else False
-            )
-            cls = amp.classify_improvement(
-                a_metrics, b_metrics, ratios, amp_cfg,
-                success_material=material and delta_pp > 0,
-                success_delta_pp=delta_pp,
-            )
-            comparisons.append({
-                "model_b": mid,
-                "model_a": baseline,
-                "success_delta_pp": delta_pp,
-                "objective_delta": b["objective_score"] - a["objective_score"],
-                "ratios": ratios,
-                "quality_delta_per_extra_dollar": amp.quality_delta_per_extra(
-                    a["objective_score"], b["objective_score"],
-                    a["cost_mean_usd"], b["cost_mean_usd"]),
-                "quality_delta_per_extra_minute": amp.quality_delta_per_extra(
-                    a["objective_score"], b["objective_score"],
-                    _minutes(a), _minutes(b)),
-                "paired": paired.__dict__ if paired else None,
-                "classification": {
-                    "category": cls.category,
-                    "rationale": cls.rationale,
-                    "red_flags": cls.red_flags,
-                    "modes_missing": cls.modes_missing,
-                },
-            })
+    level1 = _level1_assessment(models, ranking, baseline)
+    level2 = _level2_assessment(models, baseline, level1["improvements"], amp_cfg, awi_components)
 
     # Strip non-serializable helpers.
     for m in models.values():
@@ -204,12 +166,103 @@ def aggregate_mode(records: list[dict], baseline: str | None = None) -> dict[str
 
     return {
         "models": models,
-        "ranking": [m["model_id"] for m in ranking],
         "baseline": baseline,
         "best_cost_per_success_usd": best_cps,
         "best_median_time_to_success_s": best_time,
+        "level1": level1,
+        "level2": level2,
+    }
+
+
+def _level1_assessment(models: dict, ranking: list, baseline: str | None) -> dict:
+    """Level 1 (SPEC.md): ranking and which Model B over Model A gains are material.
+
+    Materiality (SPEC 14.6 / 15.4): success improvement >= threshold percentage
+    points AND statistically supported (paired McNemar p < 0.05). This is what
+    Level 2 narrows down to.
+    """
+    materiality = config.load_scoring_config()["materiality"]
+    thresh_pp = materiality["task_success_delta_pp"]
+    improvements = []
+    if baseline:
+        a = models[baseline]
+        for mid, b in models.items():
+            if mid == baseline:
+                continue
+            delta_pp = (b["success_rate"] - a["success_rate"]) * 100.0
+            paired = _paired(a, b)
+            significant = paired.p_value < 0.05 if paired else False
+            material = delta_pp >= thresh_pp and significant
+            if delta_pp < thresh_pp:
+                reason = f"success delta {delta_pp:+.1f} pp is below the {thresh_pp} pp threshold"
+            elif not significant:
+                p = paired.p_value if paired else float("nan")
+                reason = f"success delta {delta_pp:+.1f} pp but paired McNemar p = {p:.3f} (>= 0.05)"
+            else:
+                reason = f"success delta {delta_pp:+.1f} pp with paired McNemar p = {paired.p_value:.3f}"
+            improvements.append({
+                "model_b": mid,
+                "model_a": baseline,
+                "success_delta_pp": delta_pp,
+                "objective_delta": b["objective_score"] - a["objective_score"],
+                "paired": paired.__dict__ if paired else None,
+                "material": material,
+                "materiality_reason": reason,
+            })
+    return {
+        "ranking": [m["model_id"] for m in ranking],
+        "baseline": baseline,
+        "improvements": improvements,
+    }
+
+
+def _level2_assessment(
+    models: dict, baseline: str | None, improvements: list, amp_cfg: dict, awi_components: list
+) -> dict:
+    """Level 2 (SPEC-ADDENDUM): amplification analysis of ONLY the material gains.
+
+    For each materially-better Model B from Level 1, decide whether the gain is
+    intrinsic or driven by agentic amplification. Non-material gains are recorded
+    as excluded (not escalated to Level 2).
+    """
+    assessments, excluded = [], []
+    for imp in improvements:
+        if not imp["material"]:
+            excluded.append({
+                "model_b": imp["model_b"],
+                "model_a": imp["model_a"],
+                "reason": imp["materiality_reason"],
+            })
+            continue
+        a, b = models[imp["model_a"]], models[imp["model_b"]]
+        a_metrics, b_metrics = _amp_metrics(a), _amp_metrics(b)
+        ratios = amp.amplification_ratios(a_metrics, b_metrics)
+        cls = amp.classify_improvement(
+            a_metrics, b_metrics, ratios, amp_cfg,
+            success_material=True, success_delta_pp=imp["success_delta_pp"],
+        )
+        assessments.append({
+            "model_b": imp["model_b"],
+            "model_a": imp["model_a"],
+            "success_delta_pp": imp["success_delta_pp"],
+            "objective_delta": imp["objective_delta"],
+            "ratios": ratios,
+            "quality_delta_per_extra_dollar": amp.quality_delta_per_extra(
+                a["objective_score"], b["objective_score"], a["cost_mean_usd"], b["cost_mean_usd"]),
+            "quality_delta_per_extra_minute": amp.quality_delta_per_extra(
+                a["objective_score"], b["objective_score"], _minutes(a), _minutes(b)),
+            "classification": {
+                "category": cls.category,
+                "rationale": cls.rationale,
+                "red_flags": cls.red_flags,
+                "modes_missing": cls.modes_missing,
+            },
+        })
+    return {
+        "baseline": baseline,
         "work_index_components": awi_components,
-        "comparisons": comparisons,
+        "assessments": assessments,
+        "excluded": excluded,
     }
 
 

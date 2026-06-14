@@ -143,24 +143,30 @@ def aggregate_cmd(results_dir: str, suite: str, baseline: str | None) -> None:
     for mode, data in report["per_mode"].items():
         ranked = ", ".join(
             f"{data['models'][mid]['model_id']} {data['models'][mid]['objective_score']:.1f}"
-            for mid in data["ranking"]
+            for mid in data["level1"]["ranking"]
         )
-        click.echo(f"  [{mode}] {ranked}")
+        click.echo(f"  [{mode}] L1 ranking: {ranked}")
+        material = [i["model_b"] for i in data["level1"]["improvements"] if i["material"]]
+        click.echo(f"  [{mode}] L2 escalated (material gains): {', '.join(material) or 'none'}")
 
 
 @main.command("report")
 @click.option("--results", "results_dir", default=None, help="Dir of run records (defaults from suite).")
 @click.option("--suite", required=True, help="Suite name.")
 @click.option("--baseline", default=None, help="Baseline model ID for amplification.")
+@click.option("--level", type=click.Choice(["1", "2", "both"]), default="both",
+              help="1 = primary assessment only; 2 = amplification only; both (default).")
 @click.option("--output", default=None, help="Markdown output path.")
-def report_cmd(results_dir: str | None, suite: str, baseline: str | None, output: str | None) -> None:
+def report_cmd(results_dir: str | None, suite: str, baseline: str | None,
+               level: str, output: str | None) -> None:
     """Generate a Markdown report from run records."""
     from agent_delta.reporting import build_report, render, write_report_json
 
     rdir = Path(results_dir) if results_dir else (config.RAW_RESULTS_DIR / suite)
     report = build_report(rdir, suite=suite, baseline=baseline)
     write_report_json(report, suite)
-    md = render(report)
+    levels = (1, 2) if level == "both" else (int(level),)
+    md = render(report, levels=levels)
     out = Path(output) if output else (config.RESULTS_DIR / "reports" / suite / "report.md")
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(md)

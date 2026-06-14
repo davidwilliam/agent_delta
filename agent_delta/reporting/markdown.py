@@ -1,4 +1,10 @@
-"""Render an aggregated report dict as Markdown (SPEC 17 + ADDENDUM 9, 10)."""
+"""Render an aggregated report dict as Markdown.
+
+The report is presented as two levels of assessment:
+  Level 1 (SPEC.md): the primary ranking and which gains are real and material.
+  Level 2 (SPEC-ADDENDUM.md): for ONLY those material gains, whether the gain is
+  intrinsic capability or agentic amplification.
+"""
 
 from __future__ import annotations
 
@@ -33,7 +39,7 @@ def _ratio(x: Any) -> str:
     return "n/a" if x is None else f"{x:.2f}x"
 
 
-def render(report: dict) -> str:
+def render(report: dict, levels: tuple[int, ...] = (1, 2)) -> str:
     L: list[str] = []
     L.append(f"# AgentDelta report: {report['suite']}")
     L.append("")
@@ -46,7 +52,12 @@ def render(report: dict) -> str:
     L.append("")
 
     for mode, data in report["per_mode"].items():
-        _render_mode(L, mode, data)
+        L.append(f"## Mode: {mode}")
+        L.append("")
+        if 1 in levels:
+            _render_level1(L, data)
+        if 2 in levels:
+            _render_level2(L, data)
 
     if report.get("limitations"):
         L.append("## Limitations")
@@ -59,16 +70,17 @@ def render(report: dict) -> str:
 
 
 def _ordered(data: dict) -> list[dict]:
-    return [data["models"][mid] for mid in data["ranking"]]
+    return [data["models"][mid] for mid in data["level1"]["ranking"]]
 
 
-def _render_mode(L: list[str], mode: str, data: dict) -> None:
+def _render_level1(L: list[str], data: dict) -> None:
     models = _ordered(data)
-    L.append(f"## Mode: {mode}")
+    L.append("### Level 1: Primary Assessment (SPEC.md)")
+    L.append("")
+    L.append("Which model-agent system performs best, by objective evidence.")
     L.append("")
 
-    # Primary ranking table (SPEC 17.1).
-    L.append("### Primary ranking")
+    L.append("#### Primary ranking")
     L.append("")
     L.append("| Rank | Model | Objective | Success | Hidden | Regression | Cost/Success | Median Time |")
     L.append("| ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: |")
@@ -82,24 +94,52 @@ def _render_mode(L: list[str], mode: str, data: dict) -> None:
         )
     L.append("")
 
-    # Resource amplification table (ADDENDUM 10.2).
-    L.append("### Resource use and Agentic Work Index")
+    improvements = data["level1"]["improvements"]
+    if improvements:
+        baseline = data["level1"]["baseline"]
+        L.append(f"#### Material improvements over baseline (`{baseline}`)")
+        L.append("")
+        L.append("A gain is material only if success improves by at least the configured "
+                 "threshold and the paired McNemar test is significant. Only material gains "
+                 "are escalated to Level 2.")
+        L.append("")
+        L.append("| Model B | Success delta | Objective delta | Material? | Reason |")
+        L.append("| --- | ---: | ---: | :---: | --- |")
+        for imp in improvements:
+            mark = "yes" if imp["material"] else "no"
+            L.append(
+                f"| {imp['model_b']} | {imp['success_delta_pp']:+.1f} pp | "
+                f"{imp['objective_delta']:+.1f} | {mark} | {imp['materiality_reason']} |"
+            )
+        L.append("")
+
+
+def _render_level2(L: list[str], data: dict) -> None:
+    models = _ordered(data)
+    level2 = data["level2"]
+    L.append("### Level 2: Agentic Amplification Assessment (SPEC-ADDENDUM.md)")
     L.append("")
-    comps = data.get("work_index_components") or []
+    L.append("For the material Level 1 gains only: is the improvement intrinsic model "
+             "capability, or does the newer model mainly do more work by default "
+             "(more tokens, time, tool calls, retries, self-review)?")
+    L.append("")
+
+    comps = level2.get("work_index_components") or []
     L.append(f"Agentic Work Index components in use: {', '.join(comps) if comps else 'none'}.")
     L.append("")
-    L.append("| Model | Mean tokens | Cost/Success | Median Time | Files edited | Work Index |")
+    L.append("#### Resource use and Agentic Work Index")
+    L.append("")
+    L.append("| Model | Mean tokens | Cost/task | Median Time | Files edited | Work Index |")
     L.append("| --- | ---: | ---: | ---: | ---: | ---: |")
     for m in models:
         L.append(
             f"| {m['model_id']} | {_n(m['tokens_total_mean'], '{:,.0f}')} | "
-            f"{_cost(m['cost_per_success_usd'])} | {_time(m['median_time_to_success_s'])} | "
+            f"{_cost(m['cost_mean_usd'])} | {_time(m['median_time_to_success_s'])} | "
             f"{_n((m['work'] or {}).get('file_edits'), '{:.1f}')} | {_n(m.get('work_index'))} |"
         )
     L.append("")
 
-    # Efficiency table (ADDENDUM 10.3).
-    L.append("### Efficiency")
+    L.append("#### Efficiency")
     L.append("")
     L.append("| Model | Objective | Quality/$ | Quality/Minute | Quality/Work Unit |")
     L.append("| --- | ---: | ---: | ---: | ---: |")
@@ -111,47 +151,52 @@ def _render_mode(L: list[str], mode: str, data: dict) -> None:
         )
     L.append("")
 
-    _render_amplification(L, data)
-
-
-def _render_amplification(L: list[str], data: dict) -> None:
-    L.append("### Agentic Amplification Analysis")
-    L.append("")
-    baseline = data.get("baseline")
-    comparisons = data.get("comparisons") or []
-    if not comparisons:
-        L.append("Only one model present; no amplification comparison.")
+    assessments = level2.get("assessments") or []
+    excluded = level2.get("excluded") or []
+    if not assessments:
+        L.append("No material Level 1 gains were escalated to amplification analysis"
+                 + (f" ({len(excluded)} comparison(s) excluded as non-material)." if excluded else "."))
         L.append("")
+        _render_excluded(L, excluded)
         return
-    L.append(f"Baseline (Model A): `{baseline}`. Each row compares a newer model B "
-             f"against this baseline.")
+
+    baseline = level2.get("baseline")
+    L.append(f"#### Amplification of material gains (baseline `{baseline}`)")
     L.append("")
-    L.append("| Model B | Success delta | Objective delta | Token amp | Cost amp | Time amp | Classification |")
+    L.append("| Model B | Success delta | Token amp | Cost amp | Time amp | Work amp | Classification |")
     L.append("| --- | ---: | ---: | ---: | ---: | ---: | --- |")
-    for c in comparisons:
-        r = c["ratios"]
+    for a in assessments:
+        r = a["ratios"]
         L.append(
-            f"| {c['model_b']} | {c['success_delta_pp']:+.1f} pp | {c['objective_delta']:+.1f} | "
+            f"| {a['model_b']} | {a['success_delta_pp']:+.1f} pp | "
             f"{_ratio(r.get('token_amplification'))} | {_ratio(r.get('cost_amplification'))} | "
-            f"{_ratio(r.get('time_amplification'))} | {c['classification']['category']} |"
+            f"{_ratio(r.get('time_amplification'))} | {_ratio(r.get('work_index_amplification'))} | "
+            f"{a['classification']['category']} |"
         )
     L.append("")
-    for c in comparisons:
-        cls = c["classification"]
-        L.append(f"**{c['model_b']} vs {baseline}: {cls['category']}**")
+    for a in assessments:
+        cls = a["classification"]
+        L.append(f"**{a['model_b']} vs {a['model_a']}: {cls['category']}**")
         L.append("")
         for reason in cls["rationale"]:
             L.append(f"- {reason}")
         if cls["red_flags"]:
             L.append(f"- Red flags (ratio >= 2.0): {', '.join(cls['red_flags'])}")
-        qd = c.get("quality_delta_per_extra_dollar")
+        qd = a.get("quality_delta_per_extra_dollar")
         if qd is not None:
             L.append(f"- Quality delta per extra dollar: {qd:.1f}")
         if cls["modes_missing"]:
-            L.append(f"- To confirm, run: {', '.join(cls['modes_missing'])} mode(s).")
-        paired = c.get("paired")
-        if paired:
-            L.append(f"- Paired McNemar over {paired['n_pairs']} pairs: "
-                     f"p = {paired['p_value']:.3f} (B-only wins {paired['b_only']}, "
-                     f"A-only wins {paired['a_only']}).")
+            L.append(f"- To confirm intrinsic vs workflow-equivalent, run: "
+                     f"{', '.join(cls['modes_missing'])} mode(s).")
         L.append("")
+    _render_excluded(L, excluded)
+
+
+def _render_excluded(L: list[str], excluded: list) -> None:
+    if not excluded:
+        return
+    L.append("#### Not escalated to Level 2 (non-material)")
+    L.append("")
+    for e in excluded:
+        L.append(f"- {e['model_b']} vs {e['model_a']}: {e['reason']}.")
+    L.append("")
