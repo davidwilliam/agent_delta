@@ -32,6 +32,7 @@ def run_matrix(
     randomize: bool = True,
     dry_run: bool = False,
     scaffold_model: str | None = None,
+    network: str | None = None,
     on_run=None,
 ) -> tuple[list[dict[str, Any]], list[str]]:
     """Execute the matrix. Returns (run_order_log, fixtures_used)."""
@@ -48,7 +49,7 @@ def run_matrix(
                 if on_run:
                     on_run(rep, task_id, model_id)
                 logs = run_task(task_id, model_id, repetitions=1, mode=mode,
-                                dry_run=dry_run, scaffold_model=scaffold_model)
+                                dry_run=dry_run, scaffold_model=scaffold_model, network=network)
                 write_run_records(logs, suite=suite, mode=mode, epoch=rep)
 
     fixtures = sorted({load_task(t).repo for t in task_ids})

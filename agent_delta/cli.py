@@ -161,8 +161,10 @@ def run_cmd(task_id: str, model_id: str, repetitions: int, suite: str, mode: str
 @click.option("--mode", default="default", help="Evaluation mode.")
 @click.option("--seed", default=12345, type=int, help="Run-order randomization seed.")
 @click.option("--randomize/--no-randomize", default=True, help="Blocked-randomize model order.")
+@click.option("--network", type=click.Choice(["disabled", "enabled"]), default=None,
+              help="Override sandbox network (a real model run needs 'enabled').")
 @click.option("--dry-run", is_flag=True, help="Apply reference solution, no API calls.")
-def run_matrix_cmd(suite, tasks, models, repetitions, mode, seed, randomize, dry_run):
+def run_matrix_cmd(suite, tasks, models, repetitions, mode, seed, randomize, network, dry_run):
     """Run the task x model x repetition matrix with blocked randomization."""
     from datetime import datetime, timezone
 
@@ -180,7 +182,7 @@ def run_matrix_cmd(suite, tasks, models, repetitions, mode, seed, randomize, dry
 
     order_log, fixtures = run_matrix(
         suite, task_ids, model_ids, repetitions=repetitions, mode=mode, seed=seed,
-        randomize=randomize, dry_run=dry_run, on_run=progress,
+        randomize=randomize, dry_run=dry_run, network=network, on_run=progress,
     )
     date = datetime.now(timezone.utc).date().isoformat()
     manifest = build_manifest(
