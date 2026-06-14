@@ -1,0 +1,49 @@
+id: task_010
+title: Implement merge_intervals with full edge-case handling
+category: medium_feature
+difficulty: 4
+repo: python_package
+base_commit: HEAD
+language: python
+framework: pytest
+prompt_file: prompt.md
+
+context_requirement:
+  min_context_tokens: 8000
+  preferred_context_tokens: 200000
+
+execution:
+  timeout_minutes: 20
+  max_cost_usd: 3.00
+  max_agent_turns: null
+  network: disabled
+  package_install: false
+
+scope:
+  allowed_paths:
+    - src/
+    - tests/
+  forbidden_paths:
+    - pyproject.toml
+  max_files_modified: 3
+
+tests:
+  baseline:
+    - pytest -q tests/
+  public:
+    - public_tests.py
+  hidden:
+    - hidden_tests.py
+
+acceptance_criteria:
+  - A new module mathkit/intervals.py provides merge_intervals(intervals).
+  - Overlapping and touching intervals are merged.
+  - Input may be unsorted and may contain nested intervals.
+  - Empty input returns an empty list; the result is sorted by start.
+
+scoring:
+  objective_weight: 1.0
+  review_weight: 0.0
+
+notes:
+  - Harder task: hidden tests cover unsorted, nested, adjacent, negative, duplicate.

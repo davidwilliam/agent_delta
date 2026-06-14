@@ -110,6 +110,9 @@ def build_run_record(
         "agent_version": agent_version,
         "provider": "anthropic",
         "model_id": model_id,
+        "model_config": {
+            "reasoning_effort": getattr(spec.model_generate_config, "reasoning_effort", None),
+        },
         "mode": mode,
         "scaffolded": bool((sample.metadata or {}).get("scaffolded", False)),
         "epoch": epoch,

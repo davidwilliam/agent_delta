@@ -1,0 +1,49 @@
+id: task_011
+title: Implement int_to_roman and roman_to_int
+category: medium_feature
+difficulty: 4
+repo: python_package
+base_commit: HEAD
+language: python
+framework: pytest
+prompt_file: prompt.md
+
+context_requirement:
+  min_context_tokens: 8000
+  preferred_context_tokens: 200000
+
+execution:
+  timeout_minutes: 20
+  max_cost_usd: 3.00
+  max_agent_turns: null
+  network: disabled
+  package_install: false
+
+scope:
+  allowed_paths:
+    - src/
+    - tests/
+  forbidden_paths:
+    - pyproject.toml
+  max_files_modified: 3
+
+tests:
+  baseline:
+    - pytest -q tests/
+  public:
+    - public_tests.py
+  hidden:
+    - hidden_tests.py
+
+acceptance_criteria:
+  - A new module mathkit/roman.py provides int_to_roman(n) and roman_to_int(s).
+  - Subtractive notation is correct (4=IV, 9=IX, 40=XL, 90=XC, 400=CD, 900=CM).
+  - int_to_roman and roman_to_int round-trip for 1..3999.
+  - int_to_roman raises ValueError outside 1..3999.
+
+scoring:
+  objective_weight: 1.0
+  review_weight: 0.0
+
+notes:
+  - Harder task: hidden tests cover subtractive cases, large composites, and round-trips.

@@ -116,9 +116,12 @@ def build_sandbox_cmd(fixture: str, method: str) -> None:
               help="Model that receives the scaffold under older_plus_scaffold (default: oldest).")
 @click.option("--network", type=click.Choice(["disabled", "enabled"]), default=None,
               help="Override sandbox network (a real model run needs 'enabled').")
+@click.option("--effort", type=click.Choice(["low", "medium", "high", "xhigh", "max"]),
+              default=None, help="Reasoning effort override (default: model config).")
 @click.option("--dry-run", is_flag=True, help="Apply reference solution, no API calls.")
 def run_cmd(task_id: str, model_id: str, repetitions: int, suite: str, mode: str,
-            scaffold_model: str | None, network: str | None, dry_run: bool) -> None:
+            scaffold_model: str | None, network: str | None, effort: str | None,
+            dry_run: bool) -> None:
     """Run one task for one model in one mode and write run records."""
     from agent_delta.eval import run_task
     from agent_delta.modes import available_modes, is_scaffolded
@@ -135,7 +138,7 @@ def run_cmd(task_id: str, model_id: str, repetitions: int, suite: str, mode: str
         click.secho(f"{model_id} runs WITH scaffold (older_plus_scaffold).", fg="cyan")
 
     logs = run_task(task_id, model_id, repetitions=repetitions, dry_run=dry_run,
-                    mode=mode, scaffold_model=scaffold_model, network=network)
+                    mode=mode, scaffold_model=scaffold_model, network=network, effort=effort)
     paths = write_run_records(logs, suite=suite, mode=mode)
     click.secho(f"\nWrote {len(paths)} run record(s):", fg="green")
     for p in paths:
@@ -163,8 +166,10 @@ def run_cmd(task_id: str, model_id: str, repetitions: int, suite: str, mode: str
 @click.option("--randomize/--no-randomize", default=True, help="Blocked-randomize model order.")
 @click.option("--network", type=click.Choice(["disabled", "enabled"]), default=None,
               help="Override sandbox network (a real model run needs 'enabled').")
+@click.option("--effort", type=click.Choice(["low", "medium", "high", "xhigh", "max"]),
+              default=None, help="Reasoning effort for every run (default: model config).")
 @click.option("--dry-run", is_flag=True, help="Apply reference solution, no API calls.")
-def run_matrix_cmd(suite, tasks, models, repetitions, mode, seed, randomize, network, dry_run):
+def run_matrix_cmd(suite, tasks, models, repetitions, mode, seed, randomize, network, effort, dry_run):
     """Run the task x model x repetition matrix with blocked randomization."""
     from datetime import datetime, timezone
 
@@ -182,7 +187,7 @@ def run_matrix_cmd(suite, tasks, models, repetitions, mode, seed, randomize, net
 
     order_log, fixtures = run_matrix(
         suite, task_ids, model_ids, repetitions=repetitions, mode=mode, seed=seed,
-        randomize=randomize, dry_run=dry_run, network=network, on_run=progress,
+        randomize=randomize, dry_run=dry_run, network=network, effort=effort, on_run=progress,
     )
     date = datetime.now(timezone.utc).date().isoformat()
     manifest = build_manifest(

@@ -14,6 +14,7 @@ from pathlib import Path
 
 from inspect_ai import Task, eval as inspect_eval
 from inspect_ai.dataset import Sample
+from inspect_ai.model import GenerateConfig
 from inspect_ai.solver import Generate, Solver, TaskState, solver
 from inspect_ai.util import sandbox
 
@@ -90,8 +91,10 @@ def build_task(
     agent_name: str = "claude_code",
     mode: str = "default",
     scaffolded: bool = False,
+    effort: str | None = None,
 ) -> Task:
     limits = mode_limits(task, mode)
+    gen_config = GenerateConfig(reasoning_effort=effort) if effort else GenerateConfig()
     sample = Sample(
         id=task.id,
         input=build_prompt(task, mode, scaffolded=scaffolded),
@@ -118,6 +121,7 @@ def build_task(
         solver=agent,
         scorer=agentdelta_scorer(),
         epochs=epochs,
+        config=gen_config,
         time_limit=limits["time_limit"],
         cost_limit=limits["cost_limit"] if not dry_run else None,
         token_limit=limits["token_limit"],
@@ -136,11 +140,19 @@ def run_task(
     mode: str = "default",
     scaffold_model: str | None = None,
     network: str | None = None,
+    effort: str | None = None,
     log_dir: str | Path | None = None,
 ):
     """Run one AgentDelta task for one model in one mode. Returns the EvalLogs."""
     task = load_task(task_id)
     fixture = load_fixture(task.repo)
+    # Effort: explicit override, else the model's configured effort, else high.
+    if effort is None and not dry_run:
+        try:
+            effort = config.model_spec(model_id).get("effort")
+        except KeyError:
+            effort = None
+    effort = effort or "high"
     os.environ["AGENTDELTA_IMAGE"] = fixture.image_tag
     # Network disabled by default (SPEC 22); a task opts in with network: enabled,
     # or the caller overrides (a real model run needs the inspect_swe proxy).
@@ -155,7 +167,7 @@ def run_task(
     log_dir = str(log_dir) if log_dir else str(config.RESULTS_DIR / "logs")
     eval_task = build_task(
         task, fixture, epochs=repetitions, dry_run=dry_run, agent_name=agent_name,
-        mode=mode, scaffolded=scaffolded,
+        mode=mode, scaffolded=scaffolded, effort=None if dry_run else effort,
     )
 
     # In dry-run there is no model; pass a placeholder Inspect accepts via the
