@@ -17,10 +17,15 @@ from agent_delta.registry import load_fixture, load_task
 
 
 @task
-def agentdelta(task_id: str = "task_001", repetitions: int = 1, dry_run: bool = False) -> Task:
+def agentdelta(
+    task_id: str = "task_001",
+    repetitions: int = 1,
+    dry_run: bool = False,
+    mode: str = "default",
+) -> Task:
     import os
 
     t = load_task(task_id)
     fixture = load_fixture(t.repo)
     os.environ["AGENTDELTA_IMAGE"] = fixture.image_tag
-    return build_task(t, fixture, epochs=repetitions, dry_run=dry_run)
+    return build_task(t, fixture, epochs=repetitions, dry_run=dry_run, mode=mode)

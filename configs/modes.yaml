@@ -1,0 +1,49 @@
+# Evaluation modes (SPEC-ADDENDUM section 5). A mode is a normalization applied
+# to the run: a prompt transform, a set of resource limits, or both. The task,
+# fixture, base commit, and scoring are identical across modes; only the
+# conditions change, which is what lets cross-mode comparison isolate agentic
+# amplification. Declared before runs, like the scoring config.
+#
+# limits map to Inspect eval limits: token_limit, message_limit, time_limit
+# (seconds), cost_limit (USD). Omitted limits fall back to the task's own values.
+modes:
+  default:
+    description: Each model exactly as a normal user would run it (ADDENDUM 5.1).
+
+  equal_budget:
+    description: Comparable resource caps across all models (ADDENDUM 5.2).
+    limits:
+      token_limit: 400000
+      message_limit: 80
+      time_limit: 900
+      cost_limit: 2.00
+
+  matched_workflow:
+    description: Force the same explicit workflow for every model (ADDENDUM 5.3).
+    workflow: true
+
+  strong_spec:
+    description: Give every model the task's full acceptance criteria (ADDENDUM 5.4).
+    strong_spec: true
+
+  cost_matched:
+    description: Same dollar budget per task for every model (ADDENDUM 5.6).
+    limits:
+      cost_limit: 1.00
+
+  time_matched:
+    description: Same wall-clock budget per task for every model (ADDENDUM 5.7).
+    limits:
+      time_limit: 600
+
+# The shared workflow injected by matched_workflow mode (ADDENDUM 5.3).
+workflow_steps: |
+  Follow this process for this task:
+  1. Inspect the relevant files before changing anything.
+  2. Write a short implementation plan.
+  3. Make the smallest change that satisfies the request.
+  4. Run the tests.
+  5. If the tests fail, debug once and fix.
+  6. Run the tests again.
+  7. Review your diff against the requirements.
+  8. Give a final summary of what you changed.

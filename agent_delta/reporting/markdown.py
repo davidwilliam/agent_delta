@@ -59,6 +59,9 @@ def render(report: dict, levels: tuple[int, ...] = (1, 2)) -> str:
         if 2 in levels:
             _render_level2(L, data)
 
+    if 2 in levels and report.get("cross_mode"):
+        _render_cross_mode(L, report["cross_mode"])
+
     if report.get("limitations"):
         L.append("## Limitations")
         L.append("")
@@ -190,6 +193,34 @@ def _render_level2(L: list[str], data: dict) -> None:
                      f"{', '.join(cls['modes_missing'])} mode(s).")
         L.append("")
     _render_excluded(L, excluded)
+
+
+def _render_cross_mode(L: list[str], cross: dict) -> None:
+    assessments = cross.get("assessments") or []
+    L.append("## Cross-Mode Synthesis (Level 2 definitive)")
+    L.append("")
+    L.append(f"Modes available: {', '.join(cross.get('modes_present') or [])}. "
+             "Each material Default-Mode gain is re-checked across the normalized modes "
+             "to decide whether it is intrinsic, amplified, or workflow-equivalent.")
+    L.append("")
+    if not assessments:
+        L.append("No material Default-Mode gains to synthesize.")
+        L.append("")
+        return
+    for a in assessments:
+        L.append(f"### {a['model_b']} vs {a['model_a']}: {a['category']} ({a['confidence']})")
+        L.append("")
+        L.append("| Mode | A success | B success | Gap | Material? |")
+        L.append("| --- | ---: | ---: | ---: | :---: |")
+        for row in a["by_mode"]:
+            L.append(
+                f"| {row['mode']} | {_pct(row['a_success_rate'])} | {_pct(row['b_success_rate'])} | "
+                f"{row['delta_pp']:+.1f} pp | {'yes' if row['material'] else 'no'} |"
+            )
+        L.append("")
+        for ev in a["evidence"]:
+            L.append(f"- {ev}")
+        L.append("")
 
 
 def _render_excluded(L: list[str], excluded: list) -> None:

@@ -32,14 +32,16 @@ What works today:
   with its reference solution (no model, no API)
 - `agentdelta run --task <id> --dry-run` - full scoring pipeline, no API cost
 - `agentdelta run --task <id> --model claude-opus-4-8` - real run
+- `agentdelta run --mode <mode>` - run a task under a normalized mode
+  (equal_budget, matched_workflow, strong_spec, cost_matched, time_matched;
+  see `docs/modes.md`)
 - `agentdelta aggregate` / `agentdelta report` - turn run records into rankings,
-  confidence intervals, paired comparisons, and the Agentic Amplification
-  Analysis (intrinsic vs amplified gains; see SPEC-ADDENDUM.md and
-  `docs/amplification.md`)
+  confidence intervals, paired comparisons, the Agentic Amplification Analysis,
+  and a Cross-Mode Synthesis that confirms whether a gain is intrinsic, amplified,
+  or workflow-equivalent (see SPEC-ADDENDUM.md, `docs/amplification.md`)
 
-Not yet built: the resource-normalized run modes (Equal-Budget, Matched-Workflow,
-etc.) that make amplification verdicts non-provisional, a second-language fixture,
-network-locked sandbox, the Codex/Gemini adapters.
+Not yet built: the Older-Model-Plus-Scaffold mode, review-pass capture, a
+second-language fixture, network-locked sandbox, the Codex/Gemini adapters.
 
 ## Setup
 

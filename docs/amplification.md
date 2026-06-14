@@ -39,15 +39,22 @@ per evaluation mode and model:
   versus the baseline (ADDENDUM 6.5 to 6.10), with red flags at ratio >= 2.0.
 - A classification of each Model B over Model A change (ADDENDUM 8).
 
-## Classification with Default-Mode-only data
+## Cross-mode synthesis (definitive verdict)
 
-The current eval runs Default Mode. With only that data the report can identify
-Cost-Inefficient, Time-Inefficient, Agentic-Amplification (provisional), and
-No-Material-Gain outcomes, and it reports which additional modes are needed to
-separate Intrinsic from Workflow-Equivalent gains. Those modes (Equal-Budget,
-Matched-Workflow, Strong-Spec, Cost-Matched, Time-Matched, Older-Model-Plus-
-Scaffold; ADDENDUM 5) are not yet implemented as run configurations; the report
-labels Intrinsic and Amplification gains "provisional" until they are.
+The normalized run modes are implemented (see `docs/modes.md`). When a suite
+contains more than one mode, `agentdelta report` adds a Cross-Mode Synthesis
+section that re-checks each material Default-Mode gain across modes and reaches a
+confirmed classification (`agent_delta/scoring/synthesis.py`):
+
+- the gap shrinks under Equal-Budget -> Agentic Amplification Gain,
+- the gap shrinks under Matched-Workflow or Strong-Spec -> Workflow-Equivalent Gain,
+- the gap persists under Equal-Budget -> Intrinsic Capability Gain.
+
+"Shrinks" means the success gap falls below the materiality threshold. Only gains
+that Level 1 found material in Default Mode are synthesized, so the narrowing of
+the two-level design is preserved. With only Default Mode present, the per-mode
+Level 2 classification stays provisional and the synthesis section is omitted; a
+single normalized mode is enough to confirm the verdict.
 
 ## Frozen config
 

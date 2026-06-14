@@ -104,20 +104,24 @@ def build_sandbox_cmd(fixture: str, method: str) -> None:
 @click.option("--model", "model_id", default="claude-opus-4-8", help="Pinned model ID.")
 @click.option("--repetitions", default=1, type=int, help="Repeated runs (epochs).")
 @click.option("--suite", default="anthropic-claude-code-v0.1", help="Results suite name.")
+@click.option("--mode", default="default", help="Evaluation mode (see configs/modes.yaml).")
 @click.option("--dry-run", is_flag=True, help="Apply reference solution, no API calls.")
-def run_cmd(task_id: str, model_id: str, repetitions: int, suite: str, dry_run: bool) -> None:
-    """Run one task for one model and write run records."""
+def run_cmd(task_id: str, model_id: str, repetitions: int, suite: str, mode: str, dry_run: bool) -> None:
+    """Run one task for one model in one mode and write run records."""
     from agent_delta.eval import run_task
+    from agent_delta.modes import available_modes
     from agent_delta.reporting import write_run_records
 
+    if mode not in available_modes():
+        raise click.UsageError(f"Unknown mode {mode!r}; choose from: {', '.join(available_modes())}")
     if not dry_run and model_id not in config.included_models():
         click.secho(
             f"Warning: {model_id} is not flagged include:true in the model config.",
             fg="yellow",
         )
 
-    logs = run_task(task_id, model_id, repetitions=repetitions, dry_run=dry_run)
-    paths = write_run_records(logs, suite=suite)
+    logs = run_task(task_id, model_id, repetitions=repetitions, dry_run=dry_run, mode=mode)
+    paths = write_run_records(logs, suite=suite, mode=mode)
     click.secho(f"\nWrote {len(paths)} run record(s):", fg="green")
     for p in paths:
         record = json.loads(p.read_text())

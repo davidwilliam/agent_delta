@@ -20,6 +20,7 @@ from agent_delta.scoring import stats as st
 from agent_delta.scoring.cost import cost_efficiency
 from agent_delta.scoring.latency import time_efficiency
 from agent_delta.scoring.objective import ObjectiveComponents, full_score, objective_score
+from agent_delta.scoring.synthesis import synthesize_cross_mode
 
 
 def _mean(vals: list[float | None]) -> float | None:
@@ -310,6 +311,12 @@ def build_report(results_dir: Path, suite: str, baseline: str | None = None) -> 
     tasks = {r["task_id"] for r in records}
     invalid = [r["run_id"] for r in records if r.get("execution", {}).get("invalid")]
 
+    materiality_pp = config.load_scoring_config()["materiality"]["task_success_delta_pp"]
+    default_baseline = per_mode.get("default", {}).get("baseline")
+    cross_mode = None
+    if default_baseline and len(by_mode) > 1:
+        cross_mode = synthesize_cross_mode(per_mode, default_baseline, materiality_pp)
+
     return {
         "benchmark_version": BENCHMARK_VERSION,
         "suite": suite,
@@ -322,6 +329,7 @@ def build_report(results_dir: Path, suite: str, baseline: str | None = None) -> 
         "modes": sorted(by_mode),
         "scoring_formula": config.load_scoring_config(),
         "per_mode": per_mode,
+        "cross_mode": cross_mode,
         "limitations": _limitations(by_mode, per_mode),
     }
 

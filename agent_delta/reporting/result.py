@@ -51,6 +51,7 @@ def build_run_record(
 ) -> dict[str, Any]:
     spec = log.eval
     model_id = (spec.model or "").split("/")[-1]
+    mode = (sample.metadata or {}).get("mode", mode)
     score = (sample.scores or {}).get(_SCORER_KEY)
     smeta: dict[str, Any] = (score.metadata if score else {}) or {}
     components = smeta.get("components", {})
@@ -127,9 +128,13 @@ def write_run_records(
     suite: str,
     agent: str = "claude_code",
     agent_version: str | None = None,
+    mode: str = "default",
     out_root: Path | None = None,
 ) -> list[Path]:
-    """Write one run.json (+ final.diff) per sample/epoch. Returns the paths."""
+    """Write one run.json (+ final.diff) per sample/epoch. Returns the paths.
+
+    `mode` is a fallback; each record prefers the mode recorded in sample metadata.
+    """
     out_root = out_root or (config.RAW_RESULTS_DIR / suite)
     out_root.mkdir(parents=True, exist_ok=True)
     if not isinstance(logs, list):
@@ -139,7 +144,7 @@ def write_run_records(
     for log in logs:
         for sample in log.samples or []:
             record = build_run_record(
-                log, sample, suite=suite, agent=agent, agent_version=agent_version
+                log, sample, suite=suite, agent=agent, agent_version=agent_version, mode=mode
             )
             run_dir = out_root / record["run_id"]
             run_dir.mkdir(parents=True, exist_ok=True)

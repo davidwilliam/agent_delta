@@ -18,6 +18,7 @@ from inspect_ai.solver import Generate, Solver, TaskState, solver
 from inspect_ai.util import sandbox
 
 from agent_delta import config
+from agent_delta.modes import build_prompt, mode_limits
 from agent_delta.registry import Fixture, Task as ADTask, load_fixture, load_task
 from agent_delta.runners.claude_code import build_claude_code_agent
 from agent_delta.scoring.sandbox_scorer import agentdelta_scorer
@@ -52,15 +53,18 @@ def build_task(
     epochs: int,
     dry_run: bool,
     agent_name: str = "claude_code",
+    mode: str = "default",
 ) -> Task:
+    limits = mode_limits(task, mode)
     sample = Sample(
         id=task.id,
-        input=task.prompt,
+        input=build_prompt(task, mode),
         metadata={
             "task_id": task.id,
             "repo": task.repo,
             "category": task.category,
             "workdir": fixture.workdir,
+            "mode": mode,
         },
         sandbox=("docker", str(COMPOSE_PATH)),
     )
@@ -75,9 +79,11 @@ def build_task(
         solver=agent,
         scorer=agentdelta_scorer(),
         epochs=epochs,
-        time_limit=task.timeout_seconds,
-        cost_limit=task.max_cost_usd if not dry_run else None,
-        name=f"agentdelta_{task.id}",
+        time_limit=limits["time_limit"],
+        cost_limit=limits["cost_limit"] if not dry_run else None,
+        token_limit=limits["token_limit"],
+        message_limit=limits["message_limit"],
+        name=f"agentdelta_{task.id}_{mode}",
     )
 
 
@@ -88,9 +94,10 @@ def run_task(
     repetitions: int = 1,
     agent_name: str = "claude_code",
     dry_run: bool = False,
+    mode: str = "default",
     log_dir: str | Path | None = None,
 ):
-    """Run one AgentDelta task for one model. Returns the list of EvalLogs."""
+    """Run one AgentDelta task for one model in one mode. Returns the EvalLogs."""
     task = load_task(task_id)
     fixture = load_fixture(task.repo)
     os.environ["AGENTDELTA_IMAGE"] = fixture.image_tag
@@ -100,7 +107,7 @@ def run_task(
 
     log_dir = str(log_dir) if log_dir else str(config.RESULTS_DIR / "logs")
     eval_task = build_task(
-        task, fixture, epochs=repetitions, dry_run=dry_run, agent_name=agent_name
+        task, fixture, epochs=repetitions, dry_run=dry_run, agent_name=agent_name, mode=mode
     )
 
     # In dry-run there is no model; pass a placeholder Inspect accepts via the
