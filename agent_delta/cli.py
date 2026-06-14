@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 
 import click
 
@@ -126,6 +127,44 @@ def run_cmd(task_id: str, model_id: str, repetitions: int, suite: str, dry_run: 
             f"partial_obj={s['partial_objective_score']:.1f} "
             f"hidden={s['hidden_test_score']}"
         )
+
+
+@main.command("aggregate")
+@click.option("--results", "results_dir", required=True, help="Dir of run records (results/raw/<suite>).")
+@click.option("--suite", required=True, help="Suite name for the report.")
+@click.option("--baseline", default=None, help="Baseline model ID for amplification (default: oldest).")
+def aggregate_cmd(results_dir: str, suite: str, baseline: str | None) -> None:
+    """Aggregate run records into report.json (scores, stats, amplification)."""
+    from agent_delta.reporting import build_report, write_report_json
+
+    report = build_report(Path(results_dir), suite=suite, baseline=baseline)
+    path = write_report_json(report, suite)
+    click.secho(f"Wrote {path}", fg="green")
+    for mode, data in report["per_mode"].items():
+        ranked = ", ".join(
+            f"{data['models'][mid]['model_id']} {data['models'][mid]['objective_score']:.1f}"
+            for mid in data["ranking"]
+        )
+        click.echo(f"  [{mode}] {ranked}")
+
+
+@main.command("report")
+@click.option("--results", "results_dir", default=None, help="Dir of run records (defaults from suite).")
+@click.option("--suite", required=True, help="Suite name.")
+@click.option("--baseline", default=None, help="Baseline model ID for amplification.")
+@click.option("--output", default=None, help="Markdown output path.")
+def report_cmd(results_dir: str | None, suite: str, baseline: str | None, output: str | None) -> None:
+    """Generate a Markdown report from run records."""
+    from agent_delta.reporting import build_report, render, write_report_json
+
+    rdir = Path(results_dir) if results_dir else (config.RAW_RESULTS_DIR / suite)
+    report = build_report(rdir, suite=suite, baseline=baseline)
+    write_report_json(report, suite)
+    md = render(report)
+    out = Path(output) if output else (config.RESULTS_DIR / "reports" / suite / "report.md")
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(md)
+    click.secho(f"Wrote {out}", fg="green")
 
 
 if __name__ == "__main__":

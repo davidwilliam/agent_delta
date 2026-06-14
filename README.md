@@ -32,9 +32,14 @@ What works today:
   with its reference solution (no model, no API)
 - `agentdelta run --task <id> --dry-run` - full scoring pipeline, no API cost
 - `agentdelta run --task <id> --model claude-opus-4-8` - real run
+- `agentdelta aggregate` / `agentdelta report` - turn run records into rankings,
+  confidence intervals, paired comparisons, and the Agentic Amplification
+  Analysis (intrinsic vs amplified gains; see SPEC-ADDENDUM.md and
+  `docs/amplification.md`)
 
-Not yet built: aggregation/statistics, report generation, a second-language
-fixture, network-locked sandbox, the Codex/Gemini adapters.
+Not yet built: the resource-normalized run modes (Equal-Budget, Matched-Workflow,
+etc.), full agent-behavior capture for the Work Index, a second-language fixture,
+network-locked sandbox, the Codex/Gemini adapters.
 
 ## Setup
 
@@ -57,9 +62,13 @@ Requirements: Python 3.11+, Docker.
 
 # 3. Real run against a pinned model
 .venv/bin/agentdelta run --task task_001 --model claude-opus-4-8 --repetitions 1
+
+# 4. Aggregate run records into a Markdown report
+.venv/bin/agentdelta report --suite anthropic-claude-code-v0.1
 ```
 
-Run records land in `results/raw/<suite>/<run_id>/run.json` with the final diff.
+Run records land in `results/raw/<suite>/<run_id>/run.json` with the final diff;
+reports land in `results/reports/<suite>/` as `report.json` and `report.md`.
 
 ## Layout
 

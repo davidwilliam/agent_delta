@@ -1,0 +1,36 @@
+# Frozen Agentic Work Index weights (SPEC-ADDENDUM section 6.1) and red-flag
+# thresholds (section 7). Declared before any run; do not change mid-benchmark.
+#
+# Each component is normalized across the models in an evaluation set (divided by
+# the set maximum), weighted, summed, and scaled so the heaviest-working system
+# is 100. Components with no captured data are dropped and the remaining weights
+# renormalized, so the index degrades gracefully as instrumentation improves.
+agentic_work_index:
+  weights:
+    input_tokens: 0.15
+    output_tokens: 0.15
+    wall_clock_seconds: 0.15
+    api_calls: 0.10
+    tool_calls: 0.10
+    shell_commands: 0.05
+    test_runs: 0.10
+    file_reads: 0.05
+    file_edits: 0.05
+    retry_count: 0.05
+    review_passes: 0.05
+
+# A Model B vs Model A improvement is flagged potentially agentic-amplified when
+# any of these ratios reaches the threshold (SPEC-ADDENDUM section 7).
+red_flags:
+  token_amplification: 2.0
+  cost_amplification: 2.0
+  time_amplification: 2.0
+  tool_amplification: 2.0
+  retry_amplification: 2.0
+  test_amplification: 2.0
+  api_amplification: 2.0
+  work_index_amplification: 2.0
+
+# Materiality for calling a quality gain "modest" when paired with large
+# amplification (drives the Cost-Inefficient / Time-Inefficient classifications).
+modest_quality_gain_pp: 5

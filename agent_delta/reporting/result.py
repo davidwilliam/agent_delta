@@ -46,6 +46,7 @@ def build_run_record(
     suite: str,
     agent: str,
     agent_version: str | None,
+    mode: str = "default",
 ) -> dict[str, Any]:
     spec = log.eval
     model_id = (spec.model or "").split("/")[-1]
@@ -76,6 +77,7 @@ def build_run_record(
         "agent_version": agent_version,
         "provider": "anthropic",
         "model_id": model_id,
+        "mode": mode,
         "epoch": sample.epoch,
         "execution": {
             "started_at": str(sample.started_at) if sample.started_at else None,
