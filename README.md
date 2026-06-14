@@ -26,8 +26,15 @@ checker are language-aware.
 | `task_003` | python_package | medium_feature | Add a `slugify` function |
 | `task_004` | python_package | multi_file_refactor | Extract a shared `require_nonempty` helper |
 | `task_005` | python_package | security_fix | Fix path traversal in `read_fixture` |
+| `task_006` | python_package | test_writing | Write tests for `normalize_spaces` (mutation-scored) |
+| `task_007` | python_package | long_horizon | Build a `summary` module (summarize/describe/top_n) |
+| `task_008` | python_package | dependency_migration | Migrate `report` off the deprecated `avg` |
 | `go_task_001` | go_cli | small_bug_fix | Fix `Truncate` past the string length |
 | `go_task_002` | go_cli | medium_feature | Add a `Capitalize` function |
+
+All seven SPEC §8.2 categories are represented. Test-writing tasks are scored by
+mutation: the agent's tests must pass on the correct code and fail on each planted
+mutant.
 
 What works today:
 - `agentdelta list-tasks` / `validate-task`

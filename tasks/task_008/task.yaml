@@ -1,0 +1,49 @@
+id: task_008
+title: Migrate report off the deprecated avg helper
+category: dependency_migration
+difficulty: 3
+repo: python_package
+base_commit: HEAD
+language: python
+framework: pytest
+prompt_file: prompt.md
+
+context_requirement:
+  min_context_tokens: 8000
+  preferred_context_tokens: 200000
+
+execution:
+  timeout_minutes: 20
+  max_cost_usd: 3.00
+  max_agent_turns: null
+  network: disabled
+  package_install: false
+
+scope:
+  allowed_paths:
+    - src/
+    - tests/
+  forbidden_paths:
+    - pyproject.toml
+  max_files_modified: 4
+
+tests:
+  baseline:
+    - pytest -q tests/
+  public:
+    - public_tests.py
+  hidden:
+    - hidden_tests.py
+
+acceptance_criteria:
+  - average_line in report.py uses mathkit.stats.mean instead of the deprecated avg.
+  - The deprecated avg is removed from mathkit.legacy.
+  - The observable output of average_line is unchanged.
+  - Existing baseline tests continue to pass.
+
+scoring:
+  objective_weight: 1.0
+  review_weight: 0.0
+
+notes:
+  - Detects a real migration: avg gone, report references mean, behavior preserved.

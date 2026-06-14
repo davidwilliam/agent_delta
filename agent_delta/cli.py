@@ -33,9 +33,13 @@ def validate_task_cmd(task_id: str) -> None:
     problems: list[str] = []
     if not (task.dir / task.spec.get("prompt_file", "prompt.md")).exists():
         problems.append("missing prompt file")
-    for p in task.public_test_files + task.hidden_test_files:
-        if not p.exists():
-            problems.append(f"missing test file: {p.name}")
+    if task.task_type == "test_writing":
+        if not task.load_mutants():
+            problems.append("test_writing task has no mutants/")
+    else:
+        for p in task.public_test_files + task.hidden_test_files:
+            if not p.exists():
+                problems.append(f"missing test file: {p.name}")
     try:
         load_fixture(task.repo)
     except FileNotFoundError as e:

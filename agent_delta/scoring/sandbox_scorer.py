@@ -35,6 +35,38 @@ async def _run_injected(language: str, label: str, files: dict[str, str], workdi
     return parse(language, result.stdout + result.stderr)
 
 
+async def _score_test_writing(task, workdir: str):
+    """Mutation scoring (SPEC 13 test quality): the agent's tests should pass on
+    the correct code and fail on each planted mutant.
+
+    Returns (public, hidden, regression_ok) where public encodes test validity and
+    hidden encodes the mutation kill rate.
+    """
+    baseline_cmd = task.baseline_cmds[0] if task.baseline_cmds else "true"
+    # Tests must pass on the correct code (and not break the existing suite).
+    res = await _exec(["bash", "-c", baseline_cmd], workdir)
+    tests_valid = res.returncode == 0
+
+    mutants = task.load_mutants()
+    killed = 0
+    for _name, files in mutants:
+        for rel_path, contents in files.items():
+            await sandbox().write_file(f"{workdir}/{rel_path}", contents)
+        res = await _exec(["bash", "-c", baseline_cmd], workdir)
+        if res.returncode != 0:
+            killed += 1
+        # Restore the correct sources (the agent only edits test files).
+        for rel_path in files:
+            await _exec(["git", "-C", workdir, "checkout", "--", rel_path], workdir)
+
+    total = len(mutants)
+    public = {"passed": 1 if tests_valid else 0, "failed": 0 if tests_valid else 1,
+              "error": 0, "skipped": 0, "total": 1}
+    hidden = {"passed": killed, "failed": total - killed, "error": 0,
+              "skipped": 0, "total": total}
+    return public, hidden, tests_valid
+
+
 def _compute_scope_control(
     modified_files: list[str], forbidden: list[str], max_files: int | None
 ) -> tuple[float, list[str]]:
@@ -80,20 +112,23 @@ def agentdelta_scorer():
                 lines_added += int(parts[0])
                 lines_removed += int(parts[1])
 
-        # regression: baseline suite must still pass
-        regression_ok = True
-        for cmd in task.baseline_cmds:
-            res = await _exec(["bash", "-c", cmd], workdir)
-            if res.returncode != 0:
-                regression_ok = False
+        if task.task_type == "test_writing":
+            # The agent wrote tests; score by mutation (do the tests catch bugs?).
+            public, hidden, regression_ok = await _score_test_writing(task, workdir)
+        else:
+            # regression: baseline suite must still pass
+            regression_ok = True
+            for cmd in task.baseline_cmds:
+                res = await _exec(["bash", "-c", cmd], workdir)
+                if res.returncode != 0:
+                    regression_ok = False
+            # public + hidden tests (injected, not in the repo)
+            public_files = {p.name: p.read_text() for p in task.public_test_files}
+            hidden_files = {p.name: p.read_text() for p in task.hidden_test_files}
+            public = await _run_injected(language, "public", public_files, workdir)
+            hidden = await _run_injected(language, "hidden", hidden_files, workdir)
+
         regression_avoidance = 1.0 if regression_ok else 0.0
-
-        # public + hidden tests (injected, not in the repo)
-        public_files = {p.name: p.read_text() for p in task.public_test_files}
-        hidden_files = {p.name: p.read_text() for p in task.hidden_test_files}
-        public = await _run_injected(language, "public", public_files, workdir)
-        hidden = await _run_injected(language, "hidden", hidden_files, workdir)
-
         public_ok = public["total"] > 0 and public["failed"] == 0 and public["error"] == 0
         hidden_score = (hidden["passed"] / hidden["total"]) if hidden["total"] else 0.0
 
@@ -102,8 +137,13 @@ def agentdelta_scorer():
             modified_files, task.forbidden_paths, task.max_files_modified
         )
 
-        # verified success: public passes + no regression + in scope
-        verified = public_ok and regression_ok and not violations
+        # verified success: public passes + no regression + in scope. For
+        # test_writing, also require the mutation kill rate to meet the threshold.
+        mutation_ok = True
+        if task.task_type == "test_writing":
+            threshold = task.test_writing.get("mutation_threshold", 1.0)
+            mutation_ok = hidden_score >= threshold
+        verified = public_ok and regression_ok and not violations and mutation_ok
         components = ObjectiveComponents(
             verified_success=1.0 if verified else 0.0,
             hidden_test_score=hidden_score,

@@ -92,6 +92,39 @@ def _apply_reference(container: str, workdir: str, task: Task) -> None:
                            capture_output=True)
 
 
+def _mutation_pass(container: str, workdir: str, baseline_cmd: str, task: Task) -> tuple[bool, int, int]:
+    """Run the mutation pass: (tests_valid, killed, total)."""
+    valid = _exec(container, workdir, ["bash", "-c", baseline_cmd]).returncode == 0
+    mutants = task.load_mutants()
+    killed = 0
+    for name, files in mutants:
+        for rel in files:
+            src = task.dir / "mutants" / name / rel
+            subprocess.run(["docker", "cp", str(src), f"{container}:{workdir}/{rel}"],
+                           capture_output=True)
+        if _exec(container, workdir, ["bash", "-c", baseline_cmd]).returncode != 0:
+            killed += 1
+        for rel in files:
+            _exec(container, workdir, ["git", "-C", workdir, "checkout", "--", rel])
+    return valid, killed, len(mutants)
+
+
+def _check_test_writing(task: Task, fixture, workdir: str, container: str) -> TaskCheck:
+    baseline_cmd = task.baseline_cmds[0] if task.baseline_cmds else "true"
+    # BEFORE: no agent tests -> mutants survive (non-trivial).
+    _, base_killed, total = _mutation_pass(container, workdir, baseline_cmd, task)
+    _apply_reference(container, workdir, task)
+    after_valid, after_killed, _ = _mutation_pass(container, workdir, baseline_cmd, task)
+    return TaskCheck(
+        task_id=task.id,
+        base_public=Phase(base_killed, total - base_killed, 0, total),
+        base_hidden=Phase(0, 0, 0, 0),
+        after_baseline_ok=after_valid,
+        after_public=Phase(after_killed, total - after_killed, 0, total),
+        after_hidden=Phase(1 if after_valid else 0, 0 if after_valid else 1, 0, 1),
+    )
+
+
 def check_task(task_id: str) -> TaskCheck:
     task = load_task(task_id)
     fixture = load_fixture(task.repo)
@@ -105,6 +138,8 @@ def check_task(task_id: str) -> TaskCheck:
         capture_output=True, check=True,
     )
     try:
+        if task.task_type == "test_writing":
+            return _check_test_writing(task, fixture, workdir, container)
         base_public = _run_test_files(container, workdir, task.public_test_files, language, "public")
         base_hidden = _run_test_files(container, workdir, task.hidden_test_files, language, "hidden")
 

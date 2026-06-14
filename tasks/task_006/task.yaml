@@ -1,0 +1,50 @@
+id: task_006
+title: Write tests for normalize_spaces
+category: test_writing
+task_type: test_writing
+difficulty: 3
+repo: python_package
+base_commit: HEAD
+language: python
+framework: pytest
+prompt_file: prompt.md
+
+context_requirement:
+  min_context_tokens: 8000
+  preferred_context_tokens: 200000
+
+execution:
+  timeout_minutes: 20
+  max_cost_usd: 3.00
+  max_agent_turns: null
+  network: disabled
+  package_install: false
+
+scope:
+  allowed_paths:
+    - tests/
+  forbidden_paths:
+    - src/
+  max_files_modified: 2
+
+tests:
+  baseline:
+    - pytest -q tests/
+
+# Mutation scoring: the agent's tests must pass on the correct code and fail on
+# each planted mutant under tasks/task_006/mutants/.
+test_writing:
+  target_path: src/mathkit/textnorm.py
+  mutation_threshold: 1.0
+
+acceptance_criteria:
+  - New tests exist for normalize_spaces and pass against the correct code.
+  - The tests fail (catch the bug) for every planted mutant of normalize_spaces.
+  - Only test files are modified; the source is not changed.
+
+scoring:
+  objective_weight: 1.0
+  review_weight: 0.0
+
+notes:
+  - Measures test design. A weak test (only happy path) fails to kill the mutants.

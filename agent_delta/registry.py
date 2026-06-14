@@ -30,6 +30,29 @@ class Task:
         return self.spec.get("category", "uncategorized")
 
     @property
+    def task_type(self) -> str:
+        """'implement' (default) or 'test_writing' (mutation-scored)."""
+        return self.spec.get("task_type", "implement")
+
+    @property
+    def test_writing(self) -> dict[str, Any]:
+        return self.spec.get("test_writing", {})
+
+    def load_mutants(self) -> list[tuple[str, dict[str, str]]]:
+        """Return [(mutant_name, {repo_relative_path: contents})] from mutants/."""
+        mutants_dir = self.dir / "mutants"
+        if not mutants_dir.is_dir():
+            return []
+        out = []
+        for mdir in sorted(p for p in mutants_dir.iterdir() if p.is_dir()):
+            files = {
+                f.relative_to(mdir).as_posix(): f.read_text()
+                for f in sorted(mdir.rglob("*")) if f.is_file()
+            }
+            out.append((mdir.name, files))
+        return out
+
+    @property
     def repo(self) -> str:
         return self.spec["repo"]
 

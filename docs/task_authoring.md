@@ -59,3 +59,15 @@ driven by the fixture manifest's `language`.
 
 To add another language, give it an `injection` plan and an output parser in
 `testrunner.py` and set `language` plus `base_image` in the fixture manifest.
+
+## Test-writing tasks (mutation scoring)
+
+Set `task_type: test_writing` and a `test_writing.target_path` in `task.yaml`. The
+agent writes tests (only test files, source is forbidden by scope). Instead of
+injected public/hidden tests, the scorer runs the agent's tests against the
+correct code (they must pass) and then against each planted mutant under
+`tasks/<id>/mutants/<name>/<repo-relative-path>` (they must fail). The mutation
+kill rate becomes the hidden-test score, and `mutation_threshold` (default 1.0)
+gates verified success. Author mutants as small bugs that the baseline suite does
+not already catch, so only a good new test kills them. The `reference_solution/`
+holds a test file that kills every mutant (used by `--dry-run` and `check-task`).

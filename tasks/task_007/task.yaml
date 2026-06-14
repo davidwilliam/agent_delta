@@ -1,0 +1,51 @@
+id: task_007
+title: Build a summary module (summarize, describe, top_n)
+category: long_horizon
+difficulty: 4
+repo: python_package
+base_commit: HEAD
+language: python
+framework: pytest
+prompt_file: prompt.md
+
+context_requirement:
+  min_context_tokens: 8000
+  preferred_context_tokens: 1000000
+
+execution:
+  timeout_minutes: 30
+  max_cost_usd: 5.00
+  max_agent_turns: null
+  network: disabled
+  package_install: false
+
+scope:
+  allowed_paths:
+    - src/
+    - tests/
+  forbidden_paths:
+    - pyproject.toml
+  max_files_modified: 5
+
+tests:
+  baseline:
+    - pytest -q tests/
+  public:
+    - public_tests.py
+  hidden:
+    - hidden_tests.py
+
+acceptance_criteria:
+  - A new module mathkit/summary.py provides summarize, describe, and top_n.
+  - summarize returns count, mean, minimum, maximum, and span (max minus min).
+  - describe returns a formatted one-line string with mean to two decimals.
+  - top_n returns the n largest values in descending order.
+  - Empty input to summarize/describe raises ValueError; negative n to top_n raises.
+  - Existing baseline tests continue to pass.
+
+scoring:
+  objective_weight: 1.0
+  review_weight: 0.0
+
+notes:
+  - A sustained, multi-function task; also flagged long-context-eligible (1M preferred).
