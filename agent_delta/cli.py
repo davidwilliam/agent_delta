@@ -48,11 +48,20 @@ def validate_task_cmd(task_id: str) -> None:
 
 @main.command("build-sandbox")
 @click.option("--fixture", default="python_package", help="Fixture to build an image for.")
-def build_sandbox_cmd(fixture: str) -> None:
+@click.option(
+    "--method",
+    type=click.Choice(["dockerfile", "run-commit"]),
+    default="dockerfile",
+    help="dockerfile = BuildKit (reproducible); run-commit = BuildKit-free fallback.",
+)
+def build_sandbox_cmd(fixture: str, method: str) -> None:
     """Build the Docker sandbox image for a fixture."""
-    from agent_delta.sandbox_build import build_image
+    from agent_delta.sandbox_build import build_image, build_image_dockerfile
 
-    build_image(fixture)
+    if method == "dockerfile":
+        build_image_dockerfile(fixture)
+    else:
+        build_image(fixture)
 
 
 @main.command("run")

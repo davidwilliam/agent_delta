@@ -7,7 +7,10 @@
 # NOTE: the Claude Code agent itself is NOT baked in. inspect_swe provisions the
 # agent binary into the sandbox at runtime (see runners/claude_code.py `version`),
 # which keeps this image small and fast to build. The dry-run path needs no agent.
-FROM python:3.12-slim
+# Base pinned by digest for reproducibility (SPEC 5.2) and to keep BuildKit's
+# resolve deterministic — an unpinned tag can go stale locally and hang resolve.
+# python:3.12-slim, refreshed 2026-06-13.
+FROM python:3.12-slim@sha256:d764629ce0ddd8c71fd371e9901efb324a95789d2315a47db7e4d27e78f1b0e9
 
 ARG FIXTURE=python_package
 

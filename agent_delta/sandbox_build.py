@@ -21,7 +21,11 @@ import subprocess
 from agent_delta import config
 from agent_delta.registry import load_fixture
 
-BASE_IMAGE = "python:3.12-slim"
+# Pinned by digest to match the Dockerfile and keep builds reproducible.
+BASE_IMAGE = (
+    "python:3.12-slim@sha256:"
+    "d764629ce0ddd8c71fd371e9901efb324a95789d2315a47db7e4d27e78f1b0e9"
+)
 
 
 def _run(cmd: list[str], **kw) -> subprocess.CompletedProcess:
