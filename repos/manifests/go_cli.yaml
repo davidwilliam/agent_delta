@@ -10,6 +10,11 @@ base_image: golang:1.22-bookworm@sha256:3d699e4d15d0f8f13c9195c0632a16702b8cbdec
 source_path: repos/fixtures/go_cli
 workdir: /repo
 
+# Baked into the image so `go test` is hermetic with the sandbox network disabled.
+image_env:
+  GOPROXY: "off"
+  GOFLAGS: "-mod=readonly"
+
 setup:
   - go build ./...
 baseline_tests:

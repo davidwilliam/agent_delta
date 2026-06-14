@@ -60,6 +60,14 @@ def scoring_hash() -> str:
                          + [config.CONFIGS_DIR / "modes.yaml"])
 
 
+def fixtures_hash() -> str:
+    """Hash over fixture manifests and dependency lockfiles (SPEC 5.2)."""
+    paths = list(config.MANIFESTS_DIR.glob("*.yaml"))
+    for fx in config.FIXTURES_DIR.iterdir() if config.FIXTURES_DIR.is_dir() else []:
+        paths += list(fx.glob("requirements.lock")) + list(fx.glob("go.mod")) + list(fx.glob("go.sum"))
+    return _sha256_paths(paths)
+
+
 def _cmd(args: list[str]) -> str | None:
     try:
         return subprocess.run(args, capture_output=True, text=True, timeout=20).stdout.strip() or None
@@ -104,12 +112,14 @@ def build_manifest(
         "suite": suite,
         **collect_versions(),
         "agent": agent,
+        "agent_cli_version": config.load_agent_config(agent).get("version"),
         "agent_settings_hash": _sha256_paths([agent_cfg]),
         "models": models,
         "tasks": tasks,
         "sandbox_images": image_digests(fixtures),
         "tasks_hash": tasks_hash(),
         "scoring_hash": scoring_hash(),
+        "fixtures_hash": fixtures_hash(),
         "hidden_tests_hash": hidden_tests_hash(),
         "run_order_seed": run_order_seed,
     }
@@ -129,6 +139,7 @@ def validate_manifest(manifest: dict) -> list[str]:
     checks = {
         "tasks_hash": tasks_hash(),
         "scoring_hash": scoring_hash(),
+        "fixtures_hash": fixtures_hash(),
         "hidden_tests_hash": hidden_tests_hash(),
     }
     for key, current in checks.items():

@@ -21,6 +21,12 @@ def test_implement_tasks_have_no_mutants():
     assert t.load_mutants() == []
 
 
+def test_tasks_default_to_network_disabled():
+    # Network is disabled by default (SPEC 22); no task opts into network for now.
+    for tid in list_tasks():
+        assert load_task(tid).network == "disabled"
+
+
 def test_all_seven_categories_present():
     cats = {load_task(tid).category for tid in list_tasks()}
     expected = {

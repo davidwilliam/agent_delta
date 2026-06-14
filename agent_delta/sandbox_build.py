@@ -60,12 +60,10 @@ git rev-parse --short HEAD
 """
         _run(["docker", "exec", container, "bash", "-c", script])
 
-        _run([
-            "docker", "commit",
-            "-c", f"WORKDIR {workdir}",
-            "-c", 'CMD ["sleep", "infinity"]',
-            container, tag,
-        ])
+        commit_cfg = ["-c", f"WORKDIR {workdir}", "-c", 'CMD ["sleep", "infinity"]']
+        for k, v in fixture.image_env.items():
+            commit_cfg += ["-c", f"ENV {k}={v}"]
+        _run(["docker", "commit", *commit_cfg, container, tag])
     finally:
         subprocess.run(["docker", "rm", "-f", container], capture_output=True)
 

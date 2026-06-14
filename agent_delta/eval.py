@@ -128,6 +128,8 @@ def run_task(
     task = load_task(task_id)
     fixture = load_fixture(task.repo)
     os.environ["AGENTDELTA_IMAGE"] = fixture.image_tag
+    # Network disabled by default (SPEC 22); a task opts in with network: enabled.
+    os.environ["AGENTDELTA_NETWORK"] = "bridge" if task.network == "enabled" else "none"
 
     if not dry_run:
         config.ensure_anthropic_key()

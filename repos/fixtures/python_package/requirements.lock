@@ -1,0 +1,9 @@
+# Pinned dependency lock for the python_package fixture (SPEC 5.2).
+# Captured from the built image; the sandbox build installs exactly these so a
+# rebuild reproduces the same runtime. Regenerate with:
+#   docker run --rm agentdelta/python_package:v0.1 python -m pip freeze
+iniconfig==2.3.0
+packaging==26.2
+pluggy==1.6.0
+Pygments==2.20.0
+pytest==9.1.0

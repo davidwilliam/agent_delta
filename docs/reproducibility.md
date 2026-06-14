@@ -31,16 +31,33 @@ seed (`agent_delta/matrix.py`), so no model runs all its repetitions before the
 next. Each repetition is recorded as a distinct epoch so paired comparisons line
 up across models.
 
+## Network lockdown (SPEC §22)
+
+The sandbox network defaults to `none` (`network_mode: ${AGENTDELTA_NETWORK:-none}`
+in `sandboxes/claude-code/compose.yaml`). The runner sets it from each task's
+`execution.network` (disabled -> `none`, enabled -> `bridge`); every task is
+disabled today. Fixture dependencies are baked into the image and the scoring
+tools run fully offline (verified: external egress is blocked while pytest, git,
+and `go test` still work; the Go image bakes `GOPROXY=off`). A real model run that
+needs the inspect_swe model proxy is the one case that may require a restricted
+network; enable it per task and record it.
+
+## Dependency pinning (SPEC §5.2)
+
+- **Python fixture**: `repos/fixtures/python_package/requirements.lock` pins the
+  exact deps (captured from the image); the build installs from it then the
+  package with `--no-deps`.
+- **Go fixture**: `go.mod` pins the Go version; with no external modules there is
+  no `go.sum`.
+- **Agent CLI**: `configs/agents/claude_code.yaml` `version` (a pinned channel by
+  default; set an exact version for an official run). Recorded in the manifest as
+  `agent_cli_version`.
+- The manifest's `fixtures_hash` covers the fixture manifests and lockfiles.
+
 ## Known gaps to close before an official run
 
-1. **Network lockdown.** The v0.1 compose leaves the default network up so the
-   Claude Code CLI and any first-run download work without friction. The SPEC
-   target is `network: disabled`. Hardening path: bake/inject the agent binary on
-   the host, route model calls through the Inspect proxy, then set
-   `network_mode: none` in `sandboxes/claude-code/compose.yaml`.
-2. **Pinned CLI version.** The image installs the latest `@anthropic-ai/claude-code`.
-   Pin an exact version and record it.
-3. **Pinned dependency lockfiles** for each fixture.
+1. **Exact agent CLI version.** `version: stable` is a pinned channel; resolve it
+   to an exact version string once a live run reports it.
 
 ## Fallback detection (SPEC §5.5)
 

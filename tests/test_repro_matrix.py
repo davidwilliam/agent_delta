@@ -32,10 +32,16 @@ def test_content_hashes_stable_and_prefixed():
     assert len({repro.tasks_hash(), repro.hidden_tests_hash(), repro.scoring_hash()}) == 3
 
 
+def test_fixtures_hash_covers_lockfiles():
+    h = repro.fixtures_hash()
+    assert h.startswith("sha256:") and h == repro.fixtures_hash()
+
+
 def test_validate_manifest_detects_drift():
     good = {
         "tasks_hash": repro.tasks_hash(),
         "scoring_hash": repro.scoring_hash(),
+        "fixtures_hash": repro.fixtures_hash(),
         "hidden_tests_hash": repro.hidden_tests_hash(),
         "sandbox_images": {"python_package": "sha256:abc"},
     }
@@ -44,6 +50,9 @@ def test_validate_manifest_detects_drift():
     drifted = dict(good, tasks_hash="sha256:deadbeef")
     problems = repro.validate_manifest(drifted)
     assert any("tasks_hash" in p for p in problems)
+
+    fixtures_drift = dict(good, fixtures_hash="sha256:deadbeef")
+    assert any("fixtures_hash" in p for p in repro.validate_manifest(fixtures_drift))
 
     missing_image = dict(good, sandbox_images={"python_package": None})
     assert any("sandbox image" in p for p in repro.validate_manifest(missing_image))

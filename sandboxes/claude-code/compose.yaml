@@ -1,12 +1,14 @@
 # Inspect docker sandbox for AgentDelta.
 #
-# The image is selected at runtime via AGENTDELTA_IMAGE (set by the runner so a
-# single compose file serves every prebuilt fixture image). Network is left at
-# the default for the v0.1 slice; hardening (network_mode: none + host-side agent
-# binary injection) is a Phase 1 task tracked in docs/reproducibility.md.
+# The image is selected at runtime via AGENTDELTA_IMAGE and the network mode via
+# AGENTDELTA_NETWORK (both set by the runner). Network defaults to `none`
+# (disabled, SPEC 22): the fixture deps are baked into the image and scoring runs
+# git/pytest/go test fully offline. A task that needs outbound access sets
+# `execution.network: enabled`, which the runner maps to `bridge`.
 services:
   default:
     image: ${AGENTDELTA_IMAGE:-agentdelta/python_package:v0.1}
+    network_mode: ${AGENTDELTA_NETWORK:-none}
     command: ["sleep", "infinity"]
     init: true
     working_dir: /repo

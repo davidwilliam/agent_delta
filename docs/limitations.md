@@ -17,7 +17,10 @@ date-specific (SPEC §3, §17.3). The following limits apply to the current stat
 - **Refactor scoring is a proxy.** task_004 verifies the helper exists, is used
   (source check), and behavior is preserved - it does not fully judge refactor
   quality. Deeper structural judgment would need the blinded-review layer.
-- **Network not locked down.** See `docs/reproducibility.md`.
+- **Real model run still needs network.** Scoring runs fully offline (sandbox
+  network is `none` by default), but a live agent run may need a restricted
+  network for the inspect_swe model proxy; that path is unverified until a live
+  run. See `docs/reproducibility.md`.
 - **Pricing is placeholder.** `agent_delta/scoring/cost.py` must be reconciled
   with the live pricing page before any published cost figure.
 

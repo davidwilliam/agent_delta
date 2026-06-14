@@ -92,6 +92,11 @@ class Task:
     def max_cost_usd(self) -> float | None:
         return self.spec.get("execution", {}).get("max_cost_usd")
 
+    @property
+    def network(self) -> str:
+        """'disabled' (default) or 'enabled' -> docker network none / bridge."""
+        return self.spec.get("execution", {}).get("network", "disabled")
+
 
 @dataclass
 class Fixture:
@@ -117,6 +122,11 @@ class Fixture:
     @property
     def setup_cmds(self) -> list[str]:
         return self.manifest.get("setup", [])
+
+    @property
+    def image_env(self) -> dict[str, str]:
+        """Environment baked into the image (e.g. offline flags for the toolchain)."""
+        return self.manifest.get("image_env", {})
 
     @property
     def image_tag(self) -> str:

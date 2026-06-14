@@ -1,6 +1,9 @@
 agent: claude_code
 inspect_swe_agent: claude_code
-version: sandbox          # use the CLI baked into the sandbox image (known version)
+# Claude Code CLI version provisioned by inspect_swe. `stable` is a pinned channel;
+# for an official run set an exact version string (SPEC 5.2) once known, e.g.
+# "2.1.154", and it is recorded in the reproducibility manifest.
+version: stable
 network: disabled
 web_search: disabled
 skills: []

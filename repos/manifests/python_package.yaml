@@ -14,8 +14,9 @@ workdir: /repo
 
 # Commands. {workdir} is the repo root inside the sandbox.
 setup:
-  # Install the package + pytest from the fixture itself (no network needed for deps).
-  - pip install --no-index --no-build-isolation -e ".[dev]" || pip install -e ".[dev]"
+  # Install pinned deps from the lockfile, then the package itself (SPEC 5.2).
+  - pip install --no-cache-dir -r requirements.lock
+  - pip install --no-cache-dir -e . --no-deps
 baseline_tests:
   - pytest -q tests/
 
