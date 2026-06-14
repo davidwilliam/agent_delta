@@ -19,7 +19,9 @@ from agent_delta.scoring import amplification as amp
 from agent_delta.scoring import stats as st
 from agent_delta.scoring.cost import cost_efficiency
 from agent_delta.scoring.latency import time_efficiency
+from agent_delta.reporting.charts import cost_success_frontier, latency_success_frontier
 from agent_delta.scoring.objective import ObjectiveComponents, full_score, objective_score
+from agent_delta.scoring.review import load_review_score
 from agent_delta.scoring.synthesis import synthesize_cross_mode
 
 
@@ -29,10 +31,14 @@ def _mean(vals: list[float | None]) -> float | None:
 
 
 def load_run_records(results_dir: Path) -> list[dict[str, Any]]:
-    """Load every run.json under a results directory."""
+    """Load every run.json under a results directory, attaching any review score."""
     records = []
     for p in sorted(Path(results_dir).rglob("run.json")):
-        records.append(json.loads(p.read_text()))
+        rec = json.loads(p.read_text())
+        rs = load_review_score(p.parent)
+        if rs is not None:
+            rec["review_score"] = rs
+        records.append(rec)
     return records
 
 
@@ -107,6 +113,8 @@ def _aggregate_model(model_id: str, records: list[dict]) -> dict[str, Any]:
         "n_invalid": len(records) - n,
         "failure_labels": dict(sorted(fail_counter.items(), key=lambda kv: -kv[1])),
         "invalid_by_reason": invalid_by_reason,
+        "category_success": _category_success(valid),
+        "diagnostics": _diagnostics(valid),
         "n_success": n_succ,
         "success_rate": success_rate,
         "success_ci95": list(st.wilson_ci(n_succ, n)),
@@ -114,6 +122,7 @@ def _aggregate_model(model_id: str, records: list[dict]) -> dict[str, Any]:
         "regression_rate": 1.0 - regression_avoidance,
         "scope_control": scope,
         "partial_objective_mean": partial,
+        "review_mean": _mean([r.get("review_score") for r in valid]),
         "cost_total_usd": cost_total or None,
         "cost_mean_usd": (cost_total / n) if (n and cost_total) else None,
         "cost_per_success_usd": cost_per_success,
@@ -130,6 +139,50 @@ def _aggregate_model(model_id: str, records: list[dict]) -> dict[str, Any]:
         "_success_by_key": {
             (r["task_id"], r.get("epoch")): s for r, s in zip(valid, succ)
         },
+        "_cost_by_key": {
+            (r["task_id"], r.get("epoch")): (r.get("usage") or {}).get("estimated_cost_usd")
+            for r in valid
+        },
+        "_time_by_key": {
+            (r["task_id"], r.get("epoch")): (r.get("execution") or {}).get("wall_clock_seconds")
+            for r in valid
+        },
+    }
+
+
+def _category_success(valid: list[dict]) -> dict[str, float]:
+    """Success rate per task category (SPEC 17.2)."""
+    by_cat: dict[str, list[bool]] = {}
+    for r in valid:
+        cat = r.get("task_category") or "uncategorized"
+        by_cat.setdefault(cat, []).append(bool(r["scoring"]["verified_success"]))
+    return {cat: sum(v) / len(v) for cat, v in by_cat.items() if v}
+
+
+def _diagnostics(valid: list[dict]) -> dict[str, float | None]:
+    """Diagnostic ratios and timings (SPEC 13.3, 20), averaged over valid runs."""
+    def ratios(num_key, den_key, section="agent_behavior"):
+        out = []
+        for r in valid:
+            d = (r.get(section) or {}).get(den_key)
+            nval = (r.get(section) or {}).get(num_key)
+            if isinstance(d, (int, float)) and d > 0 and isinstance(nval, (int, float)):
+                out.append(nval / d)
+        return _mean(out)
+
+    timeouts = [1.0 if (r.get("execution") or {}).get("timeout") else 0.0 for r in valid]
+    return {
+        "failed_command_ratio": ratios("failed_shell_commands", "shell_commands"),
+        "exploration_edit_ratio": ratios("files_read", "file_edits"),
+        "timeout_rate": (sum(timeouts) / len(timeouts)) if timeouts else None,
+        "mean_time_to_first_edit_s": _mean(
+            [(r.get("agent_behavior") or {}).get("time_to_first_edit") for r in valid]),
+        "mean_time_to_first_test_s": _mean(
+            [(r.get("agent_behavior") or {}).get("time_to_first_test") for r in valid]),
+        "mean_diff_locality": _mean([(r.get("diff_metrics") or {}).get("diff_locality") for r in valid]),
+        "mean_patch_entropy": _mean([(r.get("diff_metrics") or {}).get("patch_entropy") for r in valid]),
+        "mean_test_to_code_ratio": _mean(
+            [(r.get("diff_metrics") or {}).get("test_to_code_ratio") for r in valid]),
     }
 
 
@@ -158,7 +211,8 @@ def aggregate_mode(records: list[dict], baseline: str | None = None) -> dict[str
         m["cost_efficiency"] = ce
         m["time_efficiency"] = te
         m["objective_score"] = obj
-        m["full_score"] = full_score(obj, None)
+        m["review_score"] = m.get("review_mean")
+        m["full_score"] = full_score(obj, m.get("review_mean"))
         m["work_index"] = awi.get(mid)
         # Quality-per-resource uses raw per-task spend (ADDENDUM 6.3/6.4), not
         # per-success cost (which drives the SPEC efficiency components above).
@@ -176,10 +230,13 @@ def aggregate_mode(records: list[dict], baseline: str | None = None) -> dict[str
 
     level1 = _level1_assessment(models, ranking, baseline)
     level2 = _level2_assessment(models, baseline, level1["improvements"], amp_cfg, awi_components)
+    cost_frontier = cost_success_frontier(models)
+    latency_frontier = latency_success_frontier(models)
 
     # Strip non-serializable helpers.
     for m in models.values():
-        m.pop("_success_by_key", None)
+        for k in ("_success_by_key", "_cost_by_key", "_time_by_key"):
+            m.pop(k, None)
         m["components"] = m["components"].as_dict()
 
     return {
@@ -189,6 +246,8 @@ def aggregate_mode(records: list[dict], baseline: str | None = None) -> dict[str
         "best_median_time_to_success_s": best_time,
         "level1": level1,
         "level2": level2,
+        "cost_frontier": cost_frontier,
+        "latency_frontier": latency_frontier,
     }
 
 
@@ -202,31 +261,41 @@ def _level1_assessment(models: dict, ranking: list, baseline: str | None) -> dic
     materiality = config.load_scoring_config()["materiality"]
     thresh_pp = materiality["task_success_delta_pp"]
     improvements = []
+    raw_p: dict[str, float] = {}
     if baseline:
         a = models[baseline]
         for mid, b in models.items():
             if mid == baseline:
                 continue
-            delta_pp = (b["success_rate"] - a["success_rate"]) * 100.0
             paired = _paired(a, b)
-            significant = paired.p_value < 0.05 if paired else False
-            material = delta_pp >= thresh_pp and significant
-            if delta_pp < thresh_pp:
-                reason = f"success delta {delta_pp:+.1f} pp is below the {thresh_pp} pp threshold"
-            elif not significant:
-                p = paired.p_value if paired else float("nan")
-                reason = f"success delta {delta_pp:+.1f} pp but paired McNemar p = {p:.3f} (>= 0.05)"
-            else:
-                reason = f"success delta {delta_pp:+.1f} pp with paired McNemar p = {paired.p_value:.3f}"
+            p = paired.p_value if paired else 1.0
+            raw_p[mid] = p
             improvements.append({
                 "model_b": mid,
                 "model_a": baseline,
-                "success_delta_pp": delta_pp,
+                "success_delta_pp": (b["success_rate"] - a["success_rate"]) * 100.0,
                 "objective_delta": b["objective_score"] - a["objective_score"],
                 "paired": paired.__dict__ if paired else None,
-                "material": material,
-                "materiality_reason": reason,
+                "raw_p_value": p,
             })
+        # Holm correction across the family of pairwise comparisons (SPEC 15.3);
+        # materiality uses the corrected p-value.
+        corrected = st.holm_correction(raw_p) if raw_p else {}
+        for imp in improvements:
+            cp = corrected.get(imp["model_b"], imp["raw_p_value"])
+            imp["holm_p_value"] = cp
+            delta_pp = imp["success_delta_pp"]
+            significant = cp < 0.05
+            imp["material"] = delta_pp >= thresh_pp and significant
+            if delta_pp < thresh_pp:
+                imp["materiality_reason"] = (
+                    f"success delta {delta_pp:+.1f} pp is below the {thresh_pp} pp threshold")
+            elif not significant:
+                imp["materiality_reason"] = (
+                    f"success delta {delta_pp:+.1f} pp but Holm-corrected McNemar p = {cp:.3f} (>= 0.05)")
+            else:
+                imp["materiality_reason"] = (
+                    f"success delta {delta_pp:+.1f} pp with Holm-corrected McNemar p = {cp:.3f}")
     return {
         "ranking": [m["model_id"] for m in ranking],
         "baseline": baseline,
@@ -265,6 +334,8 @@ def _level2_assessment(
             "success_delta_pp": imp["success_delta_pp"],
             "objective_delta": imp["objective_delta"],
             "ratios": ratios,
+            "cost_wilcoxon": _paired_continuous(a, b, "_cost_by_key"),
+            "time_wilcoxon": _paired_continuous(a, b, "_time_by_key"),
             "quality_delta_per_extra_dollar": amp.quality_delta_per_extra(
                 a["objective_score"], b["objective_score"], a["cost_mean_usd"], b["cost_mean_usd"]),
             "quality_delta_per_extra_minute": amp.quality_delta_per_extra(
@@ -310,6 +381,18 @@ def _paired(a: dict, b: dict):
         return None
     return st.mcnemar([a["_success_by_key"][k] for k in keys],
                       [b["_success_by_key"][k] for k in keys])
+
+
+def _paired_continuous(a: dict, b: dict, attr: str):
+    """Wilcoxon signed-rank on a paired continuous metric (B vs A)."""
+    am, bm = a.get(attr, {}), b.get(attr, {})
+    xs, ys = [], []
+    for k in sorted(set(am) & set(bm)):
+        av, bv = am[k], bm[k]
+        if isinstance(av, (int, float)) and isinstance(bv, (int, float)):
+            xs.append(bv)
+            ys.append(av)
+    return st.wilcoxon_signed_rank(xs, ys) if xs else None
 
 
 def build_report(results_dir: Path, suite: str, baseline: str | None = None) -> dict[str, Any]:

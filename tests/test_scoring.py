@@ -77,6 +77,28 @@ def test_classify_intrinsic_when_no_amplification():
     assert not cls.red_flags
 
 
+def test_wilcoxon_detects_consistent_difference():
+    # B consistently higher than A -> small p-value.
+    b = [10, 11, 12, 13, 14, 15, 16, 17]
+    a = [1, 2, 3, 4, 5, 6, 7, 8]
+    r = st.wilcoxon_signed_rank(b, a)
+    assert r["n"] == 8
+    assert r["p_value"] < 0.05
+
+
+def test_wilcoxon_no_difference():
+    r = st.wilcoxon_signed_rank([1, 2, 3], [1, 2, 3])
+    assert r["n"] == 0 and r["p_value"] == 1.0
+
+
+def test_holm_correction_monotone_and_scaled():
+    corrected = st.holm_correction({"a": 0.01, "b": 0.04, "c": 0.04})
+    # Smallest gets multiplied by m (3); order preserved and non-decreasing.
+    assert corrected["a"] == 0.03
+    assert corrected["b"] >= corrected["a"] and corrected["c"] >= corrected["a"]
+    assert all(0 <= v <= 1 for v in corrected.values())
+
+
 def test_agentic_work_index_scales_to_100():
     work = {
         "A": {"input_tokens": 100, "output_tokens": 10, "wall_clock_seconds": 100},

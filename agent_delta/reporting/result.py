@@ -141,6 +141,7 @@ def build_run_record(
             # Transcript-derived (how much work the agent did).
             **behavior,
         },
+        "diff_metrics": smeta.get("diff_metrics"),
         "scoring": {
             "verified_success": bool(components.get("verified_success")),
             "hidden_test_score": components.get("hidden_test_score"),

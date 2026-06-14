@@ -142,6 +142,32 @@ def run_cmd(task_id: str, model_id: str, repetitions: int, suite: str, mode: str
         )
 
 
+@main.command("review-packets")
+@click.option("--suite", required=True, help="Suite under results/raw to build packets for.")
+def review_packets_cmd(suite: str) -> None:
+    """Write blinded review packets (packet.json) next to each run for judging."""
+    import json
+
+    from agent_delta.registry import load_task
+    from agent_delta.scoring.review import build_review_packet
+
+    root = config.RAW_RESULTS_DIR / suite
+    count = 0
+    for run_json in sorted(root.rglob("run.json")):
+        record = json.loads(run_json.read_text())
+        diff = (run_json.parent / "final.diff")
+        diff_text = diff.read_text() if diff.exists() else ""
+        try:
+            prompt = load_task(record["task_id"]).prompt
+        except Exception:
+            prompt = ""
+        packet = build_review_packet(prompt, record, diff_text)
+        (run_json.parent / "packet.json").write_text(json.dumps(packet, indent=2))
+        count += 1
+    click.secho(f"Wrote {count} blinded review packet(s) under {root}", fg="green")
+    click.echo("Fill each packet's rubric (0-5) into a review.json next to it, then re-run report.")
+
+
 @main.command("aggregate")
 @click.option("--results", "results_dir", required=True, help="Dir of run records (results/raw/<suite>).")
 @click.option("--suite", required=True, help="Suite name for the report.")

@@ -69,6 +69,63 @@ def mcnemar(a_success: list[bool], b_success: list[bool]) -> PairedResult:
     return PairedResult(len(a_success), a_only, b_only, both, neither, p)
 
 
+def _phi(z: float) -> float:
+    """Standard normal CDF."""
+    return 0.5 * (1.0 + math.erf(z / math.sqrt(2.0)))
+
+
+def _average_ranks(values: list[float]) -> list[float]:
+    """1-based ranks with ties averaged."""
+    order = sorted(range(len(values)), key=lambda i: values[i])
+    ranks = [0.0] * len(values)
+    i = 0
+    while i < len(values):
+        j = i
+        while j + 1 < len(values) and values[order[j + 1]] == values[order[i]]:
+            j += 1
+        avg = (i + j) / 2.0 + 1.0
+        for k in range(i, j + 1):
+            ranks[order[k]] = avg
+        i = j + 1
+    return ranks
+
+
+def wilcoxon_signed_rank(x: list[float], y: list[float]) -> dict[str, float]:
+    """Paired Wilcoxon signed-rank test (normal approximation, SPEC 15.2).
+
+    Returns the W statistic, z, two-sided p-value, and the non-zero pair count.
+    """
+    diffs = [a - b for a, b in zip(x, y)]
+    nz = [d for d in diffs if d != 0]
+    n = len(nz)
+    if n == 0:
+        return {"statistic": 0.0, "z": 0.0, "p_value": 1.0, "n": 0}
+    ranks = _average_ranks([abs(d) for d in nz])
+    w_plus = sum(r for r, d in zip(ranks, nz) if d > 0)
+    w_minus = sum(r for r, d in zip(ranks, nz) if d < 0)
+    w = min(w_plus, w_minus)
+    mean_w = n * (n + 1) / 4.0
+    sd_w = math.sqrt(n * (n + 1) * (2 * n + 1) / 24.0)
+    if sd_w == 0:
+        return {"statistic": w, "z": 0.0, "p_value": 1.0, "n": n}
+    z = max(0.0, abs(w - mean_w) - 0.5) / sd_w  # continuity-corrected
+    p = 2.0 * (1.0 - _phi(z))
+    return {"statistic": w, "z": z, "p_value": min(1.0, p), "n": n}
+
+
+def holm_correction(pvalues: dict[str, float]) -> dict[str, float]:
+    """Holm step-down correction for a family of comparisons (SPEC 15.3)."""
+    items = sorted(pvalues.items(), key=lambda kv: kv[1])
+    m = len(items)
+    corrected: dict[str, float] = {}
+    prev = 0.0
+    for i, (key, p) in enumerate(items):
+        c = max(prev, min(1.0, (m - i) * p))  # monotone non-decreasing
+        corrected[key] = c
+        prev = c
+    return corrected
+
+
 def percentiles(values: list[float]) -> dict[str, float]:
     """Median, mean, p25, p75, p90 for a list of values (nan-safe on empty)."""
     if not values:

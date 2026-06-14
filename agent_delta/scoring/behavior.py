@@ -69,6 +69,7 @@ def extract_agent_behavior(sample: Any) -> dict[str, Any]:
     events = getattr(sample, "events", None) or []
     api_calls = tool_calls = shell_commands = test_runs = 0
     files_read = file_edits = failed_shell = retry_count = model_errors = 0
+    time_to_first_edit = time_to_first_test = None
     histogram: Counter = Counter()
 
     for ev in events:
@@ -83,18 +84,23 @@ def extract_agent_behavior(sample: Any) -> dict[str, Any]:
             fn = getattr(ev, "function", "") or ""
             histogram[fn.lower()] += 1
             args = getattr(ev, "arguments", None) or {}
+            ws = getattr(ev, "working_start", None)
             cat = classify_tool(fn, args)
             if cat == "shell":
                 shell_commands += 1
                 cmd = _command_text(args)
                 if _TEST_CMD.search(cmd):
                     test_runs += 1
+                    if time_to_first_test is None:
+                        time_to_first_test = ws
                 if getattr(ev, "failed", False) or getattr(ev, "error", None):
                     failed_shell += 1
             elif cat == "read":
                 files_read += 1
             elif cat == "edit":
                 file_edits += 1
+                if time_to_first_edit is None:
+                    time_to_first_edit = ws
 
     return {
         "api_calls": api_calls,
@@ -106,6 +112,8 @@ def extract_agent_behavior(sample: Any) -> dict[str, Any]:
         "file_edits": file_edits,
         "retry_count": retry_count,
         "model_errors": model_errors,
+        "time_to_first_edit": time_to_first_edit,
+        "time_to_first_test": time_to_first_test,
         # review_passes has no discrete transcript signal yet.
         "review_passes": None,
         "tool_histogram": dict(histogram),

@@ -39,8 +39,26 @@ single-run time. Therefore:
 
 ## Full score (SPEC §14.2)
 
-`Full = 0.95·Objective + 0.05·blinded_review`. With no blinded review (the v0.1
+`Full = 0.95·Objective + 0.05·blinded_review`. With no blinded review (the
 default), `Full == Objective`.
+
+Blinded review (SPEC §18) is optional and capped at 5%. `agentdelta
+review-packets --suite <s>` writes an anonymized `packet.json` next to each run
+(task prompt, diff, test result, but no model, mode, cost, or latency). A reviewer
+(human or a separately run LLM judge) fills the 0-5 rubric into a `review.json`
+next to it; aggregation then loads it (`scoring/review.py`), averages the rubric
+to 0-100, and folds it into the Full score.
+
+## Statistics and diagnostics (SPEC §15, §13.3, §17)
+
+The report adds, beyond the primary ranking: success Wilson intervals and paired
+McNemar with **Holm correction** across the comparison family (materiality uses
+the corrected p-value); **Wilcoxon** signed-rank tests on paired cost and time in
+the amplification analysis; a **category breakdown** of success rate; **cost- and
+latency-success Pareto frontiers**; and a **diagnostics** table (failed-command
+ratio, exploration-to-edit ratio, timeout rate, time to first edit and first test,
+diff locality, and patch entropy). Diagnostics are not ranking metrics unless
+promoted in the scoring config.
 
 ## Materiality thresholds (SPEC §14.6)
 

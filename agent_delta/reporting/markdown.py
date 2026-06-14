@@ -141,6 +141,78 @@ def _render_level1(L: list[str], data: dict) -> None:
             )
         L.append("")
 
+    _render_category(L, models)
+    _render_frontiers(L, data)
+    _render_diagnostics(L, models)
+    _render_full_score(L, models)
+
+
+def _render_category(L: list[str], models: list[dict]) -> None:
+    cats = sorted({c for m in models for c in (m.get("category_success") or {})})
+    if not cats:
+        return
+    L.append("#### Category breakdown (success rate)")
+    L.append("")
+    L.append("| Model | " + " | ".join(cats) + " |")
+    L.append("| --- |" + " ---: |" * len(cats))
+    for m in models:
+        cs = m.get("category_success") or {}
+        cells = " | ".join(_pct(cs.get(c)) if c in cs else "-" for c in cats)
+        L.append(f"| {m['model_id']} | {cells} |")
+    L.append("")
+
+
+def _render_frontiers(L: list[str], data: dict) -> None:
+    for title, key in [("Cost-success frontier", "cost_frontier"),
+                       ("Latency-success frontier", "latency_frontier")]:
+        points = data.get(key) or []
+        if not any(p.get("x") is not None for p in points):
+            continue
+        axis = "Cost/success" if key == "cost_frontier" else "Median time"
+        fmt = _cost if key == "cost_frontier" else _time
+        L.append(f"#### {title}")
+        L.append("")
+        L.append(f"| Model | {axis} | Success | On frontier |")
+        L.append("| --- | ---: | ---: | :---: |")
+        for p in sorted(points, key=lambda q: (q["x"] is None, q["x"] or 0)):
+            L.append(f"| {p['model_id']} | {fmt(p['x'])} | {_pct(p['y'])} | "
+                     f"{'yes' if p.get('on_frontier') else 'no'} |")
+        L.append("")
+
+
+def _render_diagnostics(L: list[str], models: list[dict]) -> None:
+    if not any(m.get("diagnostics") for m in models):
+        return
+    L.append("#### Diagnostics")
+    L.append("")
+    L.append("| Model | Failed-cmd ratio | Explore/edit | Timeout rate | "
+             "First edit (s) | First test (s) | Diff locality | Patch entropy |")
+    L.append("| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |")
+    for m in models:
+        d = m.get("diagnostics") or {}
+        L.append(
+            f"| {m['model_id']} | {_n(d.get('failed_command_ratio'), '{:.2f}')} | "
+            f"{_n(d.get('exploration_edit_ratio'), '{:.2f}')} | {_pct(d.get('timeout_rate'))} | "
+            f"{_n(d.get('mean_time_to_first_edit_s'), '{:.0f}')} | "
+            f"{_n(d.get('mean_time_to_first_test_s'), '{:.0f}')} | "
+            f"{_n(d.get('mean_diff_locality'), '{:.2f}')} | "
+            f"{_n(d.get('mean_patch_entropy'), '{:.2f}')} |"
+        )
+    L.append("")
+
+
+def _render_full_score(L: list[str], models: list[dict]) -> None:
+    if not any(m.get("review_score") is not None for m in models):
+        return
+    L.append("#### Full score (with blinded review, SPEC 14.2)")
+    L.append("")
+    L.append("| Model | Objective | Review (0-100) | Full (95/5) |")
+    L.append("| --- | ---: | ---: | ---: |")
+    for m in models:
+        L.append(f"| {m['model_id']} | {_n(m['objective_score'])} | "
+                 f"{_n(m.get('review_score'))} | {_n(m.get('full_score'))} |")
+    L.append("")
+
 
 def _render_level2(L: list[str], data: dict) -> None:
     models = _ordered(data)
@@ -210,6 +282,14 @@ def _render_level2(L: list[str], data: dict) -> None:
             L.append(f"- {reason}")
         if cls["red_flags"]:
             L.append(f"- Red flags (ratio >= 2.0): {', '.join(cls['red_flags'])}")
+        cw = a.get("cost_wilcoxon")
+        if cw and cw.get("n"):
+            L.append(f"- Paired cost difference (Wilcoxon over {cw['n']} pairs): "
+                     f"p = {cw['p_value']:.3f}.")
+        tw = a.get("time_wilcoxon")
+        if tw and tw.get("n"):
+            L.append(f"- Paired time difference (Wilcoxon over {tw['n']} pairs): "
+                     f"p = {tw['p_value']:.3f}.")
         qd = a.get("quality_delta_per_extra_dollar")
         if qd is not None:
             L.append(f"- Quality delta per extra dollar: {qd:.1f}")

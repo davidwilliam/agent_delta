@@ -15,6 +15,7 @@ from inspect_ai.solver import TaskState
 from inspect_ai.util import sandbox
 
 from agent_delta.registry import load_task
+from agent_delta.scoring.diff import parse_diff
 from agent_delta.scoring.objective import ObjectiveComponents, partial_objective_score
 from agent_delta.scoring.testrunner import injection, parse
 
@@ -136,6 +137,7 @@ def agentdelta_scorer():
                 "lines_added": lines_added,
                 "lines_removed": lines_removed,
                 "diff": diff_res.stdout,
+                "diff_metrics": parse_diff(diff_res.stdout, language),
                 "usage": usage,
             },
         )
