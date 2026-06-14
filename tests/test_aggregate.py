@@ -6,7 +6,7 @@ from agent_delta.reporting.aggregate import build_report
 from agent_delta.reporting.markdown import render
 
 
-def _record(model, task, epoch, *, success, cost, time_s, tokens):
+def _record(model, task, epoch, *, success, cost, time_s, tokens, tools=10, tests=2):
     """Build a SPEC-16-shaped run record dict."""
     return {
         "run_id": f"{model}_{task}_rep{epoch}",
@@ -27,7 +27,12 @@ def _record(model, task, epoch, *, success, cost, time_s, tokens):
             "total_tokens": tokens,
             "estimated_cost_usd": cost,
         },
-        "agent_behavior": {"files_modified": 2, "lines_added": 20, "lines_removed": 5},
+        "agent_behavior": {
+            "files_modified": 2, "lines_added": 20, "lines_removed": 5,
+            "tool_calls": tools, "shell_commands": tools // 2, "test_runs": tests,
+            "files_read": tools // 2, "file_edits": 4, "api_calls": tools // 2,
+            "retry_count": 0,
+        },
         "scoring": {
             "verified_success": success,
             "hidden_test_score": 1.0 if success else 0.4,
@@ -49,11 +54,12 @@ def _write_suite(tmp_path):
             a_success = not (ti == 0)  # fails all reps of task_001 -> 40/50 = 80%
             # opus-4-8: also succeeds on task_001 reps -> strictly dominates -> 50/50 = 100%
             b_success = True
-            for model, succ, cost, time_s, tok in [
-                ("claude-opus-4-6", a_success, 0.40, 300, 200_000),
-                ("claude-opus-4-8", b_success, 1.60, 900, 1_000_000),
+            for model, succ, cost, time_s, tok, tools, tests in [
+                ("claude-opus-4-6", a_success, 0.40, 300, 200_000, 12, 2),
+                ("claude-opus-4-8", b_success, 1.60, 900, 1_000_000, 48, 8),
             ]:
-                rec = _record(model, task, rep, success=succ, cost=cost, time_s=time_s, tokens=tok)
+                rec = _record(model, task, rep, success=succ, cost=cost, time_s=time_s,
+                              tokens=tok, tools=tools, tests=tests)
                 d = root / rec["run_id"]
                 d.mkdir(parents=True)
                 (d / "run.json").write_text(json.dumps(rec))
@@ -94,6 +100,13 @@ def test_build_report_and_render(tmp_path):
     a8 = assessed["claude-opus-4-8"]
     assert a8["ratios"]["cost_amplification"] == 4.0
     assert a8["ratios"]["token_amplification"] == 5.0
+    # Transcript-derived ratios are now real (48 vs 12 tools, 8 vs 2 test runs).
+    assert a8["ratios"]["tool_amplification"] == 4.0
+    assert a8["ratios"]["test_amplification"] == 4.0
+    assert a8["ratios"]["work_index_amplification"] is not None
+    # The Work Index now uses the full set of captured signals.
+    assert "tool_calls" in mode["level2"]["work_index_components"]
+    assert "test_runs" in mode["level2"]["work_index_components"]
     assert "Amplification" in a8["classification"]["category"]
 
     md = render(report)

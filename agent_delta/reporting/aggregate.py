@@ -45,16 +45,21 @@ def _work_components(records: list[dict]) -> dict[str, float | None]:
     def mean_of(path: tuple[str, str]) -> float | None:
         return _mean([(r.get(path[0]) or {}).get(path[1]) for r in records])
 
+    # file_edits prefers the transcript edit-tool count; falls back to the
+    # number of distinct files changed on disk when transcript counts are absent.
+    file_edits = mean_of(("agent_behavior", "file_edits"))
+    if file_edits is None:
+        file_edits = mean_of(("agent_behavior", "files_modified"))
     return {
         "input_tokens": mean_of(("usage", "input_tokens")),
         "output_tokens": mean_of(("usage", "output_tokens")),
         "wall_clock_seconds": mean_of(("execution", "wall_clock_seconds")),
-        "api_calls": mean_of(("usage", "api_requests")),
+        "api_calls": mean_of(("agent_behavior", "api_calls")),
         "tool_calls": mean_of(("agent_behavior", "tool_calls")),
         "shell_commands": mean_of(("agent_behavior", "shell_commands")),
         "test_runs": mean_of(("agent_behavior", "test_runs")),
         "file_reads": mean_of(("agent_behavior", "files_read")),
-        "file_edits": mean_of(("agent_behavior", "files_modified")),
+        "file_edits": file_edits,
         "retry_count": mean_of(("agent_behavior", "retry_count")),
         "review_passes": mean_of(("agent_behavior", "review_passes")),
     }
@@ -328,11 +333,14 @@ def _limitations(by_mode: dict, per_mode: dict) -> list[str]:
             "Only Default Mode was run; Intrinsic vs Workflow-Equivalent gains cannot be "
             "distinguished without Equal-Budget, Matched-Workflow, or Strong-Spec modes."
         )
-    any_model = next((m for mode in per_mode.values() for m in mode["models"].values()), None)
-    if any_model and not any_model.get("work", {}).get("tool_calls"):
+    present = set()
+    for mode in per_mode.values():
+        present.update(mode["level2"].get("work_index_components") or [])
+    missing = [c for c in amp.WORK_COMPONENTS if c not in present]
+    if missing:
         out.append(
-            "Tool-call, shell-command, test-run, file-read, retry, and review-pass counts "
-            "are not yet captured, so the Agentic Work Index uses tokens, time, and edits only."
+            "Agentic Work Index components with no captured data in this run: "
+            + ", ".join(missing) + " (the index uses the remaining components)."
         )
     return out
 

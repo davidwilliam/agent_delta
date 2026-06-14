@@ -62,9 +62,23 @@ mode, at what cost, time, and token amplification, with what statistical support
 and whether the older model is expected to close the gap under a stronger
 workflow.
 
-## Not yet captured
+## Agent-behavior capture
 
-Tool-call, shell-command, test-run, file-read, retry, and review-pass counts are
-not yet extracted from the agent transcript, so the Agentic Work Index currently
-uses tokens, wall-clock time, and file edits. Wiring those counts through the
-scorer and run record is the next step to a complete Work Index.
+`agent_delta/scoring/behavior.py` extracts work signals from the Inspect sample's
+event stream and the run record stores them under `agent_behavior`:
+
+- `api_calls` and `retry_count` from model events,
+- `tool_calls`, `shell_commands`, `failed_shell_commands`, `test_runs`,
+  `files_read`, and `file_edits` from tool events.
+
+Test runs are detected by matching the shell command text against common test
+runners (pytest, go test, npm test, rspec, and so on). Tool classification is
+pattern-based because tool names vary by agent and version; the record also
+stores a raw `tool_histogram` of the exact tool names seen, so the classifier can
+be tuned from a real transcript rather than guessed. The Agentic Work Index uses
+whichever of these components have data and reports which it used, so it
+strengthens automatically as runs populate more signals.
+
+`review_passes` has no discrete transcript signal yet and stays uncaptured; the
+report's Limitations section lists any Work Index component with no data for a
+given run.

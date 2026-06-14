@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Any
 
 from agent_delta import BENCHMARK_VERSION, config
+from agent_delta.scoring.behavior import extract_agent_behavior
 from agent_delta.scoring.cost import estimate_cost_usd
 
 _SCORER_KEY = "agentdelta_scorer"
@@ -98,10 +99,13 @@ def build_run_record(
             "estimated_cost_usd": cost,
         },
         "agent_behavior": {
+            # Diff-derived (what changed on disk).
             "files_modified": len(smeta.get("modified_files", [])),
             "lines_added": smeta.get("lines_added"),
             "lines_removed": smeta.get("lines_removed"),
             "modified_files": smeta.get("modified_files", []),
+            # Transcript-derived (how much work the agent did).
+            **extract_agent_behavior(sample),
         },
         "scoring": {
             "verified_success": bool(components.get("verified_success")),

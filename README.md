@@ -38,7 +38,7 @@ What works today:
   `docs/amplification.md`)
 
 Not yet built: the resource-normalized run modes (Equal-Budget, Matched-Workflow,
-etc.), full agent-behavior capture for the Work Index, a second-language fixture,
+etc.) that make amplification verdicts non-provisional, a second-language fixture,
 network-locked sandbox, the Codex/Gemini adapters.
 
 ## Setup
