@@ -1,0 +1,162 @@
+{
+  "benchmark_version": "agentdelta-v0.1",
+  "suite": "real-smoke",
+  "agent": "claude_code",
+  "n_tasks": 1,
+  "n_long_context_tasks": 0,
+  "n_runs": 1,
+  "n_invalid": 0,
+  "invalid_runs": [],
+  "models": [
+    "claude-opus-4-8"
+  ],
+  "modes": [
+    "default"
+  ],
+  "scoring_formula": {
+    "objective_score": {
+      "verified_task_success": 0.6,
+      "hidden_test_score": 0.15,
+      "regression_avoidance": 0.1,
+      "scope_control": 0.05,
+      "cost_efficiency": 0.05,
+      "time_efficiency": 0.05
+    },
+    "full_score": {
+      "objective_score": 0.95,
+      "blinded_review": 0.05
+    },
+    "materiality": {
+      "task_success_delta_pp": 5,
+      "category_success_delta_pp": 10,
+      "cost_delta_percent": 10,
+      "latency_delta_percent": 10,
+      "regression_delta_pp": 3
+    }
+  },
+  "per_mode": {
+    "default": {
+      "models": {
+        "claude-opus-4-8": {
+          "model_id": "claude-opus-4-8",
+          "n_runs": 1,
+          "n_invalid": 0,
+          "failure_labels": {},
+          "invalid_by_reason": {},
+          "category_success": {
+            "small_bug_fix": 1.0
+          },
+          "diagnostics": {
+            "failed_command_ratio": 0.0,
+            "exploration_edit_ratio": 1.5,
+            "timeout_rate": 0.0,
+            "mean_time_to_first_edit_s": null,
+            "mean_time_to_first_test_s": null,
+            "mean_diff_locality": 0.5,
+            "mean_patch_entropy": 0.8112781244591328,
+            "mean_test_to_code_ratio": 0.0
+          },
+          "n_success": 1,
+          "success_rate": 1.0,
+          "success_ci95": [
+            0.20654931437723745,
+            1.0
+          ],
+          "hidden_test_rate": 1.0,
+          "regression_rate": 0.0,
+          "scope_control": 1.0,
+          "partial_objective_mean": 100.0,
+          "review_mean": null,
+          "cost_total_usd": 0.26270874999999994,
+          "cost_mean_usd": 0.26270874999999994,
+          "cost_per_success_usd": 0.26270874999999994,
+          "median_time_to_success_s": 51.188,
+          "wall_clock_percentiles": {
+            "median": 51.188,
+            "mean": 51.188,
+            "p25": 51.188,
+            "p75": 51.188,
+            "p90": 51.188
+          },
+          "tokens_total_mean": 137767.0,
+          "components": {
+            "verified_success": 1.0,
+            "hidden_test_score": 1.0,
+            "regression_avoidance": 1.0,
+            "scope_control": 1.0
+          },
+          "work": {
+            "input_tokens": 9.0,
+            "output_tokens": 1306.0,
+            "wall_clock_seconds": 51.188,
+            "api_calls": 5.0,
+            "tool_calls": 6.0,
+            "shell_commands": 1.0,
+            "test_runs": 1.0,
+            "file_reads": 3.0,
+            "file_edits": 2.0,
+            "retry_count": 0.0,
+            "review_passes": null
+          },
+          "cost_efficiency": 1.0,
+          "time_efficiency": 1.0,
+          "objective_score": 100.0,
+          "review_score": null,
+          "full_score": 100.0,
+          "work_index": 100.0,
+          "quality_per_dollar": 380.64967383081085,
+          "quality_per_minute": 117.21497225912321,
+          "quality_per_work_unit": 1.0,
+          "rank": 1
+        }
+      },
+      "baseline": "claude-opus-4-8",
+      "best_cost_per_success_usd": 0.26270874999999994,
+      "best_median_time_to_success_s": 51.188,
+      "level1": {
+        "ranking": [
+          "claude-opus-4-8"
+        ],
+        "baseline": "claude-opus-4-8",
+        "improvements": []
+      },
+      "level2": {
+        "baseline": "claude-opus-4-8",
+        "work_index_components": [
+          "input_tokens",
+          "output_tokens",
+          "wall_clock_seconds",
+          "api_calls",
+          "tool_calls",
+          "shell_commands",
+          "test_runs",
+          "file_reads",
+          "file_edits"
+        ],
+        "assessments": [],
+        "excluded": []
+      },
+      "cost_frontier": [
+        {
+          "model_id": "claude-opus-4-8",
+          "x": 0.26270874999999994,
+          "y": 1.0,
+          "on_frontier": true
+        }
+      ],
+      "latency_frontier": [
+        {
+          "model_id": "claude-opus-4-8",
+          "x": 51.188,
+          "y": 1.0,
+          "on_frontier": true
+        }
+      ]
+    }
+  },
+  "cross_mode": null,
+  "limitations": [
+    "Only Default Mode was run; Intrinsic vs Workflow-Equivalent gains cannot be distinguished without Equal-Budget, Matched-Workflow, or Strong-Spec modes.",
+    "Agentic Work Index components with no captured data in this run: retry_count, review_passes (the index uses the remaining components)."
+  ]
+}

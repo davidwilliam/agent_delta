@@ -27,7 +27,8 @@ _TEST_CMD = re.compile(
 )
 
 _SHELL = {"bash", "shell", "sh", "run", "execute", "exec", "terminal"}
-_READ = {"read", "read_file", "view", "cat", "open", "viewfile"}
+_READ = {"read", "read_file", "view", "cat", "open", "viewfile",
+         "glob", "grep", "ls", "find", "list", "search"}
 _EDIT = {
     "edit", "write", "write_file", "create", "create_file", "str_replace",
     "str_replace_editor", "str_replace_based_edit_tool", "multiedit", "multi_edit",
@@ -47,6 +48,9 @@ def _command_text(args: dict[str, Any]) -> str:
 def classify_tool(function: str, args: dict[str, Any]) -> str:
     """Return one of: shell, read, edit, other."""
     fn = (function or "").lower()
+    # Task/todo management tools are not file edits (TodoWrite contains "write").
+    if "todo" in fn or fn in ("task", "exitplanmode", "webfetch", "websearch"):
+        return "other"
     # Editor-style tools carry the real action in a `command` argument.
     if "editor" in fn or "text_editor" in fn or fn.endswith("edit_tool"):
         cmd = str(args.get("command", "")).lower()
@@ -57,7 +61,7 @@ def classify_tool(function: str, args: dict[str, Any]) -> str:
         return "edit"
     if fn in _SHELL or "bash" in fn or "shell" in fn:
         return "shell"
-    if fn in _READ or fn.startswith("read") or "view" in fn:
+    if fn in _READ or fn.startswith("read") or "view" in fn or "glob" in fn or "grep" in fn:
         return "read"
     if fn in _EDIT or "edit" in fn or "write" in fn or "str_replace" in fn or "patch" in fn:
         return "edit"
@@ -67,40 +71,42 @@ def classify_tool(function: str, args: dict[str, Any]) -> str:
 def extract_agent_behavior(sample: Any) -> dict[str, Any]:
     """Count agent behavior from an Inspect EvalSample's event stream."""
     events = getattr(sample, "events", None) or []
+    messages = getattr(sample, "messages", None) or []
     api_calls = tool_calls = shell_commands = test_runs = 0
     files_read = file_edits = failed_shell = retry_count = model_errors = 0
-    time_to_first_edit = time_to_first_test = None
     histogram: Counter = Counter()
 
+    # Model calls and retries come from the proxied model events.
     for ev in events:
-        kind = getattr(ev, "event", None)
-        if kind == "model":
+        if getattr(ev, "event", None) == "model":
             api_calls += 1
             retry_count += int(getattr(ev, "retries", 0) or 0)
             if getattr(ev, "error", None):
                 model_errors += 1
-        elif kind == "tool":
+
+    # Tool calls live on the assistant messages (inspect_swe executes the agent's
+    # tools internally, so they do not surface as Inspect ToolEvents).
+    for m in messages:
+        for call in (getattr(m, "tool_calls", None) or []):
             tool_calls += 1
-            fn = getattr(ev, "function", "") or ""
+            fn = getattr(call, "function", "") or ""
             histogram[fn.lower()] += 1
-            args = getattr(ev, "arguments", None) or {}
-            ws = getattr(ev, "working_start", None)
+            args = getattr(call, "arguments", None) or {}
             cat = classify_tool(fn, args)
             if cat == "shell":
                 shell_commands += 1
-                cmd = _command_text(args)
-                if _TEST_CMD.search(cmd):
+                if _TEST_CMD.search(_command_text(args)):
                     test_runs += 1
-                    if time_to_first_test is None:
-                        time_to_first_test = ws
-                if getattr(ev, "failed", False) or getattr(ev, "error", None):
-                    failed_shell += 1
             elif cat == "read":
                 files_read += 1
             elif cat == "edit":
                 file_edits += 1
-                if time_to_first_edit is None:
-                    time_to_first_edit = ws
+
+    # Failed shell commands: tool-result messages with an error for a shell tool.
+    for m in messages:
+        if getattr(m, "role", None) == "tool" and getattr(m, "error", None):
+            if classify_tool(getattr(m, "function", "") or "", {}) == "shell":
+                failed_shell += 1
 
     return {
         "api_calls": api_calls,
@@ -112,8 +118,9 @@ def extract_agent_behavior(sample: Any) -> dict[str, Any]:
         "file_edits": file_edits,
         "retry_count": retry_count,
         "model_errors": model_errors,
-        "time_to_first_edit": time_to_first_edit,
-        "time_to_first_test": time_to_first_test,
+        # Per-tool timestamps are not exposed on messages for inspect_swe agents.
+        "time_to_first_edit": None,
+        "time_to_first_test": None,
         # review_passes has no discrete transcript signal yet.
         "review_passes": None,
         "tool_histogram": dict(histogram),
