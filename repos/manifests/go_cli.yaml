@@ -1,0 +1,18 @@
+fixture: go_cli
+language: go
+framework: go test
+description: A tiny Go string toolkit (textkit) with a small CLI and a baseline passing test suite.
+
+# Base image for the run+commit builder. golang images already include git.
+# Pinned by digest for reproducibility.
+base_image: golang:1.22-bookworm@sha256:3d699e4d15d0f8f13c9195c0632a16702b8cbdece2955af1c23b37ae5d55a253
+
+source_path: repos/fixtures/go_cli
+workdir: /repo
+
+setup:
+  - go build ./...
+baseline_tests:
+  - go test ./...
+
+base_commit: HEAD

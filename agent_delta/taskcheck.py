@@ -18,7 +18,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from agent_delta.registry import Task, load_fixture, load_task
-from agent_delta.scoring.sandbox_scorer import parse_pytest_summary
+from agent_delta.scoring.testrunner import parse, plan
 
 
 @dataclass
@@ -66,17 +66,18 @@ def _exec(container: str, workdir: str, cmd: list[str]) -> subprocess.CompletedP
     )
 
 
-def _run_test_files(container: str, workdir: str, files: list[Path]) -> Phase:
-    """Copy host test files into the container and run them with pytest."""
+def _run_test_files(container: str, workdir: str, files: list[Path], language: str, label: str) -> Phase:
+    """Copy host test files into the container and run them for `language`."""
     if not files:
         return Phase(0, 0, 0, 0)
-    paths = []
+    targets, cmd = plan(language, label, [f.name for f in files], workdir)
     for f in files:
-        dest = f"/tmp/check_{f.name}"
+        dest = targets[f.name]
+        subprocess.run(["docker", "exec", container, "mkdir", "-p",
+                        str(Path(dest).parent)], capture_output=True)
         subprocess.run(["docker", "cp", str(f), f"{container}:{dest}"], capture_output=True)
-        paths.append(dest)
-    res = _exec(container, workdir, ["python", "-m", "pytest", "-q", "--tb=no", *paths])
-    c = parse_pytest_summary(res.stdout + res.stderr)
+    res = _exec(container, workdir, cmd)
+    c = parse(language, res.stdout + res.stderr)
     return Phase(c["passed"], c["failed"], c["error"], c["total"])
 
 
@@ -95,6 +96,7 @@ def check_task(task_id: str) -> TaskCheck:
     task = load_task(task_id)
     fixture = load_fixture(task.repo)
     workdir = fixture.workdir
+    language = fixture.language
     container = f"agentdelta-check-{task_id}"
 
     subprocess.run(["docker", "rm", "-f", container], capture_output=True)
@@ -103,17 +105,17 @@ def check_task(task_id: str) -> TaskCheck:
         capture_output=True, check=True,
     )
     try:
-        base_public = _run_test_files(container, workdir, task.public_test_files)
-        base_hidden = _run_test_files(container, workdir, task.hidden_test_files)
+        base_public = _run_test_files(container, workdir, task.public_test_files, language, "public")
+        base_hidden = _run_test_files(container, workdir, task.hidden_test_files, language, "hidden")
 
         _apply_reference(container, workdir, task)
 
         baseline_ok = True
         for cmd in task.baseline_cmds:
-            r = _exec(container, workdir, ["bash", "-lc", cmd])
+            r = _exec(container, workdir, ["bash", "-c", cmd])
             baseline_ok = baseline_ok and r.returncode == 0
-        after_public = _run_test_files(container, workdir, task.public_test_files)
-        after_hidden = _run_test_files(container, workdir, task.hidden_test_files)
+        after_public = _run_test_files(container, workdir, task.public_test_files, language, "public")
+        after_hidden = _run_test_files(container, workdir, task.hidden_test_files, language, "hidden")
     finally:
         subprocess.run(["docker", "rm", "-f", container], capture_output=True)
 

@@ -1,0 +1,49 @@
+id: go_task_002
+title: Add a Capitalize function to textkit
+category: medium_feature
+difficulty: 2
+repo: go_cli
+base_commit: HEAD
+language: go
+framework: go test
+prompt_file: prompt.md
+
+context_requirement:
+  min_context_tokens: 8000
+  preferred_context_tokens: 200000
+
+execution:
+  timeout_minutes: 15
+  max_cost_usd: 2.00
+  max_agent_turns: null
+  network: disabled
+  package_install: false
+
+scope:
+  allowed_paths:
+    - textkit.go
+  forbidden_paths:
+    - go.mod
+    - go.sum
+  max_files_modified: 2
+
+tests:
+  baseline:
+    - go test ./...
+  public:
+    - public_test.go
+  hidden:
+    - hidden_test.go
+
+acceptance_criteria:
+  - A Capitalize function exists in package textkit.
+  - Capitalize uppercases the first character and leaves the rest unchanged.
+  - Capitalize returns an empty string for empty input.
+  - Existing baseline tests continue to pass (no regression).
+
+scoring:
+  objective_weight: 1.0
+  review_weight: 0.0
+
+notes:
+  - Detects that only the first character changes and that the rest is preserved.

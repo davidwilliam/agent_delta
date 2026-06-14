@@ -5,16 +5,16 @@ date-specific (SPEC §3, §17.3). The following limits apply to the current stat
 
 ## v0.1 slice
 
-- **Five tasks, one fixture, one language.** The current suite (task_001-005 on
-  the `python_package` fixture) spans four categories and proves the pipeline,
-  but it is not yet a benchmark. Real conclusions need the full 50-task / 4-model
-  / 5-repetition matrix across ≥2 languages (SPEC §8.2, §9).
+- **Seven tasks, two fixtures, two languages.** task_001-005 on `python_package`
+  and go_task_001-002 on `go_cli` span four categories across Python and Go and
+  prove the pipeline, but this is not yet a benchmark. Real conclusions need the
+  full 50-task / 4-model / 5-repetition matrix, and the categories test_writing,
+  long_horizon, and dependency_migration are not yet represented (SPEC §8.2, §9).
+- **No real model run yet.** Every result so far is from the dry-run path or
+  synthetic records; the live agent path has not been exercised.
 - **Refactor scoring is a proxy.** task_004 verifies the helper exists, is used
   (source check), and behavior is preserved - it does not fully judge refactor
   quality. Deeper structural judgment would need the blinded-review layer.
-- **No aggregation/statistics yet.** Per-run records carry only the absolute
-  objective components and `partial_objective_score`. Set-relative cost/time
-  efficiency, confidence intervals, paired comparisons, and rankings are Phase 2.
 - **Network not locked down.** See `docs/reproducibility.md`.
 - **Pricing is placeholder.** `agent_delta/scoring/cost.py` must be reconciled
   with the live pricing page before any published cost figure.

@@ -84,6 +84,14 @@ class Fixture:
         return self.manifest.get("workdir", "/repo")
 
     @property
+    def language(self) -> str:
+        return self.manifest.get("language", "python")
+
+    @property
+    def base_image(self) -> str:
+        return self.manifest.get("base_image", "python:3.12-slim")
+
+    @property
     def setup_cmds(self) -> list[str]:
         return self.manifest.get("setup", [])
 

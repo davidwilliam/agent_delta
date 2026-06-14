@@ -43,3 +43,19 @@ All tasks share one fixture base commit, so the fixture must contain every task'
 latent bug/missing-feature simultaneously while its **baseline** suite still
 passes. Put the discriminating cases only in the injected public/hidden tests,
 never in the fixture's own `tests/` (those are the regression surface).
+
+## Languages
+
+Public/hidden test injection is language-aware (`agent_delta/scoring/testrunner.py`),
+driven by the fixture manifest's `language`.
+
+- **python**: test files run in isolation from `/tmp` and import the editable
+  installed package (`from mathkit import ...`).
+- **go**: test files are written into an external test package under the module
+  at `agentdelta_eval/<public|hidden>/` and run with `go test`. Each file must
+  declare `package eval` and import the fixture module (for example
+  `import "textkit"`). A missing symbol at base produces a build failure, which
+  the parser counts as a failing (non-trivial) result.
+
+To add another language, give it an `injection` plan and an output parser in
+`testrunner.py` and set `language` plus `base_image` in the fixture manifest.

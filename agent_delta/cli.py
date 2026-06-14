@@ -85,14 +85,17 @@ def check_task_cmd(task_id: str | None, check_all: bool) -> None:
 @click.option("--fixture", default="python_package", help="Fixture to build an image for.")
 @click.option(
     "--method",
-    type=click.Choice(["dockerfile", "run-commit"]),
-    default="dockerfile",
-    help="dockerfile = BuildKit (reproducible); run-commit = BuildKit-free fallback.",
+    type=click.Choice(["auto", "dockerfile", "run-commit"]),
+    default="auto",
+    help="auto picks dockerfile for python, run-commit otherwise.",
 )
 def build_sandbox_cmd(fixture: str, method: str) -> None:
     """Build the Docker sandbox image for a fixture."""
+    from agent_delta.registry import load_fixture
     from agent_delta.sandbox_build import build_image, build_image_dockerfile
 
+    if method == "auto":
+        method = "dockerfile" if load_fixture(fixture).language == "python" else "run-commit"
     if method == "dockerfile":
         build_image_dockerfile(fixture)
     else:

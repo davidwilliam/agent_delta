@@ -21,27 +21,24 @@ import subprocess
 from agent_delta import config
 from agent_delta.registry import load_fixture
 
-# Pinned by digest to match the Dockerfile and keep builds reproducible.
-BASE_IMAGE = (
-    "python:3.12-slim@sha256:"
-    "d764629ce0ddd8c71fd371e9901efb324a95789d2315a47db7e4d27e78f1b0e9"
-)
-
-
 def _run(cmd: list[str], **kw) -> subprocess.CompletedProcess:
     print("+", " ".join(cmd))
     return subprocess.run(cmd, check=True, **kw)
 
 
 def build_image(fixture_name: str = "python_package") -> str:
-    """Build via run + exec + commit (BuildKit-free). Returns the image tag."""
+    """Build via run + exec + commit (BuildKit-free). Returns the image tag.
+
+    The base image and setup come from the fixture manifest, so this works for any
+    language. git is installed only if the base image lacks it.
+    """
     fixture = load_fixture(fixture_name)
     tag = fixture.image_tag
     workdir = fixture.workdir
     container = f"agentdelta-build-{fixture_name}"
 
     subprocess.run(["docker", "rm", "-f", container], capture_output=True)
-    _run(["docker", "run", "-d", "--name", container, BASE_IMAGE, "sleep", "infinity"])
+    _run(["docker", "run", "-d", "--name", container, fixture.base_image, "sleep", "infinity"])
     try:
         # Copy the pristine fixture into the container working dir.
         _run(["docker", "cp", f"{fixture.source_path}/.", f"{container}:{workdir}"])
@@ -49,9 +46,10 @@ def build_image(fixture_name: str = "python_package") -> str:
         setup_cmds = " && ".join(fixture.setup_cmds) if fixture.setup_cmds else "true"
         script = f"""
 set -e
-apt-get update -qq
-apt-get install -y -qq --no-install-recommends git >/dev/null 2>&1
-rm -rf /var/lib/apt/lists/*
+if ! command -v git >/dev/null 2>&1; then
+  apt-get update -qq && apt-get install -y -qq --no-install-recommends git >/dev/null 2>&1
+  rm -rf /var/lib/apt/lists/*
+fi
 cd {workdir}
 {setup_cmds}
 git config --system --add safe.directory {workdir}

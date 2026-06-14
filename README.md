@@ -15,15 +15,19 @@ inside a Docker sandbox, with objective scoring (baseline/public/hidden tests,
 scope control) and SPEC §16 run records. The architecture is wired for the full
 50-task / 4-model benchmark and for future Codex CLI / Gemini CLI adapters.
 
-Tasks (all on the `python_package`/mathkit fixture):
+Fixtures span two languages: `python_package` (the `mathkit` library, pytest) and
+`go_cli` (the `textkit` Go module, `go test`). The scorer, builder, and task
+checker are language-aware.
 
-| Task | Category | What |
-| --- | --- | --- |
-| `task_001` | small_bug_fix | Add a `median` function |
-| `task_002` | small_bug_fix | Fix `chunk()` dropping the final partial chunk |
-| `task_003` | medium_feature | Add a `slugify` function |
-| `task_004` | multi_file_refactor | Extract a shared `require_nonempty` helper |
-| `task_005` | security_fix | Fix path traversal in `read_fixture` |
+| Task | Fixture | Category | What |
+| --- | --- | --- | --- |
+| `task_001` | python_package | small_bug_fix | Add a `median` function |
+| `task_002` | python_package | small_bug_fix | Fix `chunk()` dropping the final partial chunk |
+| `task_003` | python_package | medium_feature | Add a `slugify` function |
+| `task_004` | python_package | multi_file_refactor | Extract a shared `require_nonempty` helper |
+| `task_005` | python_package | security_fix | Fix path traversal in `read_fixture` |
+| `go_task_001` | go_cli | small_bug_fix | Fix `Truncate` past the string length |
+| `go_task_002` | go_cli | medium_feature | Add a `Capitalize` function |
 
 What works today:
 - `agentdelta list-tasks` / `validate-task`

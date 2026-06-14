@@ -8,7 +8,6 @@ later during aggregation.
 
 from __future__ import annotations
 
-import re
 from typing import Any
 
 from inspect_ai.scorer import Score, Target, accuracy, scorer, stderr
@@ -17,39 +16,22 @@ from inspect_ai.util import sandbox
 
 from agent_delta.registry import load_task
 from agent_delta.scoring.objective import ObjectiveComponents, partial_objective_score
-
-_SUMMARY_RE = re.compile(r"(\d+) (passed|failed|error|errors|skipped)")
-
-
-def parse_pytest_summary(output: str) -> dict[str, int]:
-    """Parse pytest's summary line into counts. Robust to ordering/wording."""
-    counts = {"passed": 0, "failed": 0, "error": 0, "skipped": 0}
-    for n, kind in _SUMMARY_RE.findall(output):
-        key = "error" if kind.startswith("error") else kind
-        counts[key] += int(n)
-    counts["total"] = counts["passed"] + counts["failed"] + counts["error"]
-    return counts
+from agent_delta.scoring.testrunner import injection, parse
 
 
 async def _exec(cmd: list[str], cwd: str, timeout: int = 300):
     return await sandbox().exec(cmd, cwd=cwd, timeout=timeout)
 
 
-async def _run_pytest_files(files: dict[str, str], workdir: str) -> dict[str, int]:
-    """Write test files into the sandbox (outside the repo) and run them.
-
-    files: {filename: contents}. Tests import the installed package, so they can
-    live in /tmp and need not be inside the repo working tree.
-    """
+async def _run_injected(language: str, label: str, files: dict[str, str], workdir: str) -> dict[str, int]:
+    """Inject public/hidden test files into the sandbox and run them."""
     if not files:
         return {"passed": 0, "failed": 0, "error": 0, "skipped": 0, "total": 0}
-    paths = []
-    for name, contents in files.items():
-        path = f"/tmp/agentdelta_{name}"
+    writes, cmd = injection(language, label, files, workdir)
+    for path, contents in writes:
         await sandbox().write_file(path, contents)
-        paths.append(path)
-    result = await _exec(["python", "-m", "pytest", "-q", "--tb=line", *paths], cwd=workdir)
-    return parse_pytest_summary(result.stdout + result.stderr)
+    result = await _exec(cmd, cwd=workdir)
+    return parse(language, result.stdout + result.stderr)
 
 
 def _compute_scope_control(
@@ -79,6 +61,7 @@ def agentdelta_scorer():
         meta: dict[str, Any] = state.metadata or {}
         task = load_task(meta["task_id"])
         workdir = meta.get("workdir", "/repo")
+        language = meta.get("language", "python")
 
         # final diff + modified file list (numstat for line counts)
         diff_res = await _exec(["git", "-C", workdir, "diff", "HEAD"], workdir)
@@ -99,7 +82,7 @@ def agentdelta_scorer():
         # regression: baseline suite must still pass
         regression_ok = True
         for cmd in task.baseline_cmds:
-            res = await _exec(["bash", "-lc", cmd], workdir)
+            res = await _exec(["bash", "-c", cmd], workdir)
             if res.returncode != 0:
                 regression_ok = False
         regression_avoidance = 1.0 if regression_ok else 0.0
@@ -107,8 +90,8 @@ def agentdelta_scorer():
         # public + hidden tests (injected, not in the repo)
         public_files = {p.name: p.read_text() for p in task.public_test_files}
         hidden_files = {p.name: p.read_text() for p in task.hidden_test_files}
-        public = await _run_pytest_files(public_files, workdir)
-        hidden = await _run_pytest_files(hidden_files, workdir)
+        public = await _run_injected(language, "public", public_files, workdir)
+        hidden = await _run_injected(language, "hidden", hidden_files, workdir)
 
         public_ok = public["total"] > 0 and public["failed"] == 0 and public["error"] == 0
         hidden_score = (hidden["passed"] / hidden["total"]) if hidden["total"] else 0.0

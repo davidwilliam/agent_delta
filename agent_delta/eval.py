@@ -65,6 +65,7 @@ def build_task(
             "repo": task.repo,
             "category": task.category,
             "workdir": fixture.workdir,
+            "language": fixture.language,
             "mode": mode,
             "scaffolded": scaffolded,
         },

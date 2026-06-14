@@ -3,6 +3,9 @@ language: python
 framework: pytest
 description: A tiny utility toolkit (mathkit) - stats, sequences, text, io - with a baseline passing test suite.
 
+# Base image (pinned by digest) for the run+commit builder.
+base_image: python:3.12-slim@sha256:d764629ce0ddd8c71fd371e9901efb324a95789d2315a47db7e4d27e78f1b0e9
+
 # Path to the fixture source, relative to the repo root.
 source_path: repos/fixtures/python_package
 
