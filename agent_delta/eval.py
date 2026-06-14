@@ -18,7 +18,7 @@ from inspect_ai.solver import Generate, Solver, TaskState, solver
 from inspect_ai.util import sandbox
 
 from agent_delta import config
-from agent_delta.modes import build_prompt, mode_limits
+from agent_delta.modes import build_prompt, is_scaffolded, mode_limits
 from agent_delta.registry import Fixture, Task as ADTask, load_fixture, load_task
 from agent_delta.runners.claude_code import build_claude_code_agent
 from agent_delta.scoring.sandbox_scorer import agentdelta_scorer
@@ -54,17 +54,19 @@ def build_task(
     dry_run: bool,
     agent_name: str = "claude_code",
     mode: str = "default",
+    scaffolded: bool = False,
 ) -> Task:
     limits = mode_limits(task, mode)
     sample = Sample(
         id=task.id,
-        input=build_prompt(task, mode),
+        input=build_prompt(task, mode, scaffolded=scaffolded),
         metadata={
             "task_id": task.id,
             "repo": task.repo,
             "category": task.category,
             "workdir": fixture.workdir,
             "mode": mode,
+            "scaffolded": scaffolded,
         },
         sandbox=("docker", str(COMPOSE_PATH)),
     )
@@ -95,6 +97,7 @@ def run_task(
     agent_name: str = "claude_code",
     dry_run: bool = False,
     mode: str = "default",
+    scaffold_model: str | None = None,
     log_dir: str | Path | None = None,
 ):
     """Run one AgentDelta task for one model in one mode. Returns the EvalLogs."""
@@ -105,9 +108,11 @@ def run_task(
     if not dry_run:
         config.ensure_anthropic_key()
 
+    scaffolded = is_scaffolded(mode, model_id, scaffold_model)
     log_dir = str(log_dir) if log_dir else str(config.RESULTS_DIR / "logs")
     eval_task = build_task(
-        task, fixture, epochs=repetitions, dry_run=dry_run, agent_name=agent_name, mode=mode
+        task, fixture, epochs=repetitions, dry_run=dry_run, agent_name=agent_name,
+        mode=mode, scaffolded=scaffolded,
     )
 
     # In dry-run there is no model; pass a placeholder Inspect accepts via the

@@ -1,13 +1,20 @@
 """Tests for evaluation-mode prompt transforms and resource limits."""
 
-from agent_delta.modes import available_modes, build_prompt, mode_limits, mode_spec
+from agent_delta.modes import (
+    available_modes,
+    build_prompt,
+    is_scaffolded,
+    mode_limits,
+    mode_spec,
+    oldest_included_model,
+)
 from agent_delta.registry import load_task
 
 
 def test_available_modes():
     modes = available_modes()
     for m in ("default", "equal_budget", "matched_workflow", "strong_spec",
-              "cost_matched", "time_matched"):
+              "cost_matched", "time_matched", "older_plus_scaffold"):
         assert m in modes
 
 
@@ -62,3 +69,29 @@ def test_unknown_mode_raises():
         assert False, "expected KeyError"
     except KeyError:
         pass
+
+
+def test_oldest_included_model_is_baseline():
+    # The Anthropic cohort's oldest included model is opus-4-6.
+    assert oldest_included_model() == "claude-opus-4-6"
+
+
+def test_scaffold_targets_only_the_older_model():
+    assert is_scaffolded("older_plus_scaffold", "claude-opus-4-6") is True
+    assert is_scaffolded("older_plus_scaffold", "claude-opus-4-8") is False
+    # Explicit override.
+    assert is_scaffolded("older_plus_scaffold", "claude-opus-4-7",
+                         scaffold_model="claude-opus-4-7") is True
+    # Other modes never scaffold.
+    assert is_scaffolded("matched_workflow", "claude-opus-4-6") is False
+
+
+def test_scaffold_prompt_asymmetric():
+    task = load_task("task_001")
+    # Scaffolded (older) model gets the full scaffold plus acceptance criteria.
+    scaffolded = build_prompt(task, "older_plus_scaffold", scaffolded=True)
+    assert "extra structure" in scaffolded
+    assert "test-first" in scaffolded.lower()
+    assert "Acceptance criteria" in scaffolded
+    # Non-scaffolded (newer) model runs the plain prompt.
+    assert build_prompt(task, "older_plus_scaffold", scaffolded=False) == task.prompt

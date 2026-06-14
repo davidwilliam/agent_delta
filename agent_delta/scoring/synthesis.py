@@ -69,11 +69,16 @@ def synthesize_cross_mode(per_mode: dict, baseline: str, materiality_pp: float) 
     return {"baseline": baseline, "modes_present": modes, "assessments": assessments}
 
 
+_WORKFLOW_MODES = [
+    ("matched_workflow", "Matched-Workflow Mode"),
+    ("strong_spec", "Strong-Spec Mode"),
+    ("older_plus_scaffold", "Older-Model-Plus-Scaffold Mode"),
+]
+
+
 def _classify(deltas: dict[str, float], m: float) -> tuple[str, list[str], str]:
     default_d = deltas.get("default")
     eq = deltas.get("equal_budget")
-    mw = deltas.get("matched_workflow")
-    ss = deltas.get("strong_spec")
     evidence: list[str] = []
 
     def line(mode_name: str, d: float) -> str:
@@ -84,20 +89,24 @@ def _classify(deltas: dict[str, float], m: float) -> tuple[str, list[str], str]:
 
     if eq is not None and eq < m:
         evidence.append(line("Equal-Budget Mode", eq))
-        return ("Agentic Amplification Gain", evidence,
-                "confirmed")
-    if (mw is not None and mw < m) or (ss is not None and ss < m):
-        if mw is not None:
-            evidence.append(line("Matched-Workflow Mode", mw))
-        if ss is not None:
-            evidence.append(line("Strong-Spec Mode", ss))
+        return ("Agentic Amplification Gain", evidence, "confirmed")
+
+    # Workflow-equivalent: the older model closes the gap given process or spec
+    # (Matched-Workflow, Strong-Spec, or an explicit scaffold).
+    wf_shrinks = [(name, deltas[key]) for key, name in _WORKFLOW_MODES
+                  if key in deltas and deltas[key] < m]
+    if wf_shrinks:
+        for name, d in wf_shrinks:
+            evidence.append(line(name, d))
         return ("Workflow-Equivalent Gain", evidence, "confirmed")
+
     if eq is not None and eq >= m:
         evidence.append(line("Equal-Budget Mode", eq))
-        if mw is not None:
-            evidence.append(line("Matched-Workflow Mode", mw))
+        for key, name in _WORKFLOW_MODES:
+            if key in deltas:
+                evidence.append(line(name, deltas[key]))
         return ("Intrinsic Capability Gain", evidence, "confirmed")
 
-    evidence.append("No normalized mode (Equal-Budget, Matched-Workflow, Strong-Spec) "
-                    "available; classification stays provisional.")
+    evidence.append("No normalized mode (Equal-Budget, Matched-Workflow, Strong-Spec, "
+                    "Older-Model-Plus-Scaffold) available; classification stays provisional.")
     return ("Provisional (run normalized modes)", evidence, "provisional")

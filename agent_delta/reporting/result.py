@@ -80,6 +80,7 @@ def build_run_record(
         "provider": "anthropic",
         "model_id": model_id,
         "mode": mode,
+        "scaffolded": bool((sample.metadata or {}).get("scaffolded", False)),
         "epoch": sample.epoch,
         "execution": {
             "started_at": str(sample.started_at) if sample.started_at else None,

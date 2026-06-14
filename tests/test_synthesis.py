@@ -39,6 +39,13 @@ def test_workflow_equivalent_when_matched_workflow_shrinks():
     assert a["category"] == "Workflow-Equivalent Gain"
 
 
+def test_workflow_equivalent_when_older_plus_scaffold_shrinks():
+    # The scaffolded older model closes the gap -> workflow-equivalent.
+    a = _classify({"default": (0.80, 1.00), "older_plus_scaffold": (0.96, 1.00)})
+    assert a["category"] == "Workflow-Equivalent Gain"
+    assert any("Older-Model-Plus-Scaffold" in e for e in a["evidence"])
+
+
 def test_provisional_when_only_default():
     a = _classify({"default": (0.80, 1.00)})
     assert a["category"].startswith("Provisional")

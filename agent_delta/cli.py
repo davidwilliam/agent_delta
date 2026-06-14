@@ -105,11 +105,14 @@ def build_sandbox_cmd(fixture: str, method: str) -> None:
 @click.option("--repetitions", default=1, type=int, help="Repeated runs (epochs).")
 @click.option("--suite", default="anthropic-claude-code-v0.1", help="Results suite name.")
 @click.option("--mode", default="default", help="Evaluation mode (see configs/modes.yaml).")
+@click.option("--scaffold-model", default=None,
+              help="Model that receives the scaffold under older_plus_scaffold (default: oldest).")
 @click.option("--dry-run", is_flag=True, help="Apply reference solution, no API calls.")
-def run_cmd(task_id: str, model_id: str, repetitions: int, suite: str, mode: str, dry_run: bool) -> None:
+def run_cmd(task_id: str, model_id: str, repetitions: int, suite: str, mode: str,
+            scaffold_model: str | None, dry_run: bool) -> None:
     """Run one task for one model in one mode and write run records."""
     from agent_delta.eval import run_task
-    from agent_delta.modes import available_modes
+    from agent_delta.modes import available_modes, is_scaffolded
     from agent_delta.reporting import write_run_records
 
     if mode not in available_modes():
@@ -119,8 +122,11 @@ def run_cmd(task_id: str, model_id: str, repetitions: int, suite: str, mode: str
             f"Warning: {model_id} is not flagged include:true in the model config.",
             fg="yellow",
         )
+    if is_scaffolded(mode, model_id, scaffold_model):
+        click.secho(f"{model_id} runs WITH scaffold (older_plus_scaffold).", fg="cyan")
 
-    logs = run_task(task_id, model_id, repetitions=repetitions, dry_run=dry_run, mode=mode)
+    logs = run_task(task_id, model_id, repetitions=repetitions, dry_run=dry_run,
+                    mode=mode, scaffold_model=scaffold_model)
     paths = write_run_records(logs, suite=suite, mode=mode)
     click.secho(f"\nWrote {len(paths)} run record(s):", fg="green")
     for p in paths:

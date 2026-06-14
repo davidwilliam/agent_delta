@@ -18,21 +18,26 @@ applied by `agent_delta/modes.py`.
 | `strong_spec` | Appends the task's full acceptance criteria, forbidden paths, and definition of done. | 5.4 |
 | `cost_matched` | Same dollar cap per task. | 5.6 |
 | `time_matched` | Same wall-clock cap per task. | 5.7 |
-
-Older-Model-Plus-Scaffold (5.5) is per-model differential support and is not yet
-implemented.
+| `older_plus_scaffold` | Asymmetric: the older (baseline) model gets a full scaffold (plan, test-first, workflow, review checklist, full spec); the newer model runs default. | 5.5 |
 
 ## Running a mode
 
 ```bash
 agentdelta run --task task_001 --model claude-opus-4-8 --mode equal_budget
 agentdelta run --task task_001 --model claude-opus-4-6 --mode matched_workflow
+
+# older_plus_scaffold: scaffold the old model, run the new one default, same label.
+agentdelta run --task task_001 --model claude-opus-4-6 --mode older_plus_scaffold
+agentdelta run --task task_001 --model claude-opus-4-8 --mode older_plus_scaffold
 ```
 
 Prompt transforms (`matched_workflow`, `strong_spec`) rewrite the sample input;
 resource modes (`equal_budget`, `cost_matched`, `time_matched`) set the Inspect
-token, message, time, and cost limits. Every run records its `mode`, so the same
-suite directory can hold multiple modes and aggregation groups by mode.
+token, message, time, and cost limits. `older_plus_scaffold` is asymmetric: only
+the scaffolded model's prompt is transformed (the target defaults to the oldest
+included model, or `--scaffold-model`), and each run records a `scaffolded` flag.
+Every run records its `mode`, so the same suite directory can hold multiple modes
+and aggregation groups by mode.
 
 ## How modes drive the definitive verdict
 
@@ -41,8 +46,9 @@ material Default-Mode gain against the normalized modes (see
 `docs/amplification.md`):
 
 - the gap shrinks under `equal_budget` -> Agentic Amplification (it was budget),
-- the gap shrinks under `matched_workflow` or `strong_spec` -> Workflow-Equivalent
-  (the older model catches up given the process or spec),
+- the gap shrinks under `matched_workflow`, `strong_spec`, or
+  `older_plus_scaffold` -> Workflow-Equivalent (the older model catches up given
+  the process, spec, or scaffold),
 - the gap persists under `equal_budget` -> Intrinsic Capability.
 
 With only Default Mode the verdict stays provisional; one normalized mode is

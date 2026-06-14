@@ -36,6 +36,14 @@ modes:
     limits:
       time_limit: 600
 
+  older_plus_scaffold:
+    description: >
+      Give the older (baseline) model structured support while the newer model
+      runs default (ADDENDUM 5.5). Asymmetric: only the scaffolded model is
+      transformed. Tests whether the cheaper older model can match the newer one
+      when given the process the newer one applies by default.
+    scaffold: true
+
 # The shared workflow injected by matched_workflow mode (ADDENDUM 5.3).
 workflow_steps: |
   Follow this process for this task:
@@ -47,3 +55,15 @@ workflow_steps: |
   6. Run the tests again.
   7. Review your diff against the requirements.
   8. Give a final summary of what you changed.
+
+# The scaffold given to the older model by older_plus_scaffold mode (ADDENDUM 5.5).
+scaffold_steps: |
+  You are being given extra structure to work as carefully as a stronger default
+  agent would. Use all of it:
+  1. Inspect the relevant files and write a short implementation plan first.
+  2. Decide the tests that define done before changing code (test-first).
+  3. Make the smallest change that satisfies the requirements.
+  4. Run the tests. If any fail, debug and iterate until they pass; make at least
+     two attempts before giving up.
+  5. Review your diff against every acceptance criterion below.
+  6. Give a final summary of what you changed and why.

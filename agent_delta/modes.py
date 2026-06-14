@@ -9,6 +9,7 @@ apart from agentic amplification.
 
 from __future__ import annotations
 
+import re
 from functools import lru_cache
 
 import yaml
@@ -49,16 +50,47 @@ def _strong_spec_block(task) -> str:
     return "\n".join(lines)
 
 
-def build_prompt(task, mode: str) -> str:
-    """Return the task prompt transformed for `mode`."""
+def build_prompt(task, mode: str, *, scaffolded: bool = False) -> str:
+    """Return the task prompt transformed for `mode`.
+
+    `scaffolded` only matters for the asymmetric older_plus_scaffold mode: the
+    designated older model gets the scaffold; every other model runs default.
+    """
     spec = mode_spec(mode)
     body = task.prompt
+    if spec.get("scaffold"):
+        if not scaffolded:
+            return body
+        steps = _modes_config()["scaffold_steps"]
+        return f"{steps}\n\n{body}\n\n{_strong_spec_block(task)}"
     if spec.get("strong_spec"):
         body = f"{body}\n\n{_strong_spec_block(task)}"
     if spec.get("workflow"):
         steps = _modes_config()["workflow_steps"]
         body = f"{steps}\n\n{body}"
     return body
+
+
+def _version_key(model_id: str) -> tuple:
+    m = re.search(r"(\d+)[-.](\d+)", model_id)
+    return (int(m.group(1)), int(m.group(2))) if m else (0, 0)
+
+
+def oldest_included_model(provider: str = "anthropic") -> str | None:
+    """The oldest included model in the cohort (default scaffold target)."""
+    models = config.included_models(provider)
+    return min(models, key=lambda mid: (_version_key(mid), mid)) if models else None
+
+
+def is_scaffolded(mode: str, model_id: str, scaffold_model: str | None = None) -> bool:
+    """Whether this model receives the scaffold under older_plus_scaffold mode.
+
+    The scaffold goes to `scaffold_model` if given, else the oldest included model.
+    """
+    if not mode_spec(mode).get("scaffold"):
+        return False
+    target = scaffold_model or oldest_included_model()
+    return model_id == target
 
 
 def mode_limits(task, mode: str) -> dict:

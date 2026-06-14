@@ -22,10 +22,12 @@ def agentdelta(
     repetitions: int = 1,
     dry_run: bool = False,
     mode: str = "default",
+    scaffolded: bool = False,
 ) -> Task:
     import os
 
     t = load_task(task_id)
     fixture = load_fixture(t.repo)
     os.environ["AGENTDELTA_IMAGE"] = fixture.image_tag
-    return build_task(t, fixture, epochs=repetitions, dry_run=dry_run, mode=mode)
+    return build_task(t, fixture, epochs=repetitions, dry_run=dry_run,
+                      mode=mode, scaffolded=scaffolded)
