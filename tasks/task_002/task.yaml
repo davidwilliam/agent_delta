@@ -1,0 +1,51 @@
+id: task_002
+title: Fix chunk() dropping the final partial chunk
+category: small_bug_fix
+difficulty: 2
+repo: python_package
+base_commit: HEAD
+language: python
+framework: pytest
+prompt_file: prompt.md
+
+context_requirement:
+  min_context_tokens: 8000
+  preferred_context_tokens: 200000
+
+execution:
+  timeout_minutes: 15
+  max_cost_usd: 2.00
+  max_agent_turns: null
+  network: disabled
+  package_install: false
+
+scope:
+  allowed_paths:
+    - src/
+    - tests/
+  forbidden_paths:
+    - pyproject.toml
+  max_files_modified: 3
+
+tests:
+  baseline:
+    - pytest -q tests/
+  public:
+    - public_tests.py
+  hidden:
+    - hidden_tests.py
+
+acceptance_criteria:
+  - chunk includes the final partial chunk when len(seq) is not a multiple of size.
+  - chunk still returns equal-sized chunks when the length divides evenly.
+  - chunk([1,2,3,4,5], 2) == [[1,2],[3,4],[5]].
+  - A size larger than the sequence returns a single chunk with all items.
+  - Invalid (non-positive) size still raises ValueError.
+  - Existing baseline tests continue to pass (no regression).
+
+scoring:
+  objective_weight: 1.0
+  review_weight: 0.0
+
+notes:
+  - Detects whether the fix handles the remainder and the size-greater-than-length case.

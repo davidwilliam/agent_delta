@@ -1,0 +1,51 @@
+id: task_003
+title: Add a slugify function to mathkit.text
+category: medium_feature
+difficulty: 2
+repo: python_package
+base_commit: HEAD
+language: python
+framework: pytest
+prompt_file: prompt.md
+
+context_requirement:
+  min_context_tokens: 8000
+  preferred_context_tokens: 200000
+
+execution:
+  timeout_minutes: 20
+  max_cost_usd: 3.00
+  max_agent_turns: null
+  network: disabled
+  package_install: false
+
+scope:
+  allowed_paths:
+    - src/
+    - tests/
+  forbidden_paths:
+    - pyproject.toml
+  max_files_modified: 4
+
+tests:
+  baseline:
+    - pytest -q tests/
+  public:
+    - public_tests.py
+  hidden:
+    - hidden_tests.py
+
+acceptance_criteria:
+  - A slugify function exists in mathkit.text and is importable from mathkit.
+  - slugify lowercases the text.
+  - Runs of non-alphanumeric characters collapse to a single hyphen.
+  - Leading and trailing hyphens are stripped.
+  - slugify("Hello, World!") == "hello-world".
+  - Existing baseline tests continue to pass (no regression).
+
+scoring:
+  objective_weight: 1.0
+  review_weight: 0.0
+
+notes:
+  - Detects collapsing of repeated separators and trimming of edge hyphens.

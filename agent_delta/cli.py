@@ -46,6 +46,40 @@ def validate_task_cmd(task_id: str) -> None:
     click.secho(f"✓ {task_id} valid", fg="green")
 
 
+@main.command("check-task")
+@click.argument("task_id", required=False)
+@click.option("--all", "check_all", is_flag=True, help="Check every task.")
+def check_task_cmd(task_id: str | None, check_all: bool) -> None:
+    """Verify a task fails at base and passes with its reference solution."""
+    from agent_delta.taskcheck import check_task
+
+    ids = list_tasks() if check_all else [task_id]
+    if not check_all and not task_id:
+        raise click.UsageError("Provide a TASK_ID or use --all.")
+
+    failures = 0
+    for tid in ids:
+        r = check_task(tid)
+        mark = click.style("✓", fg="green") if r.ok else click.style("✗", fg="red")
+        click.echo(
+            f"{mark} {tid:10s} "
+            f"base(pub {r.base_public.failed + r.base_public.error}✗/"
+            f"{r.base_public.total}, hid {r.base_hidden.failed + r.base_hidden.error}✗/"
+            f"{r.base_hidden.total}) → "
+            f"after(base {'ok' if r.after_baseline_ok else 'FAIL'}, "
+            f"pub {r.after_public.passed}/{r.after_public.total}, "
+            f"hid {r.after_hidden.passed}/{r.after_hidden.total})"
+        )
+        if not r.ok:
+            failures += 1
+            if not r.non_trivial:
+                click.secho("    ! tests pass at base — task may be trivial", fg="yellow")
+            if not r.solvable:
+                click.secho("    ! reference solution does not fully pass", fg="yellow")
+    if failures:
+        raise SystemExit(1)
+
+
 @main.command("build-sandbox")
 @click.option("--fixture", default="python_package", help="Fixture to build an image for.")
 @click.option(

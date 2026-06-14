@@ -1,0 +1,49 @@
+id: task_005
+title: Fix path traversal in read_fixture
+category: security_fix
+difficulty: 3
+repo: python_package
+base_commit: HEAD
+language: python
+framework: pytest
+prompt_file: prompt.md
+
+context_requirement:
+  min_context_tokens: 8000
+  preferred_context_tokens: 200000
+
+execution:
+  timeout_minutes: 20
+  max_cost_usd: 3.00
+  max_agent_turns: null
+  network: disabled
+  package_install: false
+
+scope:
+  allowed_paths:
+    - src/
+    - tests/
+  forbidden_paths:
+    - pyproject.toml
+  max_files_modified: 3
+
+tests:
+  baseline:
+    - pytest -q tests/
+  public:
+    - public_tests.py
+  hidden:
+    - hidden_tests.py
+
+acceptance_criteria:
+  - read_fixture only reads files that resolve inside base_dir.
+  - A name that escapes base_dir (via .. or an absolute path) raises ValueError.
+  - Normal reads of files within base_dir still work.
+  - Existing baseline tests continue to pass (no regression).
+
+scoring:
+  objective_weight: 1.0
+  review_weight: 0.0
+
+notes:
+  - Benign defensive coding (SPEC 22). Detects naive checks that miss absolute paths.

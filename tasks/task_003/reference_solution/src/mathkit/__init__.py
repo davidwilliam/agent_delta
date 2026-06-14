@@ -2,8 +2,8 @@
 
 from mathkit.io import read_fixture
 from mathkit.sequences import chunk, dedupe
-from mathkit.stats import mean, median, variance
-from mathkit.text import word_count
+from mathkit.stats import mean, variance
+from mathkit.text import slugify, word_count
 
-__all__ = ["mean", "variance", "median", "chunk", "dedupe", "word_count", "read_fixture"]
+__all__ = ["mean", "variance", "chunk", "dedupe", "word_count", "slugify", "read_fixture"]
 __version__ = "0.1.0"

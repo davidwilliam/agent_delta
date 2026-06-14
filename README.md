@@ -9,20 +9,32 @@ whether a claimed improvement holds up on real coding-agent workloads. See
 
 ## Status
 
-**v0.1 — vertical slice.** One pilot task (`task_001`) runs end-to-end through
-Inspect AI + Claude Code (via `inspect_swe`) inside a Docker sandbox, with
-objective scoring (baseline/public/hidden tests, scope control) and SPEC §16 run
-records. The architecture is wired for the full 50-task / 4-model benchmark and
-for future Codex CLI / Gemini CLI adapters.
+**v0.1 — vertical slice + initial task suite.** Five tasks across four
+categories run end-to-end through Inspect AI + Claude Code (via `inspect_swe`)
+inside a Docker sandbox, with objective scoring (baseline/public/hidden tests,
+scope control) and SPEC §16 run records. The architecture is wired for the full
+50-task / 4-model benchmark and for future Codex CLI / Gemini CLI adapters.
+
+Tasks (all on the `python_package`/mathkit fixture):
+
+| Task | Category | What |
+| --- | --- | --- |
+| `task_001` | small_bug_fix | Add a `median` function |
+| `task_002` | small_bug_fix | Fix `chunk()` dropping the final partial chunk |
+| `task_003` | medium_feature | Add a `slugify` function |
+| `task_004` | multi_file_refactor | Extract a shared `require_nonempty` helper |
+| `task_005` | security_fix | Fix path traversal in `read_fixture` |
 
 What works today:
 - `agentdelta list-tasks` / `validate-task`
 - `agentdelta build-sandbox` — builds the fixture Docker image
-- `agentdelta run --task task_001 --dry-run` — full pipeline, no API cost
-- `agentdelta run --task task_001 --model claude-opus-4-8` — real run
+- `agentdelta check-task --all` — verifies each task fails at base and passes
+  with its reference solution (no model, no API)
+- `agentdelta run --task <id> --dry-run` — full scoring pipeline, no API cost
+- `agentdelta run --task <id> --model claude-opus-4-8` — real run
 
-Not yet built: aggregation/statistics, report generation, additional tasks &
-fixtures, network-locked sandbox, the Codex/Gemini adapters.
+Not yet built: aggregation/statistics, report generation, a second-language
+fixture, network-locked sandbox, the Codex/Gemini adapters.
 
 ## Setup
 

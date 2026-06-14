@@ -25,7 +25,21 @@ A task is a controlled coding assignment against a known fixture state (SPEC §8
 ## Validate
 
 ```bash
-agentdelta validate-task <id>
+agentdelta validate-task <id>        # static: prompt + test files + fixture exist
+agentdelta check-task <id>           # dynamic: fails at base, passes with reference
+agentdelta check-task --all          # check every task
 ```
 
-checks that the prompt, public/hidden test files, and the fixture manifest exist.
+`check-task` spins up the sandbox container and asserts the task is both
+**non-trivial** (public/hidden tests fail on the clean base — the tests really
+detect the missing/buggy behavior) and **solvable** (after applying
+`reference_solution/`, the baseline + public + hidden suites all pass). Run it on
+every new task; a task that passes at base or whose reference doesn't pass is a
+bug in the task, not a strong eval.
+
+## The fixture must stay green at base
+
+All tasks share one fixture base commit, so the fixture must contain every task's
+latent bug/missing-feature simultaneously while its **baseline** suite still
+passes. Put the discriminating cases only in the injected public/hidden tests,
+never in the fixture's own `tests/` (those are the regression surface).
