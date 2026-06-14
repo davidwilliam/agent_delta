@@ -1,0 +1,29 @@
+# Secrets
+.env
+*.key
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Inspect / eval artifacts
+.inspect/
+logs/
+results/raw/*/
+!results/raw/.gitkeep
+results/normalized/*/
+!results/normalized/.gitkeep
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+
+# Harness
+.claude/

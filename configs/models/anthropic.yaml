@@ -1,0 +1,38 @@
+provider: anthropic
+access_path: claude_api
+context_requirement: 1000000
+
+models:
+  claude-opus-4-8:
+    include: true
+    family: opus
+    context_window: 1000000
+    effort: high
+    fallback_allowed: false
+
+  claude-opus-4-7:
+    include: true
+    family: opus
+    context_window: 1000000
+    effort: high
+    fallback_allowed: false
+
+  claude-opus-4-6:
+    include: true
+    family: opus
+    context_window: 1000000
+    effort: high
+    fallback_allowed: false
+
+  claude-sonnet-4-6:
+    include: true
+    family: sonnet
+    context_window: 1000000
+    effort: high
+    fallback_allowed: false
+
+  claude-haiku-4-5:
+    include: false
+    family: haiku
+    context_window: 200000
+    exclusion_reason: "Does not satisfy the initial 1M context requirement."

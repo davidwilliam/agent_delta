@@ -1,0 +1,18 @@
+agent: claude_code
+inspect_swe_agent: claude_code
+version: sandbox          # use the CLI baked into the sandbox image (known version)
+network: disabled
+web_search: disabled
+skills: []
+mcp_servers: []
+permission_mode: benchmark_sandbox
+fallback_detection: required
+
+settings:
+  use_aliases: false
+  require_pinned_model_id: true
+  require_clean_worktree: true
+  archive_transcript: true
+  archive_diff: true
+  archive_test_output: true
+  retry_refusals: false

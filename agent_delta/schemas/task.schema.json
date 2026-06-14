@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentdelta/schemas/task.schema.json",
+  "title": "AgentDelta Task",
+  "type": "object",
+  "required": ["id", "category", "repo", "prompt_file", "tests", "acceptance_criteria"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^task_[0-9]+$" },
+    "title": { "type": "string" },
+    "category": {
+      "type": "string",
+      "enum": [
+        "small_bug_fix", "medium_feature", "multi_file_refactor",
+        "security_fix", "test_writing", "long_horizon", "dependency_migration"
+      ]
+    },
+    "difficulty": { "type": "integer", "minimum": 1, "maximum": 5 },
+    "repo": { "type": "string" },
+    "base_commit": { "type": "string" },
+    "language": { "type": "string" },
+    "framework": { "type": "string" },
+    "prompt_file": { "type": "string" },
+    "context_requirement": {
+      "type": "object",
+      "properties": {
+        "min_context_tokens": { "type": "integer" },
+        "preferred_context_tokens": { "type": "integer" }
+      }
+    },
+    "execution": {
+      "type": "object",
+      "properties": {
+        "timeout_minutes": { "type": "number" },
+        "max_cost_usd": { "type": ["number", "null"] },
+        "max_agent_turns": { "type": ["integer", "null"] },
+        "network": { "type": "string", "enum": ["disabled", "enabled"] },
+        "package_install": { "type": "boolean" }
+      }
+    },
+    "scope": {
+      "type": "object",
+      "properties": {
+        "allowed_paths": { "type": "array", "items": { "type": "string" } },
+        "forbidden_paths": { "type": "array", "items": { "type": "string" } },
+        "max_files_modified": { "type": ["integer", "null"] }
+      }
+    },
+    "tests": {
+      "type": "object",
+      "required": ["baseline", "public", "hidden"],
+      "properties": {
+        "baseline": { "type": "array", "items": { "type": "string" } },
+        "public": { "type": "array", "items": { "type": "string" } },
+        "hidden": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "acceptance_criteria": { "type": "array", "items": { "type": "string" } },
+    "scoring": {
+      "type": "object",
+      "properties": {
+        "objective_weight": { "type": "number" },
+        "review_weight": { "type": "number" }
+      }
+    },
+    "notes": { "type": "array", "items": { "type": "string" } }
+  }
+}

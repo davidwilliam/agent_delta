@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentdelta/schemas/run.schema.json",
+  "title": "AgentDelta Run Record",
+  "type": "object",
+  "required": ["run_id", "benchmark_version", "task_id", "model_id", "scoring"],
+  "properties": {
+    "run_id": { "type": "string" },
+    "benchmark_version": { "type": "string" },
+    "task_id": { "type": "string" },
+    "task_category": { "type": ["string", "null"] },
+    "repo": { "type": ["string", "null"] },
+    "agent": { "type": "string" },
+    "agent_version": { "type": ["string", "null"] },
+    "provider": { "type": "string" },
+    "model_id": { "type": "string" },
+    "epoch": { "type": "integer" },
+    "execution": { "type": "object" },
+    "usage": { "type": "object" },
+    "agent_behavior": { "type": "object" },
+    "scoring": {
+      "type": "object",
+      "required": ["verified_success"],
+      "properties": {
+        "verified_success": { "type": "boolean" },
+        "hidden_test_score": { "type": ["number", "null"] },
+        "regression_avoidance": { "type": ["number", "null"] },
+        "scope_control": { "type": ["number", "null"] },
+        "partial_objective_score": { "type": ["number", "null"] },
+        "objective_score": { "type": ["number", "null"] },
+        "full_score": { "type": ["number", "null"] }
+      }
+    }
+  }
+}

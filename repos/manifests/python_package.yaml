@@ -1,0 +1,21 @@
+fixture: python_package
+language: python
+framework: pytest
+description: A tiny statistics toolkit (mathkit) with a baseline passing test suite.
+
+# Path to the fixture source, relative to the repo root.
+source_path: repos/fixtures/python_package
+
+# Where the fixture is mounted inside the sandbox.
+workdir: /repo
+
+# Commands. {workdir} is the repo root inside the sandbox.
+setup:
+  # Install the package + pytest from the fixture itself (no network needed for deps).
+  - pip install --no-index --no-build-isolation -e ".[dev]" || pip install -e ".[dev]"
+baseline_tests:
+  - pytest -q tests/
+
+# Recorded for the reproducibility manifest. The actual base commit is created
+# when the image is built (git init + commit of the pristine fixture).
+base_commit: HEAD

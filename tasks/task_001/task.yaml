@@ -1,0 +1,56 @@
+id: task_001
+title: Add a median function to mathkit.stats
+category: small_bug_fix
+difficulty: 1
+repo: python_package
+base_commit: HEAD
+language: python
+framework: pytest
+prompt_file: prompt.md
+
+context_requirement:
+  min_context_tokens: 8000
+  preferred_context_tokens: 200000
+
+execution:
+  timeout_minutes: 15
+  max_cost_usd: 2.00
+  max_agent_turns: null
+  network: disabled
+  package_install: false
+
+scope:
+  allowed_paths:
+    - src/
+    - tests/
+  forbidden_paths:
+    - pyproject.toml
+  max_files_modified: 4
+
+tests:
+  # Run inside the sandbox. Baseline must pass before the agent runs.
+  baseline:
+    - pytest -q tests/
+  # Public + hidden tests are injected at score time from this task dir
+  # (NOT present in the repo the agent sees), then executed in the sandbox.
+  public:
+    - public_tests.py
+  hidden:
+    - hidden_tests.py
+
+acceptance_criteria:
+  - A `median` function exists in mathkit.stats and is importable from mathkit.
+  - median returns the middle value for odd-length input.
+  - median returns the average of the two middle values for even-length input.
+  - median raises ValueError on empty input.
+  - median works regardless of input order (it must sort).
+  - Existing baseline tests continue to pass (no regression).
+  - No forbidden files are modified.
+
+scoring:
+  objective_weight: 1.0
+  review_weight: 0.0
+
+notes:
+  - Intended to detect whether the agent handles even-length and unsorted input.
+  - A solution that only handles odd-length sorted lists should fail hidden tests.

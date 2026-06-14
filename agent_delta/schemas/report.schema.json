@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentdelta/schemas/report.schema.json",
+  "title": "AgentDelta Aggregate Report",
+  "type": "object",
+  "required": ["benchmark_version", "suite", "models", "rankings"],
+  "properties": {
+    "benchmark_version": { "type": "string" },
+    "suite": { "type": "string" },
+    "date": { "type": "string" },
+    "agent": { "type": "string" },
+    "n_tasks": { "type": "integer" },
+    "n_runs": { "type": "integer" },
+    "models": { "type": "array", "items": { "type": "string" } },
+    "scoring_formula": { "type": "object" },
+    "rankings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["model_id", "objective_score"],
+        "properties": {
+          "rank": { "type": "integer" },
+          "model_id": { "type": "string" },
+          "objective_score": { "type": "number" },
+          "success_rate": { "type": "number" },
+          "hidden_test_rate": { "type": "number" },
+          "regression_rate": { "type": "number" },
+          "cost_per_success_usd": { "type": ["number", "null"] },
+          "median_time_to_success_s": { "type": ["number", "null"] },
+          "success_ci95": {
+            "type": "array",
+            "items": { "type": "number" },
+            "minItems": 2,
+            "maxItems": 2
+          }
+        }
+      }
+    },
+    "category_breakdown": { "type": "object" },
+    "limitations": { "type": "array", "items": { "type": "string" } }
+  }
+}

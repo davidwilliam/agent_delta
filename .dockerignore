@@ -1,0 +1,9 @@
+.git
+.venv
+venv
+results
+logs
+**/__pycache__
+*.pyc
+.env
+.inspect

@@ -1,0 +1,39 @@
+[project]
+name = "agentdelta"
+version = "0.1.0"
+description = "Reproducible evaluation of frontier coding agents and model-upgrade deltas"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+authors = [{ name = "David Silva" }]
+dependencies = [
+    "inspect-ai>=0.3.50",
+    "inspect-swe>=0.1.0",
+    "pyyaml>=6.0",
+    "jsonschema>=4.0",
+    "click>=8.1",
+    "numpy>=1.26",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.6",
+]
+
+[project.scripts]
+agentdelta = "agent_delta.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["agent_delta", "agent_delta.scoring", "agent_delta.runners", "agent_delta.reporting"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,20 @@
+# Frozen scoring configuration for AgentDelta v0.1 (SPEC sections 14 & 26.3).
+# Do NOT change after an official run has begun.
+objective_score:
+  verified_task_success: 0.60
+  hidden_test_score: 0.15
+  regression_avoidance: 0.10
+  scope_control: 0.05
+  cost_efficiency: 0.05
+  time_efficiency: 0.05
+
+full_score:
+  objective_score: 0.95
+  blinded_review: 0.05
+
+materiality:
+  task_success_delta_pp: 5
+  category_success_delta_pp: 10
+  cost_delta_percent: 10
+  latency_delta_percent: 10
+  regression_delta_pp: 3
