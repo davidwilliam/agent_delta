@@ -80,7 +80,7 @@ def agentdelta_scorer():
         task = load_task(meta["task_id"])
         workdir = meta.get("workdir", "/repo")
 
-        # --- final diff + modified file list (numstat for line counts) ---
+        # final diff + modified file list (numstat for line counts)
         diff_res = await _exec(["git", "-C", workdir, "diff", "HEAD"], workdir)
         names_res = await _exec(
             ["git", "-C", workdir, "diff", "--name-only", "HEAD"], workdir
@@ -96,7 +96,7 @@ def agentdelta_scorer():
                 lines_added += int(parts[0])
                 lines_removed += int(parts[1])
 
-        # --- regression: baseline suite must still pass ---
+        # regression: baseline suite must still pass
         regression_ok = True
         for cmd in task.baseline_cmds:
             res = await _exec(["bash", "-lc", cmd], workdir)
@@ -104,7 +104,7 @@ def agentdelta_scorer():
                 regression_ok = False
         regression_avoidance = 1.0 if regression_ok else 0.0
 
-        # --- public + hidden tests (injected, not in the repo) ---
+        # public + hidden tests (injected, not in the repo)
         public_files = {p.name: p.read_text() for p in task.public_test_files}
         hidden_files = {p.name: p.read_text() for p in task.hidden_test_files}
         public = await _run_pytest_files(public_files, workdir)
@@ -113,12 +113,12 @@ def agentdelta_scorer():
         public_ok = public["total"] > 0 and public["failed"] == 0 and public["error"] == 0
         hidden_score = (hidden["passed"] / hidden["total"]) if hidden["total"] else 0.0
 
-        # --- scope control ---
+        # scope control
         scope_score, violations = _compute_scope_control(
             modified_files, task.forbidden_paths, task.max_files_modified
         )
 
-        # --- verified success: public passes + no regression + in scope ---
+        # verified success: public passes + no regression + in scope
         verified = public_ok and regression_ok and not violations
         components = ObjectiveComponents(
             verified_success=1.0 if verified else 0.0,
@@ -128,7 +128,7 @@ def agentdelta_scorer():
         )
         partial = partial_objective_score(components)
 
-        # --- usage from Inspect's tracked state ---
+        # usage from Inspect's tracked state
         usage = _extract_usage(state)
 
         return Score(

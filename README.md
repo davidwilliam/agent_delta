@@ -3,13 +3,13 @@
 Reproducible evaluation of frontier coding agents and model-upgrade deltas.
 
 AgentDelta measures the **delta** between agentic coding systems under controlled,
-repeatable, auditable conditions — not whether a new model "feels" better, but
+repeatable, auditable conditions - not whether a new model "feels" better, but
 whether a claimed improvement holds up on real coding-agent workloads. See
 [`SPEC.md`](SPEC.md) for the full methodology.
 
 ## Status
 
-**v0.1 — vertical slice + initial task suite.** Five tasks across four
+**v0.1 - vertical slice + initial task suite.** Five tasks across four
 categories run end-to-end through Inspect AI + Claude Code (via `inspect_swe`)
 inside a Docker sandbox, with objective scoring (baseline/public/hidden tests,
 scope control) and SPEC §16 run records. The architecture is wired for the full
@@ -27,11 +27,11 @@ Tasks (all on the `python_package`/mathkit fixture):
 
 What works today:
 - `agentdelta list-tasks` / `validate-task`
-- `agentdelta build-sandbox` — builds the fixture Docker image
-- `agentdelta check-task --all` — verifies each task fails at base and passes
+- `agentdelta build-sandbox` - builds the fixture Docker image
+- `agentdelta check-task --all` - verifies each task fails at base and passes
   with its reference solution (no model, no API)
-- `agentdelta run --task <id> --dry-run` — full scoring pipeline, no API cost
-- `agentdelta run --task <id> --model claude-opus-4-8` — real run
+- `agentdelta run --task <id> --dry-run` - full scoring pipeline, no API cost
+- `agentdelta run --task <id> --model claude-opus-4-8` - real run
 
 Not yet built: aggregation/statistics, report generation, a second-language
 fixture, network-locked sandbox, the Codex/Gemini adapters.

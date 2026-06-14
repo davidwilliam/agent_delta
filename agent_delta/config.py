@@ -14,9 +14,7 @@ from typing import Any
 
 import yaml
 
-# ---------------------------------------------------------------------------
 # Paths (anchored to the repository root, two levels up from this file).
-# ---------------------------------------------------------------------------
 ROOT = Path(__file__).resolve().parent.parent
 TASKS_DIR = ROOT / "tasks"
 REPOS_DIR = ROOT / "repos"
@@ -59,9 +57,7 @@ def ensure_anthropic_key() -> str:
     return key
 
 
-# ---------------------------------------------------------------------------
 # YAML config loading.
-# ---------------------------------------------------------------------------
 def _load_yaml(path: Path) -> dict[str, Any]:
     with path.open() as f:
         return yaml.safe_load(f) or {}

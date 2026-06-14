@@ -1,4 +1,4 @@
-# Expected behavior — task_005
+# Expected behavior - task_005
 
 Harden `read_fixture` with a realpath-containment check:
 

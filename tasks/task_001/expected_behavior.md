@@ -1,4 +1,4 @@
-# Expected behavior — task_001
+# Expected behavior - task_001
 
 A correct solution adds `median` to `src/mathkit/stats.py`:
 

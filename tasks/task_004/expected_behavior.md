@@ -1,4 +1,4 @@
-# Expected behavior — task_004
+# Expected behavior - task_004
 
 New `src/mathkit/validation.py`:
 

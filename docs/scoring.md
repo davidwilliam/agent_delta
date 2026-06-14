@@ -29,11 +29,11 @@ Objective = 0.60·verified_success + 0.15·hidden_test_score
 ```
 
 `cost_efficiency` and `time_efficiency` are **set-relative** (normalized against
-the best model in the evaluation set, SPEC §14.3–14.4), so they are unknown at
+the best model in the evaluation set, SPEC §14.3-14.4), so they are unknown at
 single-run time. Therefore:
 
 - Each run record stores `partial_objective_score`: the four absolute components
-  renormalized over their `0.90` weight to a 0–100 scale.
+  renormalized over their `0.90` weight to a 0-100 scale.
 - The authoritative `objective_score` and `full_score` are computed during
   **aggregation**, once the per-set cost/time baselines are known.
 

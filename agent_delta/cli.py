@@ -73,7 +73,7 @@ def check_task_cmd(task_id: str | None, check_all: bool) -> None:
         if not r.ok:
             failures += 1
             if not r.non_trivial:
-                click.secho("    ! tests pass at base — task may be trivial", fg="yellow")
+                click.secho("    ! tests pass at base - task may be trivial", fg="yellow")
             if not r.solvable:
                 click.secho("    ! reference solution does not fully pass", fg="yellow")
     if failures:

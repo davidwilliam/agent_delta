@@ -2,11 +2,11 @@
 
 Two strategies:
 
-* `build_image` (default) — run + exec + commit. Starts a container from the base
+* `build_image` (default) - run + exec + commit. Starts a container from the base
   image, copies the fixture in, installs git + the fixture deps, creates the clean
   base commit, and commits the result. This avoids `docker build`/BuildKit, which
   can wedge on its image-`resolve` step on some Docker Desktop setups.
-* `build_image_dockerfile` — the classic `docker build` path, kept for CI/envs
+* `build_image_dockerfile` - the classic `docker build` path, kept for CI/envs
   where BuildKit is healthy and a fully declarative build is preferred.
 
 Both produce an identical image: the fixture at /repo, editable-installed, with a

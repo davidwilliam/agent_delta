@@ -4,14 +4,14 @@ AgentDelta aims for reproducible-or-auditable runs (SPEC §5.1, §27).
 
 ## What is pinned today (v0.1 slice)
 
-- **Model ID** — full ID only, never an alias (SPEC §5.2). Passed to
+- **Model ID** - full ID only, never an alias (SPEC §5.2). Passed to
   `inspect_ai.eval()` as `anthropic/<model-id>`; the agent inherits it.
-- **Fixture base commit** — the sandbox image runs `git init && commit` on the
+- **Fixture base commit** - the sandbox image runs `git init && commit` on the
   pristine fixture, so every run starts from an identical clean worktree.
-- **Sandbox image** — built from `sandboxes/claude-code/Dockerfile`, tagged
+- **Sandbox image** - built from `sandboxes/claude-code/Dockerfile`, tagged
   `agentdelta/<fixture>:v0.1`. Capture the image digest for official runs.
-- **Scoring** — `configs/scoring/default.yaml`, frozen (see `docs/scoring.md`).
-- **Tasks** — `tasks/<id>/` with `task.yaml`, prompt, and public/hidden tests.
+- **Scoring** - `configs/scoring/default.yaml`, frozen (see `docs/scoring.md`).
+- **Tasks** - `tasks/<id>/` with `task.yaml`, prompt, and public/hidden tests.
 
 ## Known gaps to close before an official run (Phase 1)
 

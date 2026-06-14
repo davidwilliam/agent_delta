@@ -2,10 +2,10 @@
 
 For a task, spin up one sandbox container from the fixture image and verify:
 
-  * BEFORE (clean base): the public/hidden tests FAIL — proving the task is
+  * BEFORE (clean base): the public/hidden tests FAIL - proving the task is
     non-trivial (the tests actually detect the missing/buggy behavior).
   * AFTER (reference solution applied): the baseline, public, and hidden tests
-    all PASS — proving the task is solvable and the tests/reference agree.
+    all PASS - proving the task is solvable and the tests/reference agree.
 
 This is the objective quality gate for task authoring (SPEC docs/task_authoring).
 It uses docker run/exec/cp directly (no model, no Inspect) so it is fast and free.

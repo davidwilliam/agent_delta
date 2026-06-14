@@ -1,4 +1,4 @@
-# Expected behavior — task_003
+# Expected behavior - task_003
 
 Add `slugify` to `src/mathkit/text.py` and export it:
 

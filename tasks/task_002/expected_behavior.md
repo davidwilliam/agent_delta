@@ -1,4 +1,4 @@
-# Expected behavior — task_002
+# Expected behavior - task_002
 
 Fix the loop bound in `chunk` so it walks the whole sequence:
 

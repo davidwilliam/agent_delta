@@ -13,7 +13,7 @@ PRICING_SOURCE = "https://docs.anthropic.com/en/docs/about-claude/pricing"
 CURRENCY = "USD"
 
 # USD per 1M tokens: (input, output, cache_write_5m, cache_read).
-# NOTE: placeholder values for v0.1 scaffolding — verify against the live
+# NOTE: placeholder values for v0.1 scaffolding - verify against the live
 # pricing page before any published run.
 PRICING_PER_MTOK: dict[str, dict[str, float]] = {
     "claude-opus-4-8": {"input": 5.0, "output": 25.0, "cache_write": 6.25, "cache_read": 0.50},
@@ -43,7 +43,7 @@ def estimate_cost_usd(
 
 
 def cost_efficiency(model_cost_per_success: float, best_cost_per_success: float) -> float:
-    """SPEC 14.3 — normalized in [0, 1] against the best model in the set."""
+    """SPEC 14.3 - normalized in [0, 1] against the best model in the set."""
     if model_cost_per_success <= 0:
         return 1.0
     return min(1.0, best_cost_per_success / model_cost_per_success)

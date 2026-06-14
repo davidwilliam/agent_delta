@@ -16,7 +16,7 @@ A task is a controlled coding assignment against a known fixture state (SPEC §8
 ## Rules
 
 - Public and hidden tests import the installed package and are run from `/tmp` in
-  the sandbox — they are **never** committed into the fixture the agent sees.
+  the sandbox - they are **never** committed into the fixture the agent sees.
 - Hidden tests must include the discriminating edge cases (the ones a lazy or
   partial solution fails). That is what separates models.
 - Set `scope.forbidden_paths` and `max_files_modified` to detect overbroad edits.
@@ -31,7 +31,7 @@ agentdelta check-task --all          # check every task
 ```
 
 `check-task` spins up the sandbox container and asserts the task is both
-**non-trivial** (public/hidden tests fail on the clean base — the tests really
+**non-trivial** (public/hidden tests fail on the clean base - the tests really
 detect the missing/buggy behavior) and **solvable** (after applying
 `reference_solution/`, the baseline + public + hidden suites all pass). Run it on
 every new task; a task that passes at base or whose reference doesn't pass is a

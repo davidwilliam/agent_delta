@@ -1,7 +1,7 @@
 fixture: python_package
 language: python
 framework: pytest
-description: A tiny utility toolkit (mathkit) — stats, sequences, text, io — with a baseline passing test suite.
+description: A tiny utility toolkit (mathkit) - stats, sequences, text, io - with a baseline passing test suite.
 
 # Path to the fixture source, relative to the repo root.
 source_path: repos/fixtures/python_package

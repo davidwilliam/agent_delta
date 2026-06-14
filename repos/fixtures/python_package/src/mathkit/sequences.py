@@ -1,6 +1,6 @@
 """Sequence utilities.
 
-NOTE (fixture): `chunk` has an intentional bug — it drops the final partial
+NOTE (fixture): `chunk` has an intentional bug - it drops the final partial
 chunk when the length is not a multiple of `size`. The AgentDelta task_002 fixes
 it. `dedupe` is correct baseline behavior (regression surface).
 """
