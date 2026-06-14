@@ -1,9 +1,9 @@
 agent: claude_code
 inspect_swe_agent: claude_code
-# Claude Code CLI version provisioned by inspect_swe. `stable` is a pinned channel;
-# for an official run set an exact version string (SPEC 5.2) once known, e.g.
-# "2.1.154", and it is recorded in the reproducibility manifest.
-version: stable
+# Claude Code CLI version provisioned by inspect_swe, pinned to an exact version
+# (SPEC 5.2). Resolved from the `stable` channel via inspect_swe.download_agent_binary
+# on 2026-06-13; recorded in the reproducibility manifest as agent_cli_version.
+version: "2.1.153"
 network: disabled
 web_search: disabled
 skills: []

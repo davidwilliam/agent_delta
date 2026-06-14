@@ -109,6 +109,20 @@ def test_validity_crash():
     assert invalid and reason.startswith("agent_crash")
 
 
+def test_validity_categorizes_provider_errors():
+    cases = {
+        "Your credit balance is too low": "provider_error_billing",
+        "Error code: 429 rate_limit_error": "rate_limited",
+        "overloaded_error 529": "provider_overloaded",
+        "authentication_error invalid x-api-key": "provider_auth_error",
+        "Model proxy process exited unexpectedly": "model_proxy_error",
+    }
+    for err, expected in cases.items():
+        _, reason = assess_validity(requested_model="m", served_models={"m"},
+                                    sample_error=err, baseline_pre_ok=True)
+        assert reason.startswith(expected), (err, reason)
+
+
 def test_normalize_model():
     assert normalize_model("anthropic/claude-opus-4-8") == "claude-opus-4-8"
 

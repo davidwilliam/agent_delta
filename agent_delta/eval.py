@@ -17,13 +17,26 @@ from inspect_ai.dataset import Sample
 from inspect_ai.solver import Generate, Solver, TaskState, solver
 from inspect_ai.util import sandbox
 
+from inspect_ai.model import ModelCost, set_model_cost
+
 from agent_delta import config
 from agent_delta.modes import build_prompt, is_scaffolded, mode_limits
+from agent_delta.scoring.cost import PRICING_PER_MTOK
 from agent_delta.registry import Fixture, Task as ADTask, load_fixture, load_task
 from agent_delta.runners.claude_code import build_claude_code_agent
 from agent_delta.scoring.sandbox_scorer import agentdelta_scorer
 
 COMPOSE_PATH = config.SANDBOXES_DIR / "claude-code" / "compose.yaml"
+
+
+def _register_model_costs() -> None:
+    """Register AgentDelta's pricing with Inspect so cost limits and cost tracking
+    work for the pinned model IDs (Inspect has no built-in pricing for them)."""
+    for mid, p in PRICING_PER_MTOK.items():
+        set_model_cost(f"anthropic/{mid}", ModelCost(
+            input=p["input"], output=p["output"],
+            input_cache_write=p["cache_write"], input_cache_read=p["cache_read"],
+        ))
 
 
 @solver
@@ -122,17 +135,21 @@ def run_task(
     dry_run: bool = False,
     mode: str = "default",
     scaffold_model: str | None = None,
+    network: str | None = None,
     log_dir: str | Path | None = None,
 ):
     """Run one AgentDelta task for one model in one mode. Returns the EvalLogs."""
     task = load_task(task_id)
     fixture = load_fixture(task.repo)
     os.environ["AGENTDELTA_IMAGE"] = fixture.image_tag
-    # Network disabled by default (SPEC 22); a task opts in with network: enabled.
-    os.environ["AGENTDELTA_NETWORK"] = "bridge" if task.network == "enabled" else "none"
+    # Network disabled by default (SPEC 22); a task opts in with network: enabled,
+    # or the caller overrides (a real model run needs the inspect_swe proxy).
+    net = network if network is not None else task.network
+    os.environ["AGENTDELTA_NETWORK"] = "bridge" if net == "enabled" else "none"
 
     if not dry_run:
         config.ensure_anthropic_key()
+        _register_model_costs()
 
     scaffolded = is_scaffolded(mode, model_id, scaffold_model)
     log_dir = str(log_dir) if log_dir else str(config.RESULTS_DIR / "logs")

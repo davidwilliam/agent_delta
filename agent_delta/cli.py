@@ -114,9 +114,11 @@ def build_sandbox_cmd(fixture: str, method: str) -> None:
 @click.option("--mode", default="default", help="Evaluation mode (see configs/modes.yaml).")
 @click.option("--scaffold-model", default=None,
               help="Model that receives the scaffold under older_plus_scaffold (default: oldest).")
+@click.option("--network", type=click.Choice(["disabled", "enabled"]), default=None,
+              help="Override sandbox network (a real model run needs 'enabled').")
 @click.option("--dry-run", is_flag=True, help="Apply reference solution, no API calls.")
 def run_cmd(task_id: str, model_id: str, repetitions: int, suite: str, mode: str,
-            scaffold_model: str | None, dry_run: bool) -> None:
+            scaffold_model: str | None, network: str | None, dry_run: bool) -> None:
     """Run one task for one model in one mode and write run records."""
     from agent_delta.eval import run_task
     from agent_delta.modes import available_modes, is_scaffolded
@@ -133,16 +135,21 @@ def run_cmd(task_id: str, model_id: str, repetitions: int, suite: str, mode: str
         click.secho(f"{model_id} runs WITH scaffold (older_plus_scaffold).", fg="cyan")
 
     logs = run_task(task_id, model_id, repetitions=repetitions, dry_run=dry_run,
-                    mode=mode, scaffold_model=scaffold_model)
+                    mode=mode, scaffold_model=scaffold_model, network=network)
     paths = write_run_records(logs, suite=suite, mode=mode)
     click.secho(f"\nWrote {len(paths)} run record(s):", fg="green")
     for p in paths:
         record = json.loads(p.read_text())
+        execu = record.get("execution", {})
+        if execu.get("invalid"):
+            click.secho(f"  {p.parent.name}: INVALID ({execu.get('invalid_reason')})", fg="yellow")
+            continue
         s = record["scoring"]
+        po = s.get("partial_objective_score")
         click.echo(
             f"  {p.parent.name}: verified={s['verified_success']} "
-            f"partial_obj={s['partial_objective_score']:.1f} "
-            f"hidden={s['hidden_test_score']}"
+            f"partial_obj={po:.1f} hidden={s['hidden_test_score']}"
+            if po is not None else f"  {p.parent.name}: verified={s['verified_success']}"
         )
 
 

@@ -34,6 +34,22 @@ def assess_validity(
         return True, f"model_fallback: requested {requested_model}, served {sorted(served)}"
 
     if sample_error:
-        return True, f"agent_crash: {sample_error}"
+        return True, f"{_error_category(sample_error)}: {sample_error[:200]}"
 
     return False, None
+
+
+def _error_category(err: str) -> str:
+    """Classify a sample error into a SPEC 11.4 invalid reason."""
+    low = err.lower()
+    if "credit balance" in low or "billing" in low or "quota" in low:
+        return "provider_error_billing"
+    if "rate_limit" in low or "rate limit" in low or "429" in low:
+        return "rate_limited"
+    if "overloaded" in low or "529" in low:
+        return "provider_overloaded"
+    if "authentication" in low or "401" in low or "invalid x-api-key" in low:
+        return "provider_auth_error"
+    if "model proxy" in low or "proxy" in low:
+        return "model_proxy_error"
+    return "agent_crash"
