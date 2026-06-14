@@ -29,6 +29,8 @@ AgentDelta aims for reproducible-or-auditable runs (SPEC §5.1, §27).
 ## Fallback detection (SPEC §5.5)
 
 Silent model fallback invalidates a run. inspect_swe proxies the agent's model
-calls through Inspect, so the actual model served is observable in the eval log;
-aggregation should assert the served model matches the requested pinned ID and
-mark mismatches invalid.
+calls through Inspect, so the actual model served is observable in the eval log.
+`agent_delta/scoring/validity.py` compares the served model (from the sample's
+model usage) against the requested pinned ID and marks any mismatch invalid with
+reason `model_fallback`. Invalid runs are reported separately and excluded from
+rankings (see `docs/methodology.md`).

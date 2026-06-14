@@ -62,6 +62,19 @@ def render(report: dict, levels: tuple[int, ...] = (1, 2)) -> str:
     if 2 in levels and report.get("cross_mode"):
         _render_cross_mode(L, report["cross_mode"])
 
+    invalid = report.get("invalid_runs") or []
+    if invalid:
+        L.append("## Invalid runs (reported separately, excluded from ranking)")
+        L.append("")
+        L.append(f"{len(invalid)} run(s) were invalid (SPEC 11.4): broken baseline, "
+                 "model fallback, or infrastructure crash.")
+        L.append("")
+        L.append("| Run | Model | Reason |")
+        L.append("| --- | --- | --- |")
+        for r in invalid:
+            L.append(f"| {r['run_id']} | {r['model_id']} | {r.get('reason') or 'unknown'} |")
+        L.append("")
+
     if report.get("limitations"):
         L.append("## Limitations")
         L.append("")
@@ -96,6 +109,18 @@ def _render_level1(L: list[str], data: dict) -> None:
             f"{_time(m['median_time_to_success_s'])} |"
         )
     L.append("")
+
+    # Failure taxonomy per model (SPEC 23).
+    rows = [(m["model_id"], m.get("failure_labels") or {}) for m in models]
+    if any(labels for _, labels in rows):
+        L.append("#### Failure taxonomy (valid failed runs)")
+        L.append("")
+        L.append("| Model | Failure labels (count) |")
+        L.append("| --- | --- |")
+        for mid, labels in rows:
+            cell = ", ".join(f"{k} ({v})" for k, v in labels.items()) if labels else "none"
+            L.append(f"| {mid} | {cell} |")
+        L.append("")
 
     improvements = data["level1"]["improvements"]
     if improvements:

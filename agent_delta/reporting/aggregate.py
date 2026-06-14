@@ -68,6 +68,7 @@ def _work_components(records: list[dict]) -> dict[str, float | None]:
 
 def _aggregate_model(model_id: str, records: list[dict]) -> dict[str, Any]:
     valid = [r for r in records if not r.get("execution", {}).get("invalid")]
+    invalid = [r for r in records if r.get("execution", {}).get("invalid")]
     n = len(valid)
     succ = [bool(r["scoring"]["verified_success"]) for r in valid]
     n_succ = sum(succ)
@@ -91,10 +92,21 @@ def _aggregate_model(model_id: str, records: list[dict]) -> dict[str, Any]:
     all_times = [t for t in ((r.get("execution") or {}).get("wall_clock_seconds") for r in valid)
                  if isinstance(t, (int, float))]
 
+    fail_counter: dict[str, int] = {}
+    for r in valid:
+        for lbl in r.get("failure_labels", []):
+            fail_counter[lbl] = fail_counter.get(lbl, 0) + 1
+    invalid_by_reason: dict[str, int] = {}
+    for r in invalid:
+        reason = (r.get("execution", {}).get("invalid_reason") or "unknown").split(":")[0]
+        invalid_by_reason[reason] = invalid_by_reason.get(reason, 0) + 1
+
     return {
         "model_id": model_id,
         "n_runs": n,
         "n_invalid": len(records) - n,
+        "failure_labels": dict(sorted(fail_counter.items(), key=lambda kv: -kv[1])),
+        "invalid_by_reason": invalid_by_reason,
         "n_success": n_succ,
         "success_rate": success_rate,
         "success_ci95": list(st.wilson_ci(n_succ, n)),
@@ -309,7 +321,11 @@ def build_report(results_dir: Path, suite: str, baseline: str | None = None) -> 
 
     per_mode = {mode: aggregate_mode(recs, baseline) for mode, recs in by_mode.items()}
     tasks = {r["task_id"] for r in records}
-    invalid = [r["run_id"] for r in records if r.get("execution", {}).get("invalid")]
+    invalid = [
+        {"run_id": r["run_id"], "model_id": r["model_id"],
+         "reason": r.get("execution", {}).get("invalid_reason")}
+        for r in records if r.get("execution", {}).get("invalid")
+    ]
 
     materiality_pp = config.load_scoring_config()["materiality"]["task_success_delta_pp"]
     default_baseline = per_mode.get("default", {}).get("baseline")

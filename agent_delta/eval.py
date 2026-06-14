@@ -27,6 +27,28 @@ COMPOSE_PATH = config.SANDBOXES_DIR / "claude-code" / "compose.yaml"
 
 
 @solver
+def baseline_precheck_solver() -> Solver:
+    """Run the baseline suite before the agent (SPEC 11.1). Stores pass/fail.
+
+    If the baseline does not pass on the clean checkout, the run is invalid
+    (the image is broken) and must not be scored as a model failure.
+    """
+
+    async def solve(state: TaskState, generate: Generate) -> TaskState:
+        meta = state.metadata or {}
+        task = load_task(meta["task_id"])
+        workdir = meta.get("workdir", "/repo")
+        ok = True
+        for cmd in task.baseline_cmds:
+            res = await sandbox().exec(["bash", "-c", cmd], cwd=workdir)
+            ok = ok and res.returncode == 0
+        state.store.set("baseline_pre_ok", ok)
+        return state
+
+    return solve
+
+
+@solver
 def reference_solution_solver() -> Solver:
     """Dry-run solver: copy tasks/<id>/reference_solution/* into the sandbox repo."""
 
@@ -79,6 +101,7 @@ def build_task(
 
     return Task(
         dataset=[sample],
+        setup=baseline_precheck_solver(),
         solver=agent,
         scorer=agentdelta_scorer(),
         epochs=epochs,

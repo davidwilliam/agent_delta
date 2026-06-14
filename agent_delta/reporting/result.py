@@ -16,6 +16,8 @@ from typing import Any
 from agent_delta import BENCHMARK_VERSION, config
 from agent_delta.scoring.behavior import extract_agent_behavior
 from agent_delta.scoring.cost import estimate_cost_usd
+from agent_delta.scoring.failure import classify_failure
+from agent_delta.scoring.validity import assess_validity
 
 _SCORER_KEY = "agentdelta_scorer"
 _SLUG = re.compile(r"[^a-zA-Z0-9]+")
@@ -69,6 +71,33 @@ def build_run_record(
         [_ts(sample.started_at), f"task-{sample.id}", _slug(model_id), f"rep-{sample.epoch:02d}"]
     )
 
+    # Validity (SPEC 11.4 / 5.5): served-model fallback, broken baseline, crash.
+    served = set((sample.model_usage or {}).keys())
+    store = sample.store or {}
+    baseline_pre_ok = store.get("baseline_pre_ok") if hasattr(store, "get") else None
+    invalid, invalid_reason = assess_validity(
+        requested_model=model_id,
+        served_models=served,
+        sample_error=str(sample.error) if sample.error else None,
+        baseline_pre_ok=baseline_pre_ok,
+    )
+
+    verified = bool(components.get("verified_success"))
+    timed_out = bool(getattr(sample, "limit", None) == "time")
+    behavior = extract_agent_behavior(sample)
+    # Failure taxonomy (SPEC 23): only for valid, non-successful runs.
+    failure_labels = [] if invalid else classify_failure(
+        verified=verified,
+        public=smeta.get("public_tests"),
+        hidden=smeta.get("hidden_tests"),
+        regression_ok=smeta.get("regression_ok"),
+        scope_violations=smeta.get("scope_violations"),
+        modified_files=smeta.get("modified_files"),
+        behavior=behavior,
+        execution={"timeout": timed_out},
+        language=(sample.metadata or {}).get("language", "python"),
+    )
+
     return {
         "run_id": run_id,
         "benchmark_version": BENCHMARK_VERSION,
@@ -87,10 +116,13 @@ def build_run_record(
             "completed_at": str(sample.completed_at) if sample.completed_at else None,
             "wall_clock_seconds": sample.total_time,
             "working_seconds": sample.working_time,
-            "timeout": bool(getattr(sample, "limit", None) == "time"),
+            "timeout": timed_out,
             "error": str(sample.error) if sample.error else None,
-            "invalid": sample.error is not None,
+            "baseline_pre_ok": baseline_pre_ok,
+            "invalid": invalid,
+            "invalid_reason": invalid_reason,
         },
+        "failure_labels": failure_labels,
         "usage": {
             "input_tokens": usage.get("input_tokens"),
             "output_tokens": usage.get("output_tokens"),
@@ -107,7 +139,7 @@ def build_run_record(
             "lines_removed": smeta.get("lines_removed"),
             "modified_files": smeta.get("modified_files", []),
             # Transcript-derived (how much work the agent did).
-            **extract_agent_behavior(sample),
+            **behavior,
         },
         "scoring": {
             "verified_success": bool(components.get("verified_success")),
