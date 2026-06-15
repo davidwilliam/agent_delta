@@ -1,0 +1,20 @@
+fixture: pricing_ts
+language: typescript
+framework: node-test
+description: A tiny TypeScript pricing library (money/cart/discount/tax) compiled with tsc and tested with the Node built-in test runner. Hosts hard tasks in a third language.
+
+base_image: node:20-bookworm-slim@sha256:2cf067cfed83d5ea958367df9f966191a942351a2df77d6f0193e162b5febfc0
+
+source_path: repos/fixtures/pricing_ts
+workdir: /repo
+
+# TypeScript is installed globally at build time (network is available then); the
+# eval/check phases only compile and run, so they stay offline. dist/ is built into
+# the image and git-ignored so rebuilds never pollute the agent's diff.
+setup:
+  - npm install -g typescript@5.4.5
+  - npm run --silent build
+baseline_tests:
+  - npm run --silent build && node --test tests/*.test.mjs
+
+base_commit: HEAD

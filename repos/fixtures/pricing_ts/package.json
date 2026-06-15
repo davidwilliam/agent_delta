@@ -1,0 +1,14 @@
+{
+  "name": "pricingkit",
+  "version": "0.1.0",
+  "description": "A tiny TypeScript pricing library (money, cart, discount, tax) for AgentDelta hard tasks.",
+  "type": "module",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "node --test tests/*.test.mjs"
+  },
+  "license": "MIT"
+}
