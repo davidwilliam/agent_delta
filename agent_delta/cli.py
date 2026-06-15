@@ -110,7 +110,10 @@ def build_sandbox_cmd(fixture: str, method: str) -> None:
 
 @main.command("run")
 @click.option("--task", "task_id", required=True, help="Task ID, e.g. task_001.")
-@click.option("--model", "model_id", default="claude-opus-4-8", help="Pinned model ID.")
+@click.option("--agent", "agent_name", type=click.Choice(["claude_code", "codex_cli"]),
+              default="claude_code", help="Agent CLI (claude_code -> Anthropic, codex_cli -> OpenAI).")
+@click.option("--model", "model_id", default=None,
+              help="Pinned model ID (default: first included model for the agent's provider).")
 @click.option("--repetitions", default=1, type=int, help="Repeated runs (epochs).")
 @click.option("--suite", default="anthropic-claude-code-v0.1", help="Results suite name.")
 @click.option("--mode", default="default", help="Evaluation mode (see configs/modes.yaml).")
@@ -121,8 +124,8 @@ def build_sandbox_cmd(fixture: str, method: str) -> None:
 @click.option("--effort", type=click.Choice(["low", "medium", "high", "xhigh", "max"]),
               default=None, help="Reasoning effort override (default: model config).")
 @click.option("--dry-run", is_flag=True, help="Apply reference solution, no API calls.")
-def run_cmd(task_id: str, model_id: str, repetitions: int, suite: str, mode: str,
-            scaffold_model: str | None, network: str | None, effort: str | None,
+def run_cmd(task_id: str, agent_name: str, model_id: str | None, repetitions: int, suite: str,
+            mode: str, scaffold_model: str | None, network: str | None, effort: str | None,
             dry_run: bool) -> None:
     """Run one task for one model in one mode and write run records."""
     from agent_delta.eval import run_task
@@ -131,17 +134,23 @@ def run_cmd(task_id: str, model_id: str, repetitions: int, suite: str, mode: str
 
     if mode not in available_modes():
         raise click.UsageError(f"Unknown mode {mode!r}; choose from: {', '.join(available_modes())}")
-    if not dry_run and model_id not in config.included_models():
+    provider = config.provider_for_agent(agent_name)
+    included = config.included_models(provider)
+    if model_id is None:
+        if not included:
+            raise click.UsageError(f"No included models for provider {provider!r}; pass --model.")
+        model_id = next(iter(included))
+    if not dry_run and model_id not in included:
         click.secho(
-            f"Warning: {model_id} is not flagged include:true in the model config.",
+            f"Warning: {model_id} is not flagged include:true in the {provider} model config.",
             fg="yellow",
         )
     if is_scaffolded(mode, model_id, scaffold_model):
         click.secho(f"{model_id} runs WITH scaffold (older_plus_scaffold).", fg="cyan")
 
-    logs = run_task(task_id, model_id, repetitions=repetitions, dry_run=dry_run,
-                    mode=mode, scaffold_model=scaffold_model, network=network, effort=effort)
-    paths = write_run_records(logs, suite=suite, mode=mode)
+    logs = run_task(task_id, model_id, repetitions=repetitions, dry_run=dry_run, mode=mode,
+                    scaffold_model=scaffold_model, network=network, effort=effort, agent_name=agent_name)
+    paths = write_run_records(logs, suite=suite, mode=mode, agent=agent_name)
     click.secho(f"\nWrote {len(paths)} run record(s):", fg="green")
     for p in paths:
         record = json.loads(p.read_text())
@@ -160,8 +169,11 @@ def run_cmd(task_id: str, model_id: str, repetitions: int, suite: str, mode: str
 
 @main.command("run-matrix")
 @click.option("--suite", required=True, help="Results suite name.")
+@click.option("--agent", "agent_name", type=click.Choice(["claude_code", "codex_cli"]),
+              default="claude_code", help="Agent CLI for every run (claude_code / codex_cli).")
 @click.option("--tasks", default=None, help="Comma-separated task IDs (default: all).")
-@click.option("--models", default=None, help="Comma-separated model IDs (default: included).")
+@click.option("--models", default=None,
+              help="Comma-separated model IDs (default: the agent's provider's included cohort).")
 @click.option("--repetitions", default=1, type=int, help="Repetitions per task per model.")
 @click.option("--mode", default="default", help="Evaluation mode.")
 @click.option("--seed", default=12345, type=int, help="Run-order randomization seed.")
@@ -171,30 +183,33 @@ def run_cmd(task_id: str, model_id: str, repetitions: int, suite: str, mode: str
 @click.option("--effort", type=click.Choice(["low", "medium", "high", "xhigh", "max"]),
               default=None, help="Reasoning effort for every run (default: model config).")
 @click.option("--dry-run", is_flag=True, help="Apply reference solution, no API calls.")
-def run_matrix_cmd(suite, tasks, models, repetitions, mode, seed, randomize, network, effort, dry_run):
+def run_matrix_cmd(suite, agent_name, tasks, models, repetitions, mode, seed, randomize,
+                   network, effort, dry_run):
     """Run the task x model x repetition matrix with blocked randomization."""
     from datetime import datetime, timezone
 
     from agent_delta.matrix import run_matrix
     from agent_delta.reproducibility import build_manifest, write_manifest
 
+    provider = config.provider_for_agent(agent_name)
     task_ids = tasks.split(",") if tasks else list_tasks()
-    model_ids = models.split(",") if models else list(config.included_models())
+    model_ids = models.split(",") if models else list(config.included_models(provider))
     total = len(task_ids) * len(model_ids) * repetitions
     click.secho(f"Running {total} run(s): {len(task_ids)} tasks x {len(model_ids)} "
-                f"models x {repetitions} reps (mode={mode}, seed={seed}).", fg="cyan")
+                f"models x {repetitions} reps (agent={agent_name}, mode={mode}, seed={seed}).", fg="cyan")
 
     def progress(rep, task_id, model_id):
         click.echo(f"  rep {rep} | {task_id} | {model_id}")
 
     order_log, fixtures = run_matrix(
         suite, task_ids, model_ids, repetitions=repetitions, mode=mode, seed=seed,
-        randomize=randomize, dry_run=dry_run, network=network, effort=effort, on_run=progress,
+        randomize=randomize, dry_run=dry_run, network=network, effort=effort,
+        agent=agent_name, on_run=progress,
     )
     date = datetime.now(timezone.utc).date().isoformat()
     manifest = build_manifest(
         suite=suite, date=date, models=model_ids, tasks=task_ids,
-        fixtures=fixtures, run_order_seed=seed if randomize else None,
+        fixtures=fixtures, run_order_seed=seed if randomize else None, agent=agent_name,
     )
     manifest["run_order"] = order_log
     path = write_manifest(manifest, suite)
