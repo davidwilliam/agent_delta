@@ -1,0 +1,49 @@
+id: task_012
+title: Implement simplify_path (Unix path canonicalization)
+category: medium_feature
+difficulty: 5
+repo: python_package
+base_commit: HEAD
+language: python
+framework: pytest
+prompt_file: prompt.md
+
+context_requirement:
+  min_context_tokens: 8000
+  preferred_context_tokens: 200000
+
+execution:
+  timeout_minutes: 20
+  max_cost_usd: 3.00
+  max_agent_turns: null
+  network: disabled
+  package_install: false
+
+scope:
+  allowed_paths:
+    - src/
+    - tests/
+  forbidden_paths:
+    - pyproject.toml
+  max_files_modified: 3
+
+tests:
+  baseline:
+    - pytest -q tests/
+  public:
+    - public_tests.py
+  hidden:
+    - hidden_tests.py
+
+acceptance_criteria:
+  - A new module mathkit/paths.py provides simplify_path(path).
+  - Collapses redundant slashes and "." segments; ".." pops a segment but never past root.
+  - A name like "..." is an ordinary segment, not a parent reference.
+  - Returns a canonical absolute path with no trailing slash (except root "/").
+
+scoring:
+  objective_weight: 1.0
+  review_weight: 0.0
+
+notes:
+  - Frontier task; the "..." segment and ".." past root are the discriminators.

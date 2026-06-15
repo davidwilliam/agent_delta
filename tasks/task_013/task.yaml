@@ -1,0 +1,49 @@
+id: task_013
+title: Implement wildcard is_match (* and ?)
+category: medium_feature
+difficulty: 5
+repo: python_package
+base_commit: HEAD
+language: python
+framework: pytest
+prompt_file: prompt.md
+
+context_requirement:
+  min_context_tokens: 8000
+  preferred_context_tokens: 200000
+
+execution:
+  timeout_minutes: 20
+  max_cost_usd: 3.00
+  max_agent_turns: null
+  network: disabled
+  package_install: false
+
+scope:
+  allowed_paths:
+    - src/
+    - tests/
+  forbidden_paths:
+    - pyproject.toml
+  max_files_modified: 3
+
+tests:
+  baseline:
+    - pytest -q tests/
+  public:
+    - public_tests.py
+  hidden:
+    - hidden_tests.py
+
+acceptance_criteria:
+  - A new module mathkit/wildcard.py provides is_match(text, pattern).
+  - The ? wildcard matches any single character and * matches any sequence (incl empty).
+  - Matching is full-string (the whole text must match the whole pattern).
+  - Handles multiple "*", empty text, and empty pattern correctly.
+
+scoring:
+  objective_weight: 1.0
+  review_weight: 0.0
+
+notes:
+  - Frontier task; multiple-star and empty-match cases are the discriminators.
