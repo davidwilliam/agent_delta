@@ -1,0 +1,21 @@
+agent: codex_cli
+inspect_swe_agent: codex_cli
+# Codex CLI version provisioned by inspect_swe. "auto" lets inspect_swe resolve a
+# working version; pin to an exact version string for official runs and record it
+# in the reproducibility manifest as agent_cli_version.
+version: "auto"
+network: disabled
+web_search: disabled
+skills: []
+mcp_servers: []
+permission_mode: benchmark_sandbox
+fallback_detection: required
+
+settings:
+  use_aliases: false
+  require_pinned_model_id: true
+  require_clean_worktree: true
+  archive_transcript: true
+  archive_diff: true
+  archive_test_output: true
+  retry_refusals: false
