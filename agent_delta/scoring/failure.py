@@ -14,7 +14,7 @@ auto-assigned.
 
 from __future__ import annotations
 
-# Canonical taxonomy (SPEC section 23).
+# Canonical taxonomy (SPEC section 23 + HARD-TASKS-SPEC section 12).
 FAILURE_LABELS = [
     "wrong_behavior", "incomplete_implementation", "public_tests_failed",
     "hidden_tests_failed", "regression_introduced", "build_failed", "lint_failed",
@@ -23,6 +23,10 @@ FAILURE_LABELS = [
     "test_removed_or_weakened", "hardcoded_solution", "unnecessary_rewrite",
     "dependency_breakage", "security_regression", "hallucinated_api",
     "did_not_run_tests", "looping_or_thrashing",
+    # Hard-task additions.
+    "forbidden_shortcut", "authorization_regression", "concurrency_not_fixed",
+    "migration_not_reversible", "performance_regression", "state_transition_invalid",
+    "ignored_source_of_truth", "missed_existing_convention",
 ]
 
 
@@ -74,8 +78,13 @@ def classify_failure(
     for v in scope_violations or []:
         if v.startswith("forbidden_path_modified"):
             labels.add("forbidden_file_modified")
-        if v.startswith("too_many_files"):
+        if v.startswith("too_many_files") or v.startswith("too_many_lines"):
             labels.add("overbroad_edit")
+        if v.startswith("forbidden_pattern:"):
+            # The task's pattern label can name a specific failure (e.g.
+            # test_removed_or_weakened); otherwise it is a generic shortcut.
+            tail = v.split(":", 1)[1]
+            labels.add(tail if tail in FAILURE_LABELS else "forbidden_shortcut")
 
     if not modified_files:
         labels.add("incomplete_implementation")

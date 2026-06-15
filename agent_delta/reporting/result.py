@@ -110,6 +110,8 @@ def build_run_record(
         "benchmark_version": BENCHMARK_VERSION,
         "task_id": smeta.get("task_id", sample.id),
         "task_category": smeta.get("task_category"),
+        "hardness_level": smeta.get("hardness_level"),
+        "known_llm_failure_mode": smeta.get("known_llm_failure_mode"),
         "repo": (sample.metadata or {}).get("repo"),
         "agent": agent,
         "agent_version": agent_version,

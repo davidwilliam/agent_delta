@@ -8,6 +8,7 @@ later during aggregation.
 
 from __future__ import annotations
 
+import re
 from typing import Any
 
 from inspect_ai.scorer import Score, Target, accuracy, scorer, stderr
@@ -67,23 +68,47 @@ async def _score_test_writing(task, workdir: str):
     return public, hidden, tests_valid
 
 
+def _added_lines(diff_text: str) -> str:
+    """The added lines of a unified diff (for forbidden-pattern scanning)."""
+    return "\n".join(ln[1:] for ln in (diff_text or "").splitlines()
+                     if ln.startswith("+") and not ln.startswith("+++"))
+
+
 def _compute_scope_control(
-    modified_files: list[str], forbidden: list[str], max_files: int | None
+    modified_files: list[str], forbidden: list[str], max_files: int | None,
+    *, lines_changed: int | None = None, max_lines: int | None = None,
+    diff_text: str = "", forbidden_patterns: list[dict] | None = None,
 ) -> tuple[float, list[str]]:
-    """Return (scope_control_score in [0,1], list of violations)."""
-    violations: list[str] = []
-    score = 1.0
+    """Return (scope_control_score in [0,1], list of violations).
+
+    Hard violations (forbidden path or forbidden shortcut pattern) zero the score;
+    over-budget edits (too many files/lines) halve it (HARD-TASKS-SPEC 8, 11.4).
+    """
+    hard: list[str] = []
+    soft: list[str] = []
     for f in modified_files:
         for fp in forbidden:
-            # forbidden entry may be a file or a directory prefix
             if f == fp or f.startswith(fp.rstrip("/") + "/"):
-                violations.append(f"forbidden_path_modified:{f}")
-    if violations:
-        return 0.0, violations
+                hard.append(f"forbidden_path_modified:{f}")
+
+    added = _added_lines(diff_text)
+    for spec in forbidden_patterns or []:
+        pattern = spec.get("pattern") if isinstance(spec, dict) else spec
+        label = spec.get("label", "forbidden_pattern") if isinstance(spec, dict) else "forbidden_pattern"
+        if pattern and re.search(pattern, added):
+            hard.append(f"forbidden_pattern:{label}")
+
     if max_files is not None and len(modified_files) > max_files:
-        violations.append(f"too_many_files:{len(modified_files)}>{max_files}")
-        score = 0.5
-    return score, violations
+        soft.append(f"too_many_files:{len(modified_files)}>{max_files}")
+    if max_lines is not None and lines_changed is not None and lines_changed > max_lines:
+        soft.append(f"too_many_lines:{lines_changed}>{max_lines}")
+
+    violations = hard + soft
+    if hard:
+        return 0.0, violations
+    if soft:
+        return 0.5, violations
+    return 1.0, violations
 
 
 @scorer(metrics=[accuracy(), stderr()])
@@ -132,9 +157,11 @@ def agentdelta_scorer():
         public_ok = public["total"] > 0 and public["failed"] == 0 and public["error"] == 0
         hidden_score = (hidden["passed"] / hidden["total"]) if hidden["total"] else 0.0
 
-        # scope control
+        # scope control + forbidden-shortcut detection (HARD-TASKS-SPEC 8)
         scope_score, violations = _compute_scope_control(
-            modified_files, task.forbidden_paths, task.max_files_modified
+            modified_files, task.forbidden_paths, task.max_files_modified,
+            lines_changed=lines_added + lines_removed, max_lines=task.max_lines_changed,
+            diff_text=diff_res.stdout, forbidden_patterns=task.forbidden_patterns,
         )
 
         # verified success: public passes + no regression + in scope. For
@@ -167,6 +194,8 @@ def agentdelta_scorer():
             metadata={
                 "task_id": task.id,
                 "task_category": task.category,
+                "hardness_level": task.hardness_level,
+                "known_llm_failure_mode": task.known_llm_failure_mode,
                 "components": components.as_dict(),
                 "partial_objective_score": partial,
                 "public_tests": public,

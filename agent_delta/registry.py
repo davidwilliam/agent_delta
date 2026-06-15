@@ -35,6 +35,29 @@ class Task:
         return self.spec.get("task_type", "implement")
 
     @property
+    def hardness_level(self) -> str:
+        """H1..H5 (HARD-TASKS-SPEC section 4); H1 if unspecified."""
+        return self.spec.get("hardness_level", "H1")
+
+    @property
+    def known_llm_failure_mode(self) -> str | None:
+        return self.spec.get("known_llm_failure_mode")
+
+    @property
+    def forbidden_changes(self) -> list[str]:
+        """Human-readable forbidden shortcuts, surfaced in the prompt."""
+        return self.spec.get("scope", {}).get("forbidden_changes", [])
+
+    @property
+    def forbidden_patterns(self) -> list[dict]:
+        """Regexes that must not appear in the diff, each {pattern, label}."""
+        return self.spec.get("scope", {}).get("forbidden_patterns", [])
+
+    @property
+    def max_lines_changed(self) -> int | None:
+        return self.spec.get("scope", {}).get("max_lines_changed")
+
+    @property
     def test_writing(self) -> dict[str, Any]:
         return self.spec.get("test_writing", {})
 

@@ -1,0 +1,94 @@
+{
+  "agentdelta_version": "0.1.0",
+  "date": "2026-06-15",
+  "suite": "anthropic-v0.1-frontier",
+  "inspect_version": "0.3.239",
+  "inspect_swe_version": "0.2.63",
+  "python_version": "3.14.5",
+  "docker_version": "27.4.0",
+  "host_os": "macOS-26.5.1-arm64-arm-64bit-Mach-O",
+  "agent": "claude_code",
+  "agent_cli_version": "2.1.153",
+  "agent_settings_hash": "sha256:8eafc658ce71d702ab6136c729ebddfe5b6977b67607c4bbfd28383c56ac5a34",
+  "models": [
+    "claude-opus-4-8",
+    "claude-opus-4-7",
+    "claude-opus-4-6",
+    "claude-sonnet-4-6"
+  ],
+  "tasks": [
+    "task_012",
+    "task_013",
+    "task_014"
+  ],
+  "sandbox_images": {
+    "python_package": "sha256:6b39dcc3de7d7e222aa3a11d0738c3398c8c22a05af78cf0f6d7149a9ddb4d18"
+  },
+  "tasks_hash": "sha256:30fcffbbfe93977c6a0fa8358dcd4af7edd4ce518809c7f325371f91f0940764",
+  "scoring_hash": "sha256:c4aea89e5b179a09cfcc0ec5a4c4eae1c4fec9a8a18394d438baa924af762220",
+  "fixtures_hash": "sha256:b4756be9c5d2e63e06f355aa0ff8de3f260fe0bb297ff1dc7efdb07158de16d9",
+  "hidden_tests_hash": "sha256:5127c4c664b3caec19bdeddf75c851e7e1040c3a62edcf155767252c0d0d2dcc",
+  "run_order_seed": 42,
+  "run_order": [
+    {
+      "rep": 0,
+      "task": "task_012",
+      "order": [
+        "claude-opus-4-6",
+        "claude-sonnet-4-6",
+        "claude-opus-4-8",
+        "claude-opus-4-7"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "task_013",
+      "order": [
+        "claude-opus-4-8",
+        "claude-sonnet-4-6",
+        "claude-opus-4-7",
+        "claude-opus-4-6"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "task_014",
+      "order": [
+        "claude-opus-4-7",
+        "claude-opus-4-8",
+        "claude-sonnet-4-6",
+        "claude-opus-4-6"
+      ]
+    },
+    {
+      "rep": 1,
+      "task": "task_012",
+      "order": [
+        "claude-sonnet-4-6",
+        "claude-opus-4-7",
+        "claude-opus-4-6",
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 1,
+      "task": "task_013",
+      "order": [
+        "claude-opus-4-8",
+        "claude-opus-4-6",
+        "claude-sonnet-4-6",
+        "claude-opus-4-7"
+      ]
+    },
+    {
+      "rep": 1,
+      "task": "task_014",
+      "order": [
+        "claude-sonnet-4-6",
+        "claude-opus-4-8",
+        "claude-opus-4-7",
+        "claude-opus-4-6"
+      ]
+    }
+  ]
+}

@@ -41,6 +41,34 @@ def test_incomplete_when_no_diff():
     assert "incomplete_implementation" in _classify(modified_files=[])
 
 
+def test_forbidden_pattern_maps_to_named_label():
+    labels = _classify(scope_violations=["forbidden_pattern:test_removed_or_weakened"])
+    assert "test_removed_or_weakened" in labels
+
+
+def test_forbidden_pattern_unknown_label_is_generic_shortcut():
+    labels = _classify(scope_violations=["forbidden_pattern:sleep_hack"])
+    assert "forbidden_shortcut" in labels
+
+
+def test_too_many_lines_is_overbroad():
+    assert "overbroad_edit" in _classify(scope_violations=["too_many_lines:500>100"])
+
+
+def test_scope_control_forbidden_pattern_and_lines():
+    from agent_delta.scoring.sandbox_scorer import _compute_scope_control
+    diff = "+++ b/x\n+    @pytest.mark.skip(reason='x')\n"
+    score, viols = _compute_scope_control(
+        ["x"], [], None, lines_changed=1, max_lines=None, diff_text=diff,
+        forbidden_patterns=[{"pattern": r"mark\.skip", "label": "test_removed_or_weakened"}])
+    assert score == 0.0
+    assert any(v.startswith("forbidden_pattern:test_removed_or_weakened") for v in viols)
+
+    score2, viols2 = _compute_scope_control(
+        ["a", "b", "c"], [], None, lines_changed=400, max_lines=100)
+    assert score2 == 0.5 and any(v.startswith("too_many_lines") for v in viols2)
+
+
 def test_did_not_run_tests():
     assert "did_not_run_tests" in _classify(behavior={"test_runs": 0})
 

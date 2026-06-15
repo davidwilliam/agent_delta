@@ -50,25 +50,35 @@ def _strong_spec_block(task) -> str:
     return "\n".join(lines)
 
 
+def _forbidden_block(task) -> str:
+    if not task.forbidden_changes:
+        return ""
+    lines = ["", "## Do not (forbidden changes)"]
+    lines += [f"- {c}" for c in task.forbidden_changes]
+    return "\n".join(lines)
+
+
 def build_prompt(task, mode: str, *, scaffolded: bool = False) -> str:
     """Return the task prompt transformed for `mode`.
 
     `scaffolded` only matters for the asymmetric older_plus_scaffold mode: the
     designated older model gets the scaffold; every other model runs default.
+    Forbidden-change constraints (HARD-TASKS-SPEC) are appended in every mode.
     """
     spec = mode_spec(mode)
-    body = task.prompt
+    forbidden = _forbidden_block(task)
     if spec.get("scaffold"):
         if not scaffolded:
-            return body
+            return task.prompt + forbidden
         steps = _modes_config()["scaffold_steps"]
-        return f"{steps}\n\n{body}\n\n{_strong_spec_block(task)}"
+        return f"{steps}\n\n{task.prompt}\n\n{_strong_spec_block(task)}{forbidden}"
+    body = task.prompt
     if spec.get("strong_spec"):
         body = f"{body}\n\n{_strong_spec_block(task)}"
     if spec.get("workflow"):
         steps = _modes_config()["workflow_steps"]
         body = f"{steps}\n\n{body}"
-    return body
+    return body + forbidden
 
 
 def _version_key(model_id: str) -> tuple:
