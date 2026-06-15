@@ -43,8 +43,10 @@ manufacturing a ranking from noise.
 
 A **50-task suite** across **6 fixtures** in **3 languages**, evaluated across the
 four 1M-context Anthropic models (`claude-opus-4-8`, `claude-opus-4-7`,
-`claude-opus-4-6`, `claude-sonnet-4-6`). The harness is provider-pluggable; the
-Anthropic + Claude Code path is implemented.
+`claude-opus-4-6`, `claude-sonnet-4-6`). The harness is provider-pluggable: the
+**Anthropic (Claude Code)** and **OpenAI (Codex CLI)** agents are both implemented,
+selectable per run with `--agent`. Each provider declares its own pinned model
+cohort under `configs/models/`.
 
 | Fixture | Language | Runner | What it is |
 | --- | --- | --- | --- |
@@ -142,7 +144,8 @@ run record.
 | Option | Meaning |
 | --- | --- |
 | `--task` | Task ID (required), e.g. `hard_task_004` |
-| `--model` | Pinned model ID (default `claude-opus-4-8`) |
+| `--agent` | `claude_code` (Anthropic, default) or `codex_cli` (OpenAI) |
+| `--model` | Pinned model ID (default: the first included model for the agent's provider) |
 | `--repetitions` | Repeated runs (epochs) |
 | `--suite` | Results suite name |
 | `--mode` | Evaluation mode (see Modes below) |
@@ -157,8 +160,9 @@ blocked randomization of model order.
 | Option | Meaning |
 | --- | --- |
 | `--suite` | Results suite name (required) |
+| `--agent` | `claude_code` (default) or `codex_cli`; sets the provider for every run |
 | `--tasks` | Comma-separated task IDs (default: all) |
-| `--models` | Comma-separated model IDs (default: the included cohort) |
+| `--models` | Comma-separated model IDs (default: the agent's provider's included cohort) |
 | `--repetitions` | Repetitions per task per model |
 | `--mode` | Evaluation mode |
 | `--seed` | Run-order randomization seed |
@@ -253,9 +257,11 @@ tests. A result you cannot reproduce is an anecdote.
 
 ## Roadmap
 
-AgentDelta currently supports Claude Code. Support for the Codex CLI and the Gemini
-CLI is coming soon, so the same tasks and the same objective scoring can compare
-coding agents across providers on a level field.
+AgentDelta supports the Claude Code (Anthropic) and Codex CLI (OpenAI) agents
+today, selectable with `--agent`, so the same tasks and the same objective scoring
+compare coding agents across providers on a level field. The Gemini CLI is next
+(`inspect_swe` already exposes it). OpenAI model pricing in
+`agent_delta/scoring/cost.py` is verified against the OpenAI developer pricing docs.
 
 ## Contributing
 

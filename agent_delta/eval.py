@@ -32,12 +32,30 @@ COMPOSE_PATH = config.SANDBOXES_DIR / "claude-code" / "compose.yaml"
 
 def _register_model_costs() -> None:
     """Register AgentDelta's pricing with Inspect so cost limits and cost tracking
-    work for the pinned model IDs (Inspect has no built-in pricing for them)."""
-    for mid, p in PRICING_PER_MTOK.items():
-        set_model_cost(f"anthropic/{mid}", ModelCost(
-            input=p["input"], output=p["output"],
-            input_cache_write=p["cache_write"], input_cache_read=p["cache_read"],
-        ))
+    work for the pinned model IDs of every provider (Inspect has no built-in
+    pricing for them). Each model is registered under its provider prefix."""
+    for provider in ("anthropic", "openai", "google"):
+        try:
+            models = config.load_models_config(provider).get("models", {})
+        except FileNotFoundError:
+            continue
+        for mid in models:
+            p = PRICING_PER_MTOK.get(mid)
+            if not p:
+                continue
+            set_model_cost(f"{provider}/{mid}", ModelCost(
+                input=p["input"], output=p["output"],
+                input_cache_write=p["cache_write"], input_cache_read=p["cache_read"],
+            ))
+
+
+def _build_agent(agent_name: str):
+    """Construct the real agent solver for the given agent CLI."""
+    cfg = config.load_agent_config(agent_name)
+    if agent_name == "codex_cli":
+        from agent_delta.runners.codex_cli import build_codex_cli_agent
+        return build_codex_cli_agent(cfg)
+    return build_claude_code_agent(cfg)
 
 
 @solver
@@ -113,7 +131,7 @@ def build_task(
     if dry_run:
         agent = reference_solution_solver()
     else:
-        agent = build_claude_code_agent(config.load_agent_config(agent_name))
+        agent = _build_agent(agent_name)
 
     return Task(
         dataset=[sample],
@@ -146,10 +164,11 @@ def run_task(
     """Run one AgentDelta task for one model in one mode. Returns the EvalLogs."""
     task = load_task(task_id)
     fixture = load_fixture(task.repo)
+    provider = config.provider_for_agent(agent_name)
     # Effort: explicit override, else the model's configured effort, else high.
     if effort is None and not dry_run:
         try:
-            effort = config.model_spec(model_id).get("effort")
+            effort = config.model_spec(model_id, provider).get("effort")
         except KeyError:
             effort = None
     effort = effort or "high"
@@ -160,7 +179,7 @@ def run_task(
     os.environ["AGENTDELTA_NETWORK"] = "bridge" if net == "enabled" else "none"
 
     if not dry_run:
-        config.ensure_anthropic_key()
+        config.ensure_provider_key(provider)
         _register_model_costs()
 
     scaffolded = is_scaffolded(mode, model_id, scaffold_model)
@@ -172,7 +191,7 @@ def run_task(
 
     # In dry-run there is no model; pass a placeholder Inspect accepts via the
     # mockllm provider so eval() has a model role even though the solver is mocked.
-    model = "mockllm/model" if dry_run else f"anthropic/{model_id}"
+    model = "mockllm/model" if dry_run else f"{provider}/{model_id}"
 
     return inspect_eval(
         eval_task,

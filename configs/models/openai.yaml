@@ -1,0 +1,65 @@
+provider: openai
+access_path: openai_api
+context_requirement: 200000
+
+# Coding cohort for the Codex CLI agent, mirroring the Anthropic structure:
+# newest flagship + two prior generations + one smaller sibling. Pinned snapshots
+# are used where the API exposes them; bare names (gpt-5.4, gpt-5) are aliases and
+# should be replaced with dated snapshots when available (SPEC 5.2: no aliases).
+# context_window values are best-effort and should be verified before a published
+# run. effort is the reasoning effort passed to the model (OpenAI accepts
+# low|medium|high); keep at high for parity with the Anthropic cohort.
+models:
+  gpt-5.4:
+    include: true
+    family: gpt-5-flagship
+    context_window: 400000
+    effort: high
+    fallback_allowed: false
+    note: "Newest flagship. Bare alias; prefer a dated snapshot when available."
+
+  gpt-5.1-2025-11-13:
+    include: true
+    family: gpt-5-flagship
+    context_window: 400000
+    effort: high
+    fallback_allowed: false
+
+  gpt-5:
+    include: true
+    family: gpt-5-flagship
+    context_window: 400000
+    effort: high
+    fallback_allowed: false
+    note: "Older flagship. Bare alias; prefer a dated snapshot when available."
+
+  gpt-5-mini-2025-08-07:
+    include: true
+    family: gpt-5-mini
+    context_window: 400000
+    effort: high
+    fallback_allowed: false
+
+  gpt-5.4-pro-2026-03-05:
+    include: false
+    family: gpt-5-pro
+    context_window: 400000
+    effort: high
+    fallback_allowed: false
+    exclusion_reason: "Optional capability ceiling; pro tier is slower and pricier."
+
+  gpt-4o-2024-11-20:
+    include: false
+    family: gpt-4o
+    context_window: 128000
+    effort: null
+    fallback_allowed: false
+    exclusion_reason: "Optional pre-reasoning legacy floor."
+
+  gpt-5-nano-2025-08-07:
+    include: false
+    family: gpt-5-nano
+    context_window: 400000
+    effort: high
+    fallback_allowed: false
+    exclusion_reason: "Too small for the serious-coding cohort; available as a floor."
