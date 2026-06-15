@@ -260,8 +260,8 @@ tests. A result you cannot reproduce is an anecdote.
 AgentDelta supports the Claude Code (Anthropic) and Codex CLI (OpenAI) agents
 today, selectable with `--agent`, so the same tasks and the same objective scoring
 compare coding agents across providers on a level field. The Gemini CLI is next
-(`inspect_swe` already exposes it). A first real Codex run still needs its model
-pricing in `agent_delta/scoring/cost.py` verified against the live pricing page.
+(`inspect_swe` already exposes it). OpenAI model pricing in
+`agent_delta/scoring/cost.py` is verified against the OpenAI developer pricing docs.
 
 ## Contributing
 

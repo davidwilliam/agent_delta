@@ -36,8 +36,8 @@ def test_build_codex_agent_constructs():
 def test_openai_pricing_present_and_priced():
     for m in ["gpt-5.4", "gpt-5.1-2025-11-13", "gpt-5", "gpt-5-mini-2025-08-07"]:
         assert m in PRICING_PER_MTOK
-    # 1M input tokens at the gpt-5.4 placeholder input rate.
-    assert estimate_cost_usd("gpt-5.4", input_tokens=1_000_000) == pytest.approx(1.25)
+    # 1M input tokens at the verified gpt-5.4 input rate ($2.50/1M).
+    assert estimate_cost_usd("gpt-5.4", input_tokens=1_000_000) == pytest.approx(2.50)
 
 
 def test_ensure_provider_key_missing_raises(monkeypatch):

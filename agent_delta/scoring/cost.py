@@ -8,33 +8,32 @@ manifest.
 
 from __future__ import annotations
 
-PRICING_DATE = "2026-06-13"
+PRICING_DATE = "2026-06-15"
 PRICING_SOURCE = {
     "anthropic": "https://docs.anthropic.com/en/docs/about-claude/pricing",
-    "openai": "https://openai.com/api/pricing/",
+    "openai": "https://developers.openai.com/api/docs/pricing",
 }
 CURRENCY = "USD"
 
 # USD per 1M tokens: (input, output, cache_write, cache_read). Keyed by model ID
 # (unique across providers). OpenAI bills no separate cache-write charge, so
-# cache_write mirrors input and cache_read is the reduced cached-input rate.
-# NOTE: placeholder values for scaffolding - the OpenAI gpt-5.x figures in
-# particular are estimates and MUST be verified against the live pricing page
-# before any published cross-provider run.
+# cache_write mirrors input and cache_read is the reduced cached-input rate; dated
+# snapshots inherit their family's rate. OpenAI rates verified from the developers
+# pricing docs on PRICING_DATE; Anthropic rates from the Anthropic pricing page.
 PRICING_PER_MTOK: dict[str, dict[str, float]] = {
     # Anthropic (Claude Code agent).
     "claude-opus-4-8": {"input": 5.0, "output": 25.0, "cache_write": 6.25, "cache_read": 0.50},
     "claude-opus-4-7": {"input": 5.0, "output": 25.0, "cache_write": 6.25, "cache_read": 0.50},
     "claude-opus-4-6": {"input": 5.0, "output": 25.0, "cache_write": 6.25, "cache_read": 0.50},
     "claude-sonnet-4-6": {"input": 3.0, "output": 15.0, "cache_write": 3.75, "cache_read": 0.30},
-    # OpenAI (Codex CLI agent). PLACEHOLDER rates - verify before publishing.
-    "gpt-5.4": {"input": 1.25, "output": 10.0, "cache_write": 1.25, "cache_read": 0.125},
+    # OpenAI (Codex CLI agent). Verified from developers.openai.com on PRICING_DATE.
+    "gpt-5.4": {"input": 2.50, "output": 15.0, "cache_write": 2.50, "cache_read": 0.25},
     "gpt-5.1-2025-11-13": {"input": 1.25, "output": 10.0, "cache_write": 1.25, "cache_read": 0.125},
     "gpt-5": {"input": 1.25, "output": 10.0, "cache_write": 1.25, "cache_read": 0.125},
     "gpt-5-mini-2025-08-07": {"input": 0.25, "output": 2.0, "cache_write": 0.25, "cache_read": 0.025},
-    "gpt-5.4-pro-2026-03-05": {"input": 15.0, "output": 120.0, "cache_write": 15.0, "cache_read": 1.5},
-    "gpt-5.2-pro-2025-12-11": {"input": 15.0, "output": 120.0, "cache_write": 15.0, "cache_read": 1.5},
-    "gpt-4o-2024-11-20": {"input": 2.5, "output": 10.0, "cache_write": 2.5, "cache_read": 1.25},
+    # gpt-5.4-pro publishes no cached-input rate; cache_read mirrors input.
+    "gpt-5.4-pro-2026-03-05": {"input": 30.0, "output": 180.0, "cache_write": 30.0, "cache_read": 30.0},
+    "gpt-4o-2024-11-20": {"input": 2.50, "output": 10.0, "cache_write": 2.50, "cache_read": 1.25},
     "gpt-5-nano-2025-08-07": {"input": 0.05, "output": 0.40, "cache_write": 0.05, "cache_read": 0.005},
 }
 

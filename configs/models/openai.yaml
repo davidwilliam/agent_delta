@@ -48,14 +48,6 @@ models:
     fallback_allowed: false
     exclusion_reason: "Optional capability ceiling; pro tier is slower and pricier."
 
-  gpt-5.2-pro-2025-12-11:
-    include: false
-    family: gpt-5-pro
-    context_window: 400000
-    effort: high
-    fallback_allowed: false
-    exclusion_reason: "Optional pro-tier comparison point."
-
   gpt-4o-2024-11-20:
     include: false
     family: gpt-4o
