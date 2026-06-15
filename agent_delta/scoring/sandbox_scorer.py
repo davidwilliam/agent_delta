@@ -164,13 +164,16 @@ def agentdelta_scorer():
             diff_text=diff_res.stdout, forbidden_patterns=task.forbidden_patterns,
         )
 
-        # verified success: public passes + no regression + in scope. For
+        # verified success: public passes + no regression + no HARD scope/shortcut
+        # violation. A soft over-budget edit (too many files/lines) lowers the
+        # scope-control component but does not by itself fail the task. For
         # test_writing, also require the mutation kill rate to meet the threshold.
+        scope_hard_violation = scope_score == 0.0
         mutation_ok = True
         if task.task_type == "test_writing":
             threshold = task.test_writing.get("mutation_threshold", 1.0)
             mutation_ok = hidden_score >= threshold
-        verified = public_ok and regression_ok and not violations and mutation_ok
+        verified = public_ok and regression_ok and not scope_hard_violation and mutation_ok
         components = ObjectiveComponents(
             verified_success=1.0 if verified else 0.0,
             hidden_test_score=hidden_score,

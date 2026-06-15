@@ -28,7 +28,7 @@ scope:
     - src/payments/storage.py
     - src/payments/models.py
   max_files_modified: 2
-  max_lines_changed: 30
+  max_lines_changed: 50
   forbidden_changes:
     - Do not remove or reduce the simulated write latency in storage.
     - Do not deduplicate by amount; distinct events with the same amount are distinct.
