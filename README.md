@@ -1,105 +1,282 @@
 # AgentDelta
 
-Reproducible evaluation of frontier coding agents and model-upgrade deltas.
+Reproducible, objective evaluation of frontier coding agents and model-upgrade deltas.
 
 AgentDelta measures the **delta** between agentic coding systems under controlled,
-repeatable, auditable conditions - not whether a new model "feels" better, but
-whether a claimed improvement holds up on real coding-agent workloads. See
-[`SPEC.md`](SPEC.md) for the full methodology.
+repeatable, auditable conditions. It does not ask whether a new model "feels"
+better; it asks whether a claimed improvement holds up on real coding-agent
+workloads, graded by hidden tests, and whether any gain is genuine capability or
+just a newer model doing more work by default.
+
+Source: https://github.com/davidwilliam/agent_delta
+
+The full methodology is in [`SPEC.md`](SPEC.md), the amplification framework in
+[`SPEC-ADDENDUM.md`](SPEC-ADDENDUM.md), and the hard-task design rules in
+[`HARD-TASKS-SPEC.md`](HARD-TASKS-SPEC.md). Shorter topic docs live in
+[`docs/`](docs/) (methodology, scoring, modes, amplification, reproducibility,
+task authoring, limitations).
+
+## What it does
+
+Every run is a real coding agent ([Claude Code](https://docs.claude.com/en/docs/claude-code/overview)
+driven by [inspect_swe](https://pypi.org/project/inspect-swe/) on top of
+[Inspect AI](https://inspect.aisi.org.uk/)) acting inside a per-fixture
+[Docker](https://www.docker.com/) sandbox on a seeded git repository, graded by
+tests the agent never sees.
+
+Scoring is two levels:
+
+- **Level 1 (primary):** rank systems by objective success (verified pass +
+  hidden-test score + regression avoidance + scope control + set-relative
+  cost/time efficiency), and decide which Model-B-over-Model-A gains are
+  *material*: a success delta above threshold that also survives a Holm-corrected
+  paired McNemar test.
+- **Level 2 (Agentic Amplification):** for material gains only, decide whether the
+  newer model is intrinsically better or merely does more work by default (more
+  tokens, time, tool calls, retries, self-review), by re-running under normalized
+  modes (equal budget, matched workflow, strong spec).
+
+When models are statistically tied, AgentDelta reports the tie rather than
+manufacturing a ranking from noise.
 
 ## Status
 
-**v0.1 - vertical slice + initial task suite.** Five tasks across four
-categories run end-to-end through Inspect AI + Claude Code (via `inspect_swe`)
-inside a Docker sandbox, with objective scoring (baseline/public/hidden tests,
-scope control) and SPEC §16 run records. The architecture is wired for the full
-50-task / 4-model benchmark and for future Codex CLI / Gemini CLI adapters.
+A **50-task suite** across **6 fixtures** in **3 languages**, evaluated across the
+four 1M-context Anthropic models (`claude-opus-4-8`, `claude-opus-4-7`,
+`claude-opus-4-6`, `claude-sonnet-4-6`). The harness is provider-pluggable; the
+Anthropic + Claude Code path is implemented.
 
-Fixtures: `python_package` (the `mathkit` library, pytest), `go_cli` (the
-`textkit` Go module, `go test`), and `long_context` (a ~228k-token multi-schema
-ledger across 220 files for long-context tasks, SPEC §21). The scorer, builder,
-and task checker are language-aware.
-
-| Task | Fixture | Category | What |
+| Fixture | Language | Runner | What it is |
 | --- | --- | --- | --- |
-| `task_001` | python_package | small_bug_fix | Add a `median` function |
-| `task_002` | python_package | small_bug_fix | Fix `chunk()` dropping the final partial chunk |
-| `task_003` | python_package | medium_feature | Add a `slugify` function |
-| `task_004` | python_package | multi_file_refactor | Extract a shared `require_nonempty` helper |
-| `task_005` | python_package | security_fix | Fix path traversal in `read_fixture` |
-| `task_006` | python_package | test_writing | Write tests for `normalize_spaces` (mutation-scored) |
-| `task_007` | python_package | long_horizon | Build a `summary` module (summarize/describe/top_n) |
-| `task_008` | python_package | dependency_migration | Migrate `report` off the deprecated `avg` |
-| `go_task_001` | go_cli | small_bug_fix | Fix `Truncate` past the string length |
-| `go_task_002` | go_cli | medium_feature | Add a `Capitalize` function |
-| `task_009` | long_context | medium_feature (long-context) | Total a multi-schema ledger across 220 files |
+| `python_package` | Python | pytest | `mathkit` utility toolkit (stats, sequences, text, io) |
+| `saas` | Python | pytest | Layered multi-tenant service (models/storage/policy/service/api/ownership/lifecycle) |
+| `payments` | Python | pytest | Webhook/invoice/refund service with simulated write latency |
+| `long_context` | Python | pytest | 220-file multi-schema ledger (~228k tokens) for long-context tasks |
+| `pricing_ts` | TypeScript | `node --test` | Money/cart/discount/tax library compiled with `tsc` |
+| `go_cli` | Go | `go test` | `textkit` text-processing module |
 
-All seven SPEC §8.2 categories are represented. Test-writing tasks are scored by
-mutation (the agent's tests must pass on the correct code and fail on each planted
-mutant); `task_009` is a long-context task whose correct answer requires
-discovering schema variants spread across the fixture.
+Task mix: 14 categories spanning the HARD-TASKS-SPEC families (multi-file
+localization, hidden-invariant preservation, security/authorization,
+state-machine correctness, cross-file contract consistency, long-context
+retrieval, concurrency/idempotency, minimal-diff repair, test-writing, dependency
+migration). The graded **core** suite is 39 multi-file/repo-level tasks (100%
+multi-file); 11 single-file algorithmic tasks are tagged `tier: supplementary`.
+Hardness spans H1 to H5; over half the tasks carry author-written minimal / strong
+/ workflow prompt variants. See [`tasks/SUITE_PLAN.md`](tasks/SUITE_PLAN.md).
 
-What works today:
-- `agentdelta list-tasks` / `validate-task`
-- `agentdelta build-sandbox` - builds the fixture Docker image
-- `agentdelta check-task --all` - verifies each task fails at base and passes
-  with its reference solution (no model, no API)
-- `agentdelta run --task <id> --dry-run` - full scoring pipeline, no API cost
-- `agentdelta run --task <id> --model claude-opus-4-8` - real run
-- `agentdelta run --mode <mode>` - run a task under a normalized mode
-  (equal_budget, matched_workflow, strong_spec, cost_matched, time_matched,
-  older_plus_scaffold; see `docs/modes.md`)
-- `agentdelta aggregate` / `agentdelta report` - turn run records into rankings,
-  confidence intervals, paired comparisons, the Agentic Amplification Analysis,
-  and a Cross-Mode Synthesis that confirms whether a gain is intrinsic, amplified,
-  or workflow-equivalent (see SPEC-ADDENDUM.md, `docs/amplification.md`)
+## Requirements
 
-Not yet built: review-pass capture, a second-language fixture, network-locked
-sandbox, the Codex/Gemini adapters.
+- **Python 3.11+** for the harness.
+- **Docker** (daemon running). Fixture images bundle their own toolchains
+  (Python 3.12, Node 20 + TypeScript, Go 1.22), so no host install of Node or Go
+  is needed.
+- An **Anthropic API key** for real model runs (task authoring and verification
+  need only Docker, no API). Set `ANTHROPIC_API_KEY` in your environment or `.env`.
 
 ## Setup
 
 ```bash
 python3 -m venv .venv
-.venv/bin/pip install -e .
-# Put your key in .env as ANTHROPIC_API_KEY=sk-ant-...
+.venv/bin/pip install -e ".[dev]"      # drop [dev] to skip pytest/ruff
+echo 'ANTHROPIC_API_KEY=sk-ant-...' > .env
 ```
 
-Requirements: Python 3.11+, Docker.
+Build the sandbox image for each fixture once (run-commit avoids BuildKit issues):
+
+```bash
+for f in python_package saas payments long_context pricing_ts go_cli; do
+  .venv/bin/agentdelta build-sandbox --fixture "$f" --method run-commit
+done
+```
 
 ## Quick start
 
 ```bash
-# 1. Build the sandbox image for the python_package fixture
-.venv/bin/agentdelta build-sandbox --fixture python_package
+# Verify every task fails at base and passes with its reference (Docker only, no API, no cost)
+.venv/bin/agentdelta check-task --all
 
-# 2. Prove the pipeline with no API calls (applies the reference solution)
+# Prove the scoring pipeline on one task with no API calls (applies the reference solution)
 .venv/bin/agentdelta run --task task_001 --dry-run
 
-# 3. Real run against a pinned model
-.venv/bin/agentdelta run --task task_001 --model claude-opus-4-8 --repetitions 1
+# Real run of one task against a pinned model
+.venv/bin/agentdelta run --task hard_task_004 --model claude-opus-4-8 --network enabled --effort high
 
-# 4. Aggregate run records into a Markdown report
-.venv/bin/agentdelta report --suite anthropic-claude-code-v0.1
+# Run a matrix: all 4 models x 5 reps over chosen tasks
+.venv/bin/agentdelta run-matrix --suite my-suite \
+  --tasks hard_task_004,pay_concurrency_01 --repetitions 5 --network enabled --effort high
+
+# Generate the comprehensive HTML report across every suite
+.venv/bin/agentdelta report-html
 ```
 
-Run records land in `results/raw/<suite>/<run_id>/run.json` with the final diff;
-reports land in `results/reports/<suite>/` as `report.json` and `report.md`.
+Run records land in `results/raw/<suite>/<run_id>/run.json` (with the final diff);
+per-suite reports in `results/reports/<suite>/` (`report.json`, `report.md`,
+`reproducibility.json`); the cross-suite HTML at
+`results/reports/agentdelta-report.html`.
+
+## Command reference
+
+All commands are subcommands of `agentdelta` (installed entry point; or
+`.venv/bin/agentdelta`).
+
+### Authoring and validation (no API, no cost)
+
+`list-tasks` lists available tasks.
+
+`validate-task TASK_ID` checks a task's definition and that its referenced files
+(prompt, tests, fixture) exist.
+
+`check-task [TASK_ID] [--all]` spins up the fixture container and verifies the task
+is non-trivial (public/hidden tests fail at base) and solvable (baseline + public +
+hidden pass after applying `reference_solution/`). Uses Docker only.
+
+`build-sandbox --fixture NAME [--method auto|dockerfile|run-commit]` builds the
+Docker image for a fixture. `run-commit` (recommended) builds without BuildKit.
+
+### Running
+
+`run --task TASK_ID [options]` runs one task for one model in one mode and writes a
+run record.
+
+| Option | Meaning |
+| --- | --- |
+| `--task` | Task ID (required), e.g. `hard_task_004` |
+| `--model` | Pinned model ID (default `claude-opus-4-8`) |
+| `--repetitions` | Repeated runs (epochs) |
+| `--suite` | Results suite name |
+| `--mode` | Evaluation mode (see Modes below) |
+| `--scaffold-model` | Model that receives the scaffold under `older_plus_scaffold` |
+| `--network` | `disabled` (default) or `enabled`; a real model run needs `enabled` |
+| `--effort` | Reasoning effort: `low`/`medium`/`high`/`xhigh`/`max` |
+| `--dry-run` | Apply the reference solution instead of calling the model (no API cost) |
+
+`run-matrix --suite NAME [options]` runs the task x model x repetition grid with
+blocked randomization of model order.
+
+| Option | Meaning |
+| --- | --- |
+| `--suite` | Results suite name (required) |
+| `--tasks` | Comma-separated task IDs (default: all) |
+| `--models` | Comma-separated model IDs (default: the included cohort) |
+| `--repetitions` | Repetitions per task per model |
+| `--mode` | Evaluation mode |
+| `--seed` | Run-order randomization seed |
+| `--randomize / --no-randomize` | Blocked-randomize model order (default on) |
+| `--network`, `--effort`, `--dry-run` | As for `run` |
+
+### Reporting
+
+`aggregate --results DIR --suite NAME [--baseline MODEL]` turns raw run records into
+`report.json` (scores, confidence intervals, paired comparisons, amplification).
+
+`report --suite NAME [--baseline MODEL] [--level 1|2|both] [--output PATH]` writes a
+Markdown report (and `report.json`). `--results` defaults from the suite name.
+
+`report-html [--suites a,b,c] [--baseline MODEL] [--output PATH] [--min-runs N]`
+generates one self-contained HTML report across all suites (results-first overview,
+per-model, per-suite, statistics, raw runs, methodology, stack, reproducibility,
+about). Suites named `*smoke*` are excluded unless listed explicitly in `--suites`.
+
+### Review and reproducibility
+
+`review-packets --suite NAME` writes blinded `packet.json` files next to each run
+for optional human review (fill each packet's rubric into a `review.json`, then
+re-run `report`).
+
+`validate-reproducibility --suite NAME` recomputes content hashes (tasks, scoring,
+fixtures, hidden tests, sandbox image digests) and checks them against the recorded
+manifest, detecting drift.
+
+## Evaluation modes
+
+A mode normalizes a run without changing the task, fixture, base commit, or scoring.
+Set with `--mode`.
+
+| Mode | Effect |
+| --- | --- |
+| `default` | Each model as a normal user would run it |
+| `minimal_spec` | The terse, weak-user prompt (author `minimal` variant if present) |
+| `strong_spec` | Full requirements (author `strong` variant, else synthesized from acceptance criteria) |
+| `matched_workflow` | The same explicit step-by-step workflow forced on every model |
+| `equal_budget` | Comparable token/message/time/cost caps for all models |
+| `cost_matched` | Same dollar budget per task |
+| `time_matched` | Same wall-clock budget per task |
+| `older_plus_scaffold` | The older baseline model gets structured support; newer models run default |
+
+Running the same task across modes is what lets the Cross-Mode Synthesis tell
+intrinsic capability apart from agentic amplification. See [`docs/modes.md`](docs/modes.md).
+
+## How scoring works
+
+A run is **verified** only if the public tests pass, the pre-existing suite still
+passes (no regression), and no hard scope or forbidden-shortcut violation occurred.
+Hidden tests measure how completely the fix generalizes; scope control measures edit
+discipline (forbidden paths, forbidden patterns such as skipped tests, and
+max-files/lines budgets). Test-writing tasks are graded by mutation kill rate
+against planted mutants. Details in [`docs/scoring.md`](docs/scoring.md) and
+[`docs/amplification.md`](docs/amplification.md).
 
 ## Layout
 
 | Path | What |
 | --- | --- |
-| `agent_delta/` | Python package: config, registry, scoring, runners, reporting |
-| `evals/` | Inspect task entry points |
-| `tasks/` | Task definitions (prompt, public/hidden tests, acceptance) |
-| `repos/` | Fixture repositories and manifests |
-| `sandboxes/` | Dockerfiles + compose for agent sandboxes |
-| `configs/` | Pinned model / agent / scoring configs |
-| `results/` | Raw run records, normalized data, reports |
+| `agent_delta/` | Python package: config, registry, modes, eval/matrix runners, scoring, reporting |
+| `agent_delta/scoring/` | Objective/cost/latency/stats/amplification/diff/testrunner/review subsystems |
+| `agent_delta/reporting/` | Run-record builder, aggregation, Markdown and HTML report generators |
+| `evals/` | Inspect AI task entry point (`anthropic_claude_code.py`) |
+| `tasks/` | Task definitions (prompt + variants, public/hidden tests, reference solution, acceptance), plus `SUITE_PLAN.md` |
+| `repos/fixtures/`, `repos/manifests/` | Fixture repositories and their build manifests |
+| `sandboxes/` | Dockerfile for the agent sandboxes |
+| `configs/` | Pinned model / agent / scoring / mode configs |
+| `results/raw/`, `results/reports/` | Raw run records and generated reports |
+| `docs/` | Topic docs (methodology, scoring, modes, amplification, reproducibility, task authoring, limitations) |
+| `tests/` | Unit tests for the harness |
 
-## Principles (from the SPEC)
+## Principles
 
-Pinned model IDs only (no aliases), same task from the same clean repo state,
-objective scoring first, no silent model fallback, predeclared scoring, and raw
-results published alongside rankings with confidence intervals.
+Pinned model IDs only (no aliases); the same task from the same clean,
+digest-pinned repository state; objective scoring first; no silent model fallback
+(served-model mismatch quarantines a run); predeclared scoring and modes; and raw
+results published alongside rankings with confidence intervals and materiality
+tests. A result you cannot reproduce is an anecdote.
+
+## Roadmap
+
+AgentDelta currently supports Claude Code. Support for the Codex CLI and the Gemini
+CLI is coming soon, so the same tasks and the same objective scoring can compare
+coding agents across providers on a level field.
+
+## Contributing
+
+Questions, feedback, or ideas for improving AgentDelta are very welcome. If you have
+a suggestion, a new task idea, or want to add a fixture or a provider adapter, please
+get in touch at the contact email below, or open an issue or pull request on the
+repository.
+
+To contribute code:
+
+- Fork the repository and work on a feature branch.
+- Before opening a pull request, run `.venv/bin/agentdelta check-task --all` and
+  `.venv/bin/python -m pytest -q`, and make sure both are green.
+- For new tasks, follow [`docs/task_authoring.md`](docs/task_authoring.md): every
+  task must fail at base and pass with its reference solution, and must ship public
+  and hidden tests plus an explicit forbidden-shortcut check.
+- Open an issue to discuss larger changes (new fixtures, new providers, scoring
+  changes) before building them, so we can agree on the approach first.
+
+## Author
+
+**David William Silva**
+Contact: contact@davidwsilva.com
+
+AgentDelta exists because the narrative and culture around AI models lean blindly
+toward the latest and greatest, with little discernment, no pragmatics, and rarely
+any justification for upgrading, least of all a justification for the additional
+cost. When a model is called "better", that judgment usually rests on a subjective,
+biased, and ungrounded personal perception that some task was handled better by the
+newer model, rather than on objective metrics. It is often not even clear whether
+the latest model is genuinely more capable or is simply doing more agentic work:
+more tool calls, longer workflows, more retries, more self-review. AgentDelta aims
+to answer those questions and to provide a clear, evidence-based understanding of
+model capability, alongside the cost, latency, and amplification metrics that should
+actually drive an upgrade decision.

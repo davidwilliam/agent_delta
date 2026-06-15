@@ -1,0 +1,433 @@
+{
+  "agentdelta_version": "0.1.0",
+  "date": "2026-06-15",
+  "suite": "anthropic-hard50-smoke",
+  "inspect_version": "0.3.239",
+  "inspect_swe_version": "0.2.63",
+  "python_version": "3.14.5",
+  "docker_version": "27.4.0",
+  "host_os": "macOS-26.5.1-arm64-arm-64bit-Mach-O",
+  "agent": "claude_code",
+  "agent_cli_version": "2.1.153",
+  "agent_settings_hash": "sha256:8eafc658ce71d702ab6136c729ebddfe5b6977b67607c4bbfd28383c56ac5a34",
+  "models": [
+    "claude-opus-4-8"
+  ],
+  "tasks": [
+    "go_contract_01",
+    "go_loc_01",
+    "go_task_001",
+    "go_task_002",
+    "hard_task_001",
+    "hard_task_002",
+    "hard_task_003",
+    "hard_task_004",
+    "lc_retrieval_01",
+    "lc_retrieval_02",
+    "mk_contract_01",
+    "mk_invariant_01",
+    "mk_loc_01",
+    "mk_minimal_01",
+    "pay_authz_01",
+    "pay_concurrency_01",
+    "pay_concurrency_02",
+    "pay_invariant_01",
+    "pay_loc_01",
+    "pay_minimal_01",
+    "pay_state_01",
+    "pay_state_02",
+    "saas_authz_01",
+    "saas_concurrency_01",
+    "saas_contract_01",
+    "saas_invariant_01",
+    "saas_loc_01",
+    "saas_state_01",
+    "saas_state_02",
+    "task_001",
+    "task_002",
+    "task_003",
+    "task_004",
+    "task_005",
+    "task_006",
+    "task_007",
+    "task_008",
+    "task_009",
+    "task_010",
+    "task_011",
+    "task_012",
+    "task_013",
+    "task_014",
+    "ts_contract_01",
+    "ts_invariant_02",
+    "ts_loc_01",
+    "ts_minimal_01",
+    "ts_security_01",
+    "ts_state_01",
+    "ts_task_001"
+  ],
+  "sandbox_images": {
+    "go_cli": "sha256:334e949c65c73d2b12feda3b1f62d0387c0907d9bb4285623a06526afa199dea",
+    "long_context": "sha256:678924877232a2b4ef39e8a673b0d10661fee4a4d06f263989f7cf127fa2b827",
+    "payments": "sha256:6f2e8d6e7bd7e65b29bb965a6853a5005cedda616a082a6c4f17681852bd84e1",
+    "pricing_ts": "sha256:00fe273cdc61137a6ced8d8ba0b6c5f756f1f824c16eea47a885b07f81cee34e",
+    "python_package": "sha256:1baa4f06daaf319c3be76350b21c0e0df1abbc74fb28e998690bef087283784d",
+    "saas": "sha256:965c3ba089c4709e45b7fc35aeedeb2e29a49a0975e9bbfcbe38a299b4aa47dc"
+  },
+  "tasks_hash": "sha256:a1db15ea21608e431fce7a7ea77b004790d425ca63baa7d34c9b98bac1bfe386",
+  "scoring_hash": "sha256:73972ebd6646114b768a4b9fd9f7b762ed6b21acee98bd85c9f1e7f51f986f24",
+  "fixtures_hash": "sha256:26618f201a72b9b5c795261c07284baa88f5a3801d91ee85abf563c76c9aec1a",
+  "hidden_tests_hash": "sha256:cadde40f394a1538902ddcf8b5449ac172d80f235d0f689a6098baa09714c3d8",
+  "run_order_seed": 12345,
+  "run_order": [
+    {
+      "rep": 0,
+      "task": "go_contract_01",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "go_loc_01",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "go_task_001",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "go_task_002",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "hard_task_001",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "hard_task_002",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "hard_task_003",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "hard_task_004",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "lc_retrieval_01",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "lc_retrieval_02",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "mk_contract_01",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "mk_invariant_01",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "mk_loc_01",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "mk_minimal_01",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "pay_authz_01",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "pay_concurrency_01",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "pay_concurrency_02",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "pay_invariant_01",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "pay_loc_01",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "pay_minimal_01",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "pay_state_01",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "pay_state_02",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "saas_authz_01",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "saas_concurrency_01",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "saas_contract_01",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "saas_invariant_01",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "saas_loc_01",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "saas_state_01",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "saas_state_02",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "task_001",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "task_002",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "task_003",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "task_004",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "task_005",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "task_006",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "task_007",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "task_008",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "task_009",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "task_010",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "task_011",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "task_012",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "task_013",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "task_014",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "ts_contract_01",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "ts_invariant_02",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "ts_loc_01",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "ts_minimal_01",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "ts_security_01",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "ts_state_01",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "ts_task_001",
+      "order": [
+        "claude-opus-4-8"
+      ]
+    }
+  ]
+}

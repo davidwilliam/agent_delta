@@ -22,7 +22,7 @@
   "sandbox_images": {
     "payments": "sha256:6a96deb3fe12ad7c70fa88b7ce6e8350cf274afa9cf2a7a467e233d82a3bb275"
   },
-  "tasks_hash": "sha256:5ba14df68537f534bb5d7156b0eda22e449d5ff3a198e96d9a6d5f20b79daa51",
+  "tasks_hash": "sha256:bd45ab16ad45a547e6d104f26702f2d2f4eb83d54b0eafd279aca8613427709e",
   "scoring_hash": "sha256:c4aea89e5b179a09cfcc0ec5a4c4eae1c4fec9a8a18394d438baa924af762220",
   "fixtures_hash": "sha256:bbc9e0e592a577506df61681ebfda484eb32aa48076de761b9a95f6b51015529",
   "hidden_tests_hash": "sha256:7a64ee155dafca872721b07832664dda5c738b3bc08bbd9a1dad34c606bcbbda",
