@@ -1,0 +1,17 @@
+[project]
+name = "saasapp"
+version = "0.1.0"
+description = "A tiny layered multi-tenant service (AgentDelta hard-task fixture)"
+requires-python = ">=3.9"
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["saasapp"]
+package-dir = { "" = "src" }

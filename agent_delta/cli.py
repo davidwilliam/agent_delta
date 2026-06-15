@@ -37,6 +37,8 @@ def validate_task_cmd(task_id: str) -> None:
         if not task.load_mutants():
             problems.append("test_writing task has no mutants/")
     else:
+        if not task.public_test_files:
+            problems.append("no public tests declared (check the tests: block)")
         for p in task.public_test_files + task.hidden_test_files:
             if not p.exists():
                 problems.append(f"missing test file: {p.name}")
