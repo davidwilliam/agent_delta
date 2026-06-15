@@ -268,6 +268,52 @@ def aggregate_cmd(results_dir: str, suite: str, baseline: str | None) -> None:
         click.echo(f"  [{mode}] L2 escalated (material gains): {', '.join(material) or 'none'}")
 
 
+@main.command("report-html")
+@click.option("--suites", default=None,
+              help="Comma-separated suite names (default: every suite under results/raw).")
+@click.option("--baseline", default="claude-opus-4-6",
+              help="Baseline model ID for amplification (falls back to oldest if absent).")
+@click.option("--output", default=None, help="HTML output path (default: results/reports/agentdelta-report.html).")
+@click.option("--min-runs", default=1, type=int, help="Skip suites with fewer than this many runs.")
+def report_html_cmd(suites: str | None, baseline: str, output: str | None, min_runs: int) -> None:
+    """Generate one comprehensive, self-contained HTML report across all suites."""
+    from datetime import datetime, timezone
+
+    from agent_delta.reporting import build_report, render_html
+    from agent_delta.reporting.aggregate import load_run_records
+
+    raw_root = config.RAW_RESULTS_DIR
+    if suites:
+        suite_names = [s.strip() for s in suites.split(",") if s.strip()]
+    else:
+        # Default: every real suite. Smoke tests are excluded unless named explicitly.
+        suite_names = sorted(d.name for d in raw_root.iterdir()
+                             if d.is_dir() and "smoke" not in d.name and any(d.rglob("run.json")))
+
+    bundle = []
+    for name in suite_names:
+        rdir = raw_root / name
+        records = load_run_records(rdir)
+        if len(records) < min_runs:
+            click.secho(f"  skip {name} ({len(records)} run(s) < {min_runs})", fg="yellow")
+            continue
+        report = build_report(rdir, suite=name, baseline=baseline)
+        repro_path = config.RESULTS_DIR / "reports" / name / "reproducibility.json"
+        repro = json.loads(repro_path.read_text()) if repro_path.exists() else None
+        bundle.append({"report": report, "records": records, "repro": repro})
+        click.echo(f"  + {name}: {len(records)} runs")
+
+    if not bundle:
+        raise click.UsageError("No suites with run records found.")
+
+    generated = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+    doc = render_html(bundle, generated_at=generated)
+    out = Path(output) if output else (config.RESULTS_DIR / "reports" / "agentdelta-report.html")
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(doc)
+    click.secho(f"\nWrote {out} ({len(doc) // 1024} KB, {len(bundle)} suites)", fg="green")
+
+
 @main.command("report")
 @click.option("--results", "results_dir", default=None, help="Dir of run records (defaults from suite).")
 @click.option("--suite", required=True, help="Suite name.")
