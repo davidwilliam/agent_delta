@@ -22,6 +22,22 @@ BAD = "#b3322c"
 
 REPO_URL = "https://github.com/davidwilliam/agent_delta"
 
+# The report's sections, in order. Single source of truth for both the HTML
+# sidebar and the website JSON export (agent_delta/reporting/json_export.py).
+# Labels are PLAIN text here; the HTML renderer escapes them, the JSON emits them
+# as-is. Add, rename, or reorder a section by editing this one list.
+REPORT_SECTIONS: list[tuple[str, str]] = [
+    ("overview", "Results"),
+    ("models", "Per-model"),
+    ("suites", "Per-suite"),
+    ("stats", "Statistics"),
+    ("raw", "Raw runs"),
+    ("methodology", "Methodology"),
+    ("stack", "Stack & requirements"),
+    ("repro", "Reproducibility"),
+    ("about", "About"),
+]
+
 # Third-party components AgentDelta builds on. Cited with a link and a one-line
 # explanation wherever they appear in the report (the user should never hit an
 # unexplained tool name).
@@ -1172,19 +1188,9 @@ def render_html(suites: list[dict], *, generated_at: str = "") -> str:
     if generated_at:
         meta += f" &middot; generated {_esc(generated_at)}"
 
-    tabs = [
-        ("overview", "Results"),
-        ("models", "Per-model"),
-        ("suites", "Per-suite"),
-        ("stats", "Statistics"),
-        ("raw", "Raw runs"),
-        ("methodology", "Methodology"),
-        ("stack", "Stack &amp; requirements"),
-        ("repro", "Reproducibility"),
-        ("about", "About"),
-    ]
+    tabs = REPORT_SECTIONS
     nav = "".join(
-        f'<button class="nav-item{" active" if i == 0 else ""}" data-tab="{tid}">{label}</button>'
+        f'<button class="nav-item{" active" if i == 0 else ""}" data-tab="{tid}">{_esc(label)}</button>'
         for i, (tid, label) in enumerate(tabs))
 
     body = "".join([

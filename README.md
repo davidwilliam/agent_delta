@@ -78,7 +78,7 @@ Hardness spans H1 to H5; over half the tasks carry author-written minimal / stro
 ```bash
 python3 -m venv .venv
 .venv/bin/pip install -e ".[dev]"      # drop [dev] to skip pytest/ruff
-echo 'ANTHROPIC_API_KEY=sk-ant-...' > .env
+cp .env.example .env                   # then put your real key in .env (ANTHROPIC_API_KEY)
 ```
 
 Build the sandbox image for each fixture once (run-commit avoids BuildKit issues):
@@ -112,7 +112,8 @@ done
 Run records land in `results/raw/<suite>/<run_id>/run.json` (with the final diff);
 per-suite reports in `results/reports/<suite>/` (`report.json`, `report.md`,
 `reproducibility.json`); the cross-suite HTML at
-`results/reports/agentdelta-report.html`.
+`results/reports/agentdelta-report.html`, with the machine-readable
+`agentdelta-report.json` beside it.
 
 ## Command reference
 
@@ -176,6 +177,16 @@ Markdown report (and `report.json`). `--results` defaults from the suite name.
 generates one self-contained HTML report across all suites (results-first overview,
 per-model, per-suite, statistics, raw runs, methodology, stack, reproducibility,
 about). Suites named `*smoke*` are excluded unless listed explicitly in `--suites`.
+It also writes a machine-readable `agentdelta-report.json` next to the HTML on every
+run, so the JSON never drifts from the rendered report.
+
+`report-json [--suites a,b,c] [--baseline MODEL] [--output PATH] [--min-runs N]`
+writes only the JSON export (same data and code path as `report-html`). The JSON is
+the stable, versioned source of truth that downstream consumers (for example the AI
+Unmasked website) read to build their own page: a `schema_version`, a `sections`
+list mirroring the report's navigation, and per-suite `report` / `records` / `repro`
+objects identical to the per-suite files. It is strict, JS-parseable JSON (no
+NaN/Infinity). See [`docs/website_json_export.md`](docs/website_json_export.md).
 
 ### Review and reproducibility
 

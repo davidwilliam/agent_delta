@@ -268,29 +268,23 @@ def aggregate_cmd(results_dir: str, suite: str, baseline: str | None) -> None:
         click.echo(f"  [{mode}] L2 escalated (material gains): {', '.join(material) or 'none'}")
 
 
-@main.command("report-html")
-@click.option("--suites", default=None,
-              help="Comma-separated suite names (default: every suite under results/raw).")
-@click.option("--baseline", default="claude-opus-4-6",
-              help="Baseline model ID for amplification (falls back to oldest if absent).")
-@click.option("--output", default=None, help="HTML output path (default: results/reports/agentdelta-report.html).")
-@click.option("--min-runs", default=1, type=int, help="Skip suites with fewer than this many runs.")
-def report_html_cmd(suites: str | None, baseline: str, output: str | None, min_runs: int) -> None:
-    """Generate one comprehensive, self-contained HTML report across all suites."""
-    from datetime import datetime, timezone
+def _collect_report_bundle(suites: str | None, baseline: str, min_runs: int) -> list[dict]:
+    """Discover suites and build the render bundle shared by report-html and report-json.
 
-    from agent_delta.reporting import build_report, render_html
+    Returns [{"report", "records", "repro"}] (one per suite); `report` is the exact
+    build_report() output. Smoke-named suites are excluded unless listed explicitly.
+    """
+    from agent_delta.reporting import build_report
     from agent_delta.reporting.aggregate import load_run_records
 
     raw_root = config.RAW_RESULTS_DIR
     if suites:
         suite_names = [s.strip() for s in suites.split(",") if s.strip()]
     else:
-        # Default: every real suite. Smoke tests are excluded unless named explicitly.
         suite_names = sorted(d.name for d in raw_root.iterdir()
                              if d.is_dir() and "smoke" not in d.name and any(d.rglob("run.json")))
 
-    bundle = []
+    bundle: list[dict] = []
     for name in suite_names:
         rdir = raw_root / name
         records = load_run_records(rdir)
@@ -305,13 +299,61 @@ def report_html_cmd(suites: str | None, baseline: str, output: str | None, min_r
 
     if not bundle:
         raise click.UsageError("No suites with run records found.")
+    return bundle
 
-    generated = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+
+def _now_utc() -> str:
+    from datetime import datetime, timezone
+    return datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+
+
+@main.command("report-html")
+@click.option("--suites", default=None,
+              help="Comma-separated suite names (default: every suite under results/raw).")
+@click.option("--baseline", default="claude-opus-4-6",
+              help="Baseline model ID for amplification (falls back to oldest if absent).")
+@click.option("--output", default=None, help="HTML output path (default: results/reports/agentdelta-report.html).")
+@click.option("--min-runs", default=1, type=int, help="Skip suites with fewer than this many runs.")
+def report_html_cmd(suites: str | None, baseline: str, output: str | None, min_runs: int) -> None:
+    """Generate one comprehensive, self-contained HTML report across all suites.
+
+    Also writes the machine-readable agentdelta-report.json next to the HTML so the
+    JSON (the website's source of truth) can never drift from the rendered report.
+    """
+    from agent_delta.reporting import render_html
+    from agent_delta.reporting.json_export import build_report_json, dump_report_json
+
+    bundle = _collect_report_bundle(suites, baseline, min_runs)
+    generated = _now_utc()
     doc = render_html(bundle, generated_at=generated)
     out = Path(output) if output else (config.RESULTS_DIR / "reports" / "agentdelta-report.html")
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(doc)
     click.secho(f"\nWrote {out} ({len(doc) // 1024} KB, {len(bundle)} suites)", fg="green")
+
+    json_out = out.with_suffix(".json")
+    data = build_report_json(bundle, generated_at=generated, baseline=baseline)
+    json_out.write_text(dump_report_json(data))
+    click.secho(f"Wrote {json_out} ({len(json_out.read_text()) // 1024} KB)", fg="green")
+
+
+@main.command("report-json")
+@click.option("--suites", default=None,
+              help="Comma-separated suite names (default: every suite under results/raw).")
+@click.option("--baseline", default="claude-opus-4-6",
+              help="Baseline model ID for amplification (falls back to oldest if absent).")
+@click.option("--output", default=None, help="JSON output path (default: results/reports/agentdelta-report.json).")
+@click.option("--min-runs", default=1, type=int, help="Skip suites with fewer than this many runs.")
+def report_json_cmd(suites: str | None, baseline: str, output: str | None, min_runs: int) -> None:
+    """Generate the machine-readable JSON report (same data the HTML report renders)."""
+    from agent_delta.reporting.json_export import build_report_json, dump_report_json
+
+    bundle = _collect_report_bundle(suites, baseline, min_runs)
+    data = build_report_json(bundle, generated_at=_now_utc(), baseline=baseline)
+    out = Path(output) if output else (config.RESULTS_DIR / "reports" / "agentdelta-report.json")
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(dump_report_json(data))
+    click.secho(f"Wrote {out} ({len(out.read_text()) // 1024} KB, {len(bundle)} suites)", fg="green")
 
 
 @main.command("report")
