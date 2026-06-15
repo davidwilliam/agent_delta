@@ -1,0 +1,58 @@
+id: hard_task_002
+title: Add a suspended account state to the lifecycle
+category: state_machine
+hardness_level: H5
+known_llm_failure_mode: enum_or_transition_only_change_misses_enforcement_side_effects
+repo: saas
+base_commit: HEAD
+language: python
+framework: pytest
+prompt_file: prompt.md
+
+context_requirement:
+  min_context_tokens: 8000
+  preferred_context_tokens: 200000
+
+execution:
+  timeout_minutes: 25
+  max_cost_usd: 4.00
+  max_agent_turns: null
+  network: disabled
+  package_install: false
+
+scope:
+  allowed_paths:
+    - src/
+    - tests/
+  forbidden_paths:
+    - src/saasapp/storage.py
+  max_files_modified: 3
+  max_lines_changed: 40
+  forbidden_changes:
+    - Do not change the existing active/closed transitions.
+    - Do not modify the seed data in storage.py or the tests.
+  forbidden_patterns:
+    - pattern: "@pytest\\.mark\\.skip"
+      label: test_removed_or_weakened
+
+tests:
+  baseline:
+    - pytest -q tests/
+  public:
+    - public_tests.py
+  hidden:
+    - hidden_tests.py
+
+acceptance_criteria:
+  - Accounts can transition active->suspended, suspended->active, and suspended->closed.
+  - The transition closed->suspended is illegal and raises.
+  - Suspended accounts cannot create projects but can still view projects.
+  - Transitions are recorded in the audit log; existing active/closed behavior is unchanged.
+
+scoring:
+  objective_weight: 1.0
+  review_weight: 0.0
+
+notes:
+  - H5 state-machine. A transition-table-only change lets suspended accounts create
+    projects (create_project must also be updated), which the hidden tests catch.

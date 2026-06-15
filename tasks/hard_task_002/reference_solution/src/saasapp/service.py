@@ -1,5 +1,6 @@
-"""Business logic. Authorization goes through policy/ownership; account state
-through lifecycle/storage.
+"""Business logic (reference solution for hard_task_002).
+
+create_project now blocks any non-active account (closed and suspended).
 """
 
 from saasapp import ownership, policy, storage
@@ -7,12 +8,10 @@ from saasapp.models import Project
 
 
 def list_visible_projects(user):
-    """Projects the user is allowed to view."""
     return [p for p in storage.all_projects() if policy.can_view(user, p)]
 
 
 def get_project(user, project_id):
-    """Fetch a single project, enforcing authorization."""
     project = storage.find_project(project_id)
     if project is None:
         raise KeyError(project_id)
@@ -22,13 +21,11 @@ def get_project(user, project_id):
 
 
 def list_owned_projects(user):
-    """Projects owned by the user that they can view."""
     return [p for p in storage.all_projects()
             if ownership.is_owner(user, p) and policy.can_view(user, p)]
 
 
 def can_user_edit(user, project_id):
-    """Whether the user may edit the given project."""
     project = storage.find_project(project_id)
     if project is None:
         raise KeyError(project_id)
@@ -36,13 +33,9 @@ def can_user_edit(user, project_id):
 
 
 def create_project(user, name):
-    """Create a project for the user's tenant.
-
-    NOTE (fixture): only a closed account is blocked here; the H5 task must also
-    block suspended accounts.
-    """
-    if storage.account_status(user.tenant_id) == "closed":
-        raise PermissionError("closed account cannot create projects")
+    """Create a project; only active accounts may create."""
+    if storage.account_status(user.tenant_id) != "active":
+        raise PermissionError("only active accounts can create projects")
     project = Project(id=storage.next_project_id(), tenant_id=user.tenant_id,
                       owner_id=user.id, name=name, archived=False)
     storage.add_project(project)

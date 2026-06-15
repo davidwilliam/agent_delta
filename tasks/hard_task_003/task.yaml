@@ -1,0 +1,57 @@
+id: hard_task_003
+title: Fix owned-project listing and edit permission
+category: multi_file_bug_localization
+hardness_level: H2
+known_llm_failure_mode: patches_symptom_in_service_not_shared_helper_root_cause
+repo: saas
+base_commit: HEAD
+language: python
+framework: pytest
+prompt_file: prompt.md
+
+context_requirement:
+  min_context_tokens: 8000
+  preferred_context_tokens: 200000
+
+execution:
+  timeout_minutes: 25
+  max_cost_usd: 4.00
+  max_agent_turns: null
+  network: disabled
+  package_install: false
+
+scope:
+  allowed_paths:
+    - src/
+    - tests/
+  forbidden_paths:
+    - src/saasapp/storage.py
+  max_files_modified: 3
+  max_lines_changed: 20
+  forbidden_changes:
+    - Do not modify the seed data in storage.py or the tests.
+  forbidden_patterns:
+    - pattern: "@pytest\\.mark\\.skip"
+      label: test_removed_or_weakened
+
+tests:
+  baseline:
+    - pytest -q tests/
+  public:
+    - public_tests.py
+  hidden:
+    - hidden_tests.py
+
+acceptance_criteria:
+  - list_owned_projects returns exactly the projects owned by the user (and viewable).
+  - can_user_edit is true only for a project the user owns and can view.
+  - The fix is at the root cause so both owned-listing and edit-permission are correct.
+
+scoring:
+  objective_weight: 1.0
+  review_weight: 0.0
+
+notes:
+  - H2 localization. Symptom shows in list_owned_projects and can_user_edit; the
+    root cause is ownership.is_owner (shared by both). A service-only patch of
+    list_owned leaves can_user_edit wrong, which the hidden tests catch.
