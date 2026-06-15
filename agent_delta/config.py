@@ -57,6 +57,38 @@ def ensure_anthropic_key() -> str:
     return key
 
 
+# Which provider (and thus which API key) each agent CLI talks to.
+AGENT_PROVIDER = {
+    "claude_code": "anthropic",
+    "codex_cli": "openai",
+    "gemini_cli": "google",
+}
+_PROVIDER_KEY_ENV = {
+    "anthropic": "ANTHROPIC_API_KEY",
+    "openai": "OPENAI_API_KEY",
+    "google": "GEMINI_API_KEY",
+}
+
+
+def provider_for_agent(agent: str) -> str:
+    """The model provider an agent CLI uses (default anthropic)."""
+    return AGENT_PROVIDER.get(agent, "anthropic")
+
+
+def ensure_provider_key(provider: str) -> str:
+    """Ensure the API key for `provider` is present (loading .env). Raises if missing."""
+    if provider == "anthropic":
+        return ensure_anthropic_key()
+    load_dotenv()
+    env = _PROVIDER_KEY_ENV.get(provider)
+    key = os.environ.get(env) if env else None
+    if not key:
+        raise RuntimeError(
+            f"No API key for provider {provider!r}. Set {env} in your environment or .env."
+        )
+    return key
+
+
 # YAML config loading.
 def _load_yaml(path: Path) -> dict[str, Any]:
     with path.open() as f:

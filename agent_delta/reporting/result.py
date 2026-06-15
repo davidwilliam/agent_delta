@@ -54,6 +54,7 @@ def build_run_record(
 ) -> dict[str, Any]:
     spec = log.eval
     model_id = (spec.model or "").split("/")[-1]
+    provider = (spec.model or "").split("/")[0] or "anthropic"
     # Effort lives on the task/plan config (what the model actually ran with),
     # not the eval-level config; fall back to the eval config if absent.
     plan_cfg = getattr(getattr(log, "plan", None), "config", None)
@@ -115,7 +116,7 @@ def build_run_record(
         "repo": (sample.metadata or {}).get("repo"),
         "agent": agent,
         "agent_version": agent_version,
-        "provider": "anthropic",
+        "provider": provider,
         "model_id": model_id,
         "model_config": {"reasoning_effort": reasoning_effort},
         "mode": mode,
