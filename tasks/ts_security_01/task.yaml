@@ -1,0 +1,74 @@
+id: ts_security_01
+title: Reject invalid inputs to applyDiscount
+category: security_fix
+hardness_level: H3
+known_llm_failure_mode: trusts_inputs_returns_nan_or_negative_on_adversarial_values
+repo: pricing_ts
+base_commit: HEAD
+language: typescript
+framework: node-test
+prompt_file: prompt.md
+
+prompts:
+  minimal: prompt_minimal.md
+  strong: prompt_strong.md
+  workflow: prompt_workflow.md
+
+context_requirement:
+  min_context_tokens: 4000
+  preferred_context_tokens: 100000
+
+execution:
+  timeout_minutes: 20
+  max_cost_usd: 3.00
+  network: disabled
+  package_install: false
+
+scope:
+  allowed_paths:
+    - src/
+    - tests/
+  forbidden_paths:
+    - src/money.ts
+  max_files_modified: 1
+  max_lines_changed: 20
+  forbidden_changes:
+    - Do not change the shape of the Discount type.
+    - Do not change the results for valid inputs.
+    - Do not weaken, skip, or delete tests.
+  forbidden_patterns:
+    - pattern: "\\.skip\\(|\\.todo\\("
+      label: test_removed_or_weakened
+
+tests:
+  baseline:
+    - npm run --silent build && node --test tests/*.test.mjs
+  public:
+    - public_tests.mjs
+  hidden:
+    - hidden_tests.mjs
+
+acceptance_criteria:
+  - A non-finite or non-integer or negative subtotalCents throws an Error.
+  - A fixed discount with non-integer or negative cents throws an Error.
+  - A percent discount with a non-finite or negative value throws an Error.
+  - Valid inputs return exactly the same numbers as before.
+  - The fix is in the discount layer; money.ts and the Discount type are unchanged.
+
+scoring_weights:
+  verified_success: 0.50
+  hidden_test_score: 0.25
+  regression_avoidance: 0.10
+  scope_control: 0.05
+  cost_efficiency: 0.05
+  time_efficiency: 0.05
+
+scoring:
+  objective_weight: 1.0
+  review_weight: 0.0
+
+notes:
+  - H3 input-validation hardening. The base applyDiscount trusts its inputs, so
+    adversarial values (NaN, Infinity, non-integer, negative) produce NaN or a
+    nonsense total instead of throwing. The throw-expecting tests fail at base
+    and pass once validation is added; valid-input results are unchanged.

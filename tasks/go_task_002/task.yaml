@@ -1,6 +1,9 @@
 id: go_task_002
 title: Add a Capitalize function to textkit
 category: medium_feature
+tier: supplementary
+hardness_level: H1
+known_llm_failure_mode: misses_unicode_or_empty_string_edge_cases
 difficulty: 2
 repo: go_cli
 base_commit: HEAD

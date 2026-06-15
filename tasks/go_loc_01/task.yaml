@@ -1,0 +1,84 @@
+id: go_loc_01
+title: Fix word-run-together output from the whitespace helper
+category: multi_file_bug_localization
+hardness_level: H2
+known_llm_failure_mode: patches_tidy_symptom_instead_of_collapse_helper
+difficulty: 3
+repo: go_cli
+base_commit: HEAD
+language: go
+framework: go-test
+prompt_file: prompt.md
+prompts:
+  minimal: prompt_minimal.md
+  strong: prompt_strong.md
+  workflow: prompt_workflow.md
+
+context_requirement:
+  min_context_tokens: 8000
+  preferred_context_tokens: 200000
+
+execution:
+  timeout_minutes: 15
+  max_cost_usd: 2.00
+  max_agent_turns: null
+  network: disabled
+  package_install: false
+
+scope:
+  allowed_paths:
+    - normalize.go
+  forbidden_paths:
+    - go.mod
+    - go.sum
+    - textkit.go
+    - textkit_test.go
+  forbidden:
+    - go.mod
+    - go.sum
+  max_files_modified: 1
+  max_files: 1
+  max_lines_changed: 12
+  max_lines: 12
+  forbidden_changes:
+    - Fix the root cause in the collapseSpaces helper, not in Tidy. Do not rewrite Tidy to re-insert spaces while leaving the broken helper in place.
+    - Do not change the signature or doc contract of Tidy.
+    - Do not change any existing exported function (Reverse, WordCount, Truncate) or its behaviour.
+    - Do not modify go.mod or go.sum.
+    - Do not weaken, delete, or edit the public or hidden tests.
+
+tests:
+  baseline:
+    - go test ./...
+  public:
+    - public_test.go
+  hidden:
+    - hidden_test.go
+
+acceptance_criteria:
+  - Tidy trims leading and trailing whitespace and collapses internal runs of whitespace to a single space.
+  - Tidy("a  b") is "a b" and Tidy("  hello   world  ") is "hello world".
+  - Runs of any whitespace (spaces, tabs, newlines) collapse to a single space.
+  - A single word is unchanged and an empty string returns "".
+  - The fix is in the collapseSpaces helper, not in Tidy.
+  - Tidy and the other existing exported functions (Reverse, WordCount, Truncate) are unchanged.
+  - Existing baseline tests continue to pass (no regression).
+
+scoring_weights:
+  public: 0.50
+  hidden: 0.25
+  baseline: 0.10
+  scope: 0.05
+  style: 0.05
+  review: 0.05
+
+scoring:
+  objective_weight: 1.0
+  review_weight: 0.0
+
+notes:
+  - Multi-file bug localization. The symptom is wrong Tidy output but the root cause is the unexported collapseSpaces helper.
+  - At base the injected public tests fail because spaces are stripped (Tidy("a  b") is "ab"). After the helper is fixed, baseline, public, and hidden tests all pass.
+  - Detects the failure mode patches_tidy_symptom_instead_of_collapse_helper: a correct solution fixes collapseSpaces and leaves Tidy unchanged.
+
+expected_behavior: expected_behavior.md

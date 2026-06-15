@@ -1,0 +1,78 @@
+id: saas_concurrency_01
+title: Enforce the seat limit safely under concurrent assignment
+category: concurrency_idempotency
+hardness_level: H5
+known_llm_failure_mode: unlocked_check_then_act_exceeds_seat_limit
+repo: saas
+base_commit: HEAD
+language: python
+framework: pytest
+prompt_file: prompt.md
+
+prompts:
+  minimal: prompt_minimal.md
+  strong: prompt_strong.md
+  workflow: prompt_workflow.md
+
+context_requirement:
+  min_context_tokens: 4000
+  preferred_context_tokens: 100000
+
+execution:
+  timeout_minutes: 20
+  max_cost_usd: 3.00
+  network: disabled
+  package_install: false
+
+scope:
+  allowed_paths:
+    - src/
+    - tests/
+  forbidden_paths:
+    - src/saasapp/storage.py
+  max_files_modified: 1
+  max_lines_changed: 25
+  forbidden_changes:
+    - Do not remove or reduce the simulated latency in provisioning.assign.
+    - Do not weaken, skip, or delete tests.
+    - Do not change other modules.
+  forbidden_patterns:
+    - pattern: "@pytest\\.mark\\.skip"
+      label: test_removed_or_weakened
+
+tests:
+  baseline:
+    - pytest -q tests/
+  public:
+    - public_tests.py
+  hidden:
+    - hidden_tests.py
+
+acceptance_criteria:
+  - Concurrent assignments to one tenant never exceed its seat limit; exactly LIMITS[tenant] callers succeed and the rest raise ValueError.
+  - Sequential assigns fill the tenant up to its limit and the next distinct user raises ValueError.
+  - Distinct tenants remain independent under concurrency, each capped at its own limit.
+  - Re-assigning a user who already holds a seat is idempotent and does not consume a new seat.
+  - The simulated latency in provisioning.assign is preserved.
+
+scoring_weights:
+  verified_success: 0.50
+  hidden_test_score: 0.25
+  regression_avoidance: 0.10
+  scope_control: 0.05
+  cost_efficiency: 0.05
+  time_efficiency: 0.05
+
+scoring:
+  objective_weight: 1.0
+  review_weight: 0.0
+
+notes:
+  - H5 concurrency. The base assign does an unlocked check-then-act under simulated
+    latency, so concurrent callers all read the same under-limit state before any of
+    them writes, and more than LIMITS[tenant] users get seats. Only proper
+    synchronization (for example a threading.Lock held across the whole
+    check-then-act, with the latency kept inside the critical section) passes;
+    removing the latency is forbidden. Hidden tests exercise higher thread counts,
+    a second tenant with a different limit, tenant independence, and idempotent
+    re-assignment.

@@ -1,0 +1,75 @@
+id: ts_contract_01
+title: Keep the legacy amount alias consistent in receipts
+category: cross_file_contract
+hardness_level: H2
+known_llm_failure_mode: breaks_backward_compatible_alias
+repo: pricing_ts
+base_commit: HEAD
+language: typescript
+framework: node-test
+prompt_file: prompt.md
+
+prompts:
+  minimal: prompt_minimal.md
+  strong: prompt_strong.md
+  workflow: prompt_workflow.md
+
+context_requirement:
+  min_context_tokens: 4000
+  preferred_context_tokens: 100000
+
+execution:
+  timeout_minutes: 20
+  max_cost_usd: 3.00
+  network: disabled
+  package_install: false
+
+scope:
+  allowed_paths:
+    - src/
+    - tests/
+  forbidden_paths:
+    - src/cart.ts
+    - src/money.ts
+  max_files_modified: 1
+  max_lines_changed: 8
+  forbidden_changes:
+    - Do not change cart.ts or money.ts.
+    - Do not weaken, skip, or delete tests.
+    - Do not change the Receipt shape or the receipt signature.
+  forbidden_patterns:
+    - pattern: "\\.skip\\(|\\.todo\\("
+      label: test_removed_or_weakened
+
+tests:
+  baseline:
+    - npm run --silent build && node --test tests/*.test.mjs
+  public:
+    - public_tests.mjs
+  hidden:
+    - hidden_tests.mjs
+
+acceptance_criteria:
+  - In receipt(), the legacy amount field always equals the total field.
+  - total equals subtotalCents of the items, including the empty cart (0).
+  - The Receipt shape and the receipt signature are unchanged.
+  - The fix stays in src/receipt.ts; cart.ts and money.ts are unchanged.
+
+scoring_weights:
+  verified_success: 0.50
+  hidden_test_score: 0.25
+  regression_avoidance: 0.10
+  scope_control: 0.05
+  cost_efficiency: 0.05
+  time_efficiency: 0.05
+
+scoring:
+  objective_weight: 1.0
+  review_weight: 0.0
+
+notes:
+  - H2 cross file contract. receipt() reads subtotalCents from cart.ts and returns a
+    Receipt whose legacy amount field must stay equal to total for backward
+    compatibility. The base code hardcodes amount to 0, which satisfies no caller
+    relying on the alias. The minimal correct fix sets amount to total. cart.ts and
+    money.ts must remain untouched.

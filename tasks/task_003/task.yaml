@@ -1,6 +1,9 @@
 id: task_003
 title: Add a slugify function to mathkit.text
 category: medium_feature
+tier: supplementary
+hardness_level: H1
+known_llm_failure_mode: misses_unicode_or_collapse_edge_cases
 difficulty: 2
 repo: python_package
 base_commit: HEAD

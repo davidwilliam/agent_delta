@@ -1,0 +1,72 @@
+id: ts_task_001
+title: Clamp order totals so discounts cannot go negative or exceed the subtotal
+category: hidden_invariant_preservation
+hardness_level: H3
+known_llm_failure_mode: handles_happy_path_misses_invariant_clamp_edges
+repo: pricing_ts
+base_commit: HEAD
+language: typescript
+framework: node-test
+prompt_file: prompt.md
+
+prompts:
+  minimal: prompt_minimal.md
+  strong: prompt_strong.md
+  workflow: prompt_workflow.md
+
+context_requirement:
+  min_context_tokens: 4000
+  preferred_context_tokens: 100000
+
+execution:
+  timeout_minutes: 20
+  max_cost_usd: 3.00
+  network: disabled
+  package_install: false
+
+scope:
+  allowed_paths:
+    - src/
+    - tests/
+  forbidden_paths:
+    - src/money.ts
+  max_files_modified: 1
+  max_lines_changed: 12
+  forbidden_changes:
+    - Do not change the rounding behaviour in money.ts.
+    - Do not weaken, skip, or delete tests.
+    - Do not change the Discount type shape.
+  forbidden_patterns:
+    - pattern: "\\.skip\\(|\\.todo\\("
+      label: test_removed_or_weakened
+
+tests:
+  baseline:
+    - npm run --silent build && node --test tests/*.test.mjs
+  public:
+    - public_tests.mjs
+  hidden:
+    - hidden_tests.mjs
+
+acceptance_criteria:
+  - A discount can never produce a total below 0.
+  - A discount can never produce a total above the subtotal.
+  - Normal discounts within range are unchanged.
+  - The fix is in the discount layer; money.ts and the Discount type are unchanged.
+
+scoring_weights:
+  verified_success: 0.50
+  hidden_test_score: 0.25
+  regression_avoidance: 0.10
+  scope_control: 0.05
+  cost_efficiency: 0.05
+  time_efficiency: 0.05
+
+scoring:
+  objective_weight: 1.0
+  review_weight: 0.0
+
+notes:
+  - H3 hidden invariant. The naive subtraction passes the visible normal-discount
+    tests but produces negative totals for over-large discounts. Hidden tests check
+    the [0, subtotal] clamp at the edges.

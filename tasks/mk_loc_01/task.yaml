@@ -1,0 +1,77 @@
+id: mk_loc_01
+title: Fix the percentage shown on the leaderboard
+category: multi_file_bug_localization
+hardness_level: H2
+known_llm_failure_mode: patches_leaderboard_symptom_instead_of_scoring_helper
+repo: python_package
+base_commit: HEAD
+language: python
+framework: pytest
+prompt_file: prompt.md
+
+prompts:
+  minimal: prompt_minimal.md
+  strong: prompt_strong.md
+  workflow: prompt_workflow.md
+
+context_requirement:
+  min_context_tokens: 4000
+  preferred_context_tokens: 100000
+
+execution:
+  timeout_minutes: 20
+  max_cost_usd: 3.00
+  network: disabled
+  package_install: false
+
+scope:
+  allowed_paths:
+    - src/
+    - tests/
+  forbidden_paths:
+    - src/mathkit/leaderboard.py
+  max_files_modified: 1
+  max_lines_changed: 6
+  forbidden_changes:
+    - Fix the root cause in scoring.py; do not edit leaderboard.py.
+    - Do not weaken, skip, or delete tests.
+  forbidden_patterns:
+    - pattern: "@pytest\\.mark\\.skip"
+      label: test_removed_or_weakened
+
+tests:
+  baseline:
+    - pytest -q tests/
+  public:
+    - public_tests.py
+  hidden:
+    - hidden_tests.py
+
+acceptance_criteria:
+  - percent(score, max_score) returns the score as a whole-number percentage of max_score.
+  - The percentage is computed by dividing by max_score, not by max_score plus one.
+  - percent(100, 100) is 100 and percent(50, 100) is 50.
+  - The returned value equals round(100 * score / max_score) for every in-range input.
+  - leaderboard.py is left unchanged; the fix lives in scoring.py.
+
+scoring_weights:
+  verified_success: 0.50
+  hidden_test_score: 0.25
+  regression_avoidance: 0.10
+  scope_control: 0.05
+  cost_efficiency: 0.05
+  time_efficiency: 0.05
+
+scoring:
+  objective_weight: 1.0
+  review_weight: 0.0
+
+notes:
+  - H2 multi-file bug localization (HARD-TASKS-SPEC 3.2). The visible symptom is in
+    leaderboard.percent, but leaderboard.py merely forwards to scoring.normalize,
+    which has an off-by-one in its denominator (max_score + 1). The fix is to divide
+    by max_score in scoring.py. Editing leaderboard.py to compensate for the symptom
+    is forbidden and would be the common shortcut. Hidden tests confirm the values
+    match round(100 * score / max_score) across several inputs.
+
+expected_behavior_file: expected_behavior.md

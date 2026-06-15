@@ -1,0 +1,78 @@
+id: lc_retrieval_01
+title: Official credit total using the authoritative reporting cutoff
+category: long_context_retrieval
+hardness_level: H4
+known_llm_failure_mode: uses_draft_or_legacy_cutoff_instead_of_authoritative
+repo: long_context
+base_commit: HEAD
+language: python
+framework: pytest
+prompt_file: prompt.md
+
+prompts:
+  minimal: prompt_minimal.md
+  strong: prompt_strong.md
+  workflow: prompt_workflow.md
+
+# Long-context retrieval (SPEC 21): the fixture is ~228k content tokens and holds
+# three competing policy modules (authoritative, draft, legacy). Finding the
+# authoritative one and the right cutoff requires reading broadly.
+context_requirement:
+  min_context_tokens: 220000
+  preferred_context_tokens: 1000000
+
+execution:
+  timeout_minutes: 30
+  max_cost_usd: 6.00
+  max_agent_turns: null
+  network: disabled
+  package_install: false
+
+scope:
+  allowed_paths:
+    - src/
+    - tests/
+  forbidden_paths:
+    - pyproject.toml
+  max_files_modified: 2
+  forbidden_changes:
+    - Use the authoritative reporting policy (ledger.policy.official_policy); do not
+      use the draft note or the deprecated legacy policy.
+    - Do not edit the ledger entry data under src/ledger/entries/.
+    - Do not weaken, skip, or delete tests.
+
+tests:
+  baseline:
+    - pytest -q tests/
+  public:
+    - public_tests.py
+  hidden:
+    - hidden_tests.py
+
+acceptance_criteria:
+  - A new module ledger/official_credit.py provides official_credit_total().
+  - official_credit_total sums the amount of every credit entry across all schema
+    variants, but only from parts whose index is strictly less than the
+    authoritative REPORTING_CUTOFF.
+  - The cutoff is read from the authoritative policy (ledger.policy.official_policy),
+    not from the draft note or the deprecated legacy policy.
+  - The implementation handles every entry-schema variant present in the data.
+  - Existing baseline tests continue to pass.
+
+scoring_weights:
+  verified_success: 0.50
+  hidden_test_score: 0.25
+  regression_avoidance: 0.10
+  scope_control: 0.05
+  cost_efficiency: 0.05
+  time_efficiency: 0.05
+
+scoring:
+  objective_weight: 1.0
+  review_weight: 0.0
+
+notes:
+  - H4 long-context retrieval (HARD-TASKS-SPEC). Three policy modules give
+    conflicting cutoffs (authoritative 150, draft 120, legacy 200). The common
+    failure mode is using the draft or legacy cutoff, or summing all parts. The
+    correct total includes only parts 0..149 from the authoritative policy.

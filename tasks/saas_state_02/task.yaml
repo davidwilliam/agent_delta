@@ -1,0 +1,79 @@
+id: saas_state_02
+title: Validate plan transitions against the legal set
+category: state_machine
+hardness_level: H5
+known_llm_failure_mode: allows_illegal_plan_transition
+repo: saas
+base_commit: HEAD
+language: python
+framework: pytest
+prompt_file: prompt.md
+
+prompts:
+  minimal: prompt_minimal.md
+  strong: prompt_strong.md
+  workflow: prompt_workflow.md
+
+context_requirement:
+  min_context_tokens: 4000
+  preferred_context_tokens: 100000
+
+execution:
+  timeout_minutes: 20
+  max_cost_usd: 3.00
+  network: disabled
+  package_install: false
+
+scope:
+  allowed_paths:
+    - src/
+    - tests/
+  forbidden_paths:
+    - src/saasapp/storage.py
+  max_files_modified: 1
+  max_lines_changed: 18
+  forbidden_changes:
+    - Do not weaken, skip, or delete tests.
+    - Do not change the LEGAL set semantics.
+    - Do not change other modules.
+  forbidden_patterns:
+    - pattern: "@pytest\\.mark\\.skip"
+      label: test_removed_or_weakened
+
+tests:
+  baseline:
+    - pytest -q tests/
+  public:
+    - public_tests.py
+  hidden:
+    - hidden_tests.py
+
+acceptance_criteria:
+  - change_plan applies a transition only when (current, new) is in LEGAL, otherwise it raises ValueError.
+  - free->pro succeeds and the stored plan becomes pro.
+  - free->enterprise is illegal, raises ValueError, and leaves the stored plan at free.
+  - pro->enterprise and enterprise->pro are legal; enterprise->free is illegal.
+  - An illegal transition never changes the stored plan.
+
+scoring_weights:
+  verified_success: 0.50
+  hidden_test_score: 0.25
+  regression_avoidance: 0.10
+  scope_control: 0.05
+  cost_efficiency: 0.05
+  time_efficiency: 0.05
+
+scoring:
+  objective_weight: 1.0
+  review_weight: 0.0
+
+notes:
+  - H5 state-machine guard. The base change_plan blindly stores the new plan without
+    consulting LEGAL, so it allows illegal jumps such as free->enterprise and
+    enterprise->free. A correct solution validates (current, new) against LEGAL,
+    raises ValueError on an illegal transition, and applies only legal ones, leaving
+    the stored plan unchanged on rejection. The trap is that the plan ladder is free
+    up to pro up to enterprise, so free->enterprise and enterprise->free are illegal
+    and must go through pro. Hidden tests exercise the legal pro/enterprise chain, the
+    illegal enterprise->free guard, and that a rejected transition leaves the stored
+    plan untouched.

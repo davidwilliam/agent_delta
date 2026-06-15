@@ -1,0 +1,80 @@
+id: go_contract_01
+title: Add a CountWords function to textkit
+category: cross_file_contract
+hardness_level: H2
+known_llm_failure_mode: miscounts_whitespace_runs_or_unicode_or_empty
+difficulty: 2
+repo: go_cli
+base_commit: HEAD
+language: go
+framework: go-test
+prompt_file: prompt.md
+prompts:
+  minimal: prompt_minimal.md
+  strong: prompt_strong.md
+  workflow: prompt_workflow.md
+
+context_requirement:
+  min_context_tokens: 8000
+  preferred_context_tokens: 200000
+
+execution:
+  timeout_minutes: 15
+  max_cost_usd: 2.00
+  max_agent_turns: null
+  network: disabled
+  package_install: false
+
+scope:
+  allowed_paths:
+    - textkit.go
+  forbidden_paths:
+    - go.mod
+    - go.sum
+    - textkit_test.go
+  forbidden:
+    - go.mod
+    - go.sum
+  max_files_modified: 1
+  max_files: 1
+  max_lines: 30
+  forbidden_changes:
+    - Do not change any existing exported function (Reverse, WordCount, Truncate) or its behaviour.
+    - Do not modify go.mod or go.sum.
+    - Do not weaken, delete, or edit the public or hidden tests.
+
+tests:
+  baseline:
+    - go test ./...
+  public:
+    - public_test.go
+  hidden:
+    - hidden_test.go
+
+acceptance_criteria:
+  - A CountWords function exists in package textkit.
+  - CountWords returns the number of whitespace-separated words using strings.Fields semantics.
+  - Runs of whitespace between words collapse to a single separator.
+  - Leading and trailing whitespace is ignored.
+  - An empty string and an all-whitespace string both return 0.
+  - Unicode words are counted correctly (café au lait is 3 words).
+  - Existing exported functions (Reverse, WordCount, Truncate) are unchanged.
+  - Existing baseline tests continue to pass (no regression).
+
+scoring_weights:
+  public: 0.50
+  hidden: 0.25
+  baseline: 0.10
+  scope: 0.05
+  style: 0.05
+  review: 0.05
+
+scoring:
+  objective_weight: 1.0
+  review_weight: 0.0
+
+notes:
+  - Cross-file contract addition. At base the eval package fails to compile (undefined CountWords), so the task is non-trivial.
+  - Detects miscounts of whitespace runs, leading and trailing whitespace, empty and all-whitespace input, and Unicode words.
+
+expected_behavior: expected_behavior.md

@@ -1,0 +1,77 @@
+id: saas_contract_01
+title: Add a stable project serialization contract across layers
+category: cross_file_contract
+hardness_level: H2
+known_llm_failure_mode: updates_one_layer_misses_other_or_breaks_back_compat
+repo: saas
+base_commit: HEAD
+language: python
+framework: pytest
+prompt_file: prompt.md
+
+prompts:
+  minimal: prompt_minimal.md
+  strong: prompt_strong.md
+  workflow: prompt_workflow.md
+
+context_requirement:
+  min_context_tokens: 8000
+  preferred_context_tokens: 200000
+
+execution:
+  timeout_minutes: 25
+  max_cost_usd: 4.00
+  max_agent_turns: null
+  network: disabled
+  package_install: false
+
+scope:
+  allowed_paths:
+    - src/
+    - tests/
+  forbidden_paths:
+    - src/saasapp/storage.py
+  max_files_modified: 2
+  max_lines_changed: 45
+  forbidden_changes:
+    - Do not change the storage seed or the models.
+    - Keep owner and owner_id in sync (the alias must always equal the canonical key).
+    - Do not weaken, skip, or delete tests.
+  forbidden_patterns:
+    - pattern: "@pytest\\.mark\\.skip"
+      label: test_removed_or_weakened
+
+tests:
+  baseline:
+    - pytest -q tests/
+  public:
+    - public_tests.py
+  hidden:
+    - hidden_tests.py
+
+acceptance_criteria:
+  - serialize.project_to_dict returns a dict with exactly the keys id, name, tenant, owner, owner_id, archived.
+  - tenant equals project.tenant_id, owner and owner_id both equal project.owner_id, and archived is a bool.
+  - owner always equals owner_id (the backward-compatible alias stays in sync).
+  - api.handle_project_detail loads the project through the service and returns serialize.project_to_dict, identical to the serializer dict.
+  - The handler goes through service.get_project so authorization is still enforced.
+
+scoring_weights:
+  verified_success: 0.50
+  hidden_test_score: 0.25
+  regression_avoidance: 0.10
+  scope_control: 0.05
+  cost_efficiency: 0.05
+  time_efficiency: 0.05
+
+scoring:
+  objective_weight: 1.0
+  review_weight: 0.0
+
+notes:
+  - H2 cross-file contract. The happy path (a serializer) is easy; the discriminator
+    is keeping the contract identical across two layers and preserving the owner/owner_id
+    back-compat alias. Updating only one layer, or dropping/desyncing the alias, drifts
+    the shapes apart and the hidden tests catch it. All tests use only valid same-tenant
+    access (alice viewing her own project p1), so the fixture's latent cross-tenant
+    policy/ownership bugs are never exercised.

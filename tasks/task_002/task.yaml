@@ -1,6 +1,9 @@
 id: task_002
 title: Fix chunk() dropping the final partial chunk
 category: small_bug_fix
+tier: supplementary
+hardness_level: H1
+known_llm_failure_mode: off_by_one_drops_final_partial_chunk
 difficulty: 2
 repo: python_package
 base_commit: HEAD

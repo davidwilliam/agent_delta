@@ -1,0 +1,76 @@
+id: pay_invariant_01
+title: Add partial refunds without ever exceeding the amount paid
+category: hidden_invariant_preservation
+hardness_level: H3
+known_llm_failure_mode: handles_single_refund_misses_cumulative_over_refund_invariant
+repo: payments
+base_commit: HEAD
+language: python
+framework: pytest
+prompt_file: prompt.md
+
+prompts:
+  minimal: prompt_minimal.md
+  strong: prompt_strong.md
+  workflow: prompt_workflow.md
+
+context_requirement:
+  min_context_tokens: 4000
+  preferred_context_tokens: 100000
+
+execution:
+  timeout_minutes: 20
+  max_cost_usd: 3.00
+  network: disabled
+  package_install: false
+
+scope:
+  allowed_paths:
+    - src/
+    - tests/
+  forbidden_paths:
+    - src/payments/storage.py
+    - src/payments/models.py
+  max_files_modified: 2
+  max_lines_changed: 45
+  forbidden_changes:
+    - Do not change the Invoice model or the storage seed/state.
+    - Do not weaken, skip, or delete tests.
+    - Do not deduplicate or merge distinct refunds.
+  forbidden_patterns:
+    - pattern: "@pytest\\.mark\\.skip"
+      label: test_removed_or_weakened
+
+tests:
+  baseline:
+    - pytest -q tests/
+  public:
+    - public_tests.py
+  hidden:
+    - hidden_tests.py
+
+acceptance_criteria:
+  - refund(event_id, amount) records a partial refund against the invoice for that event.
+  - The cumulative refunded total for an event never exceeds the invoice amount.
+  - An over-refund attempt raises and does not change the recorded refunded total.
+  - Zero or negative refund amounts are rejected; refunding an unknown event raises.
+  - Multiple partial refunds that stay within the amount paid all succeed.
+
+scoring_weights:
+  verified_success: 0.50
+  hidden_test_score: 0.25
+  regression_avoidance: 0.10
+  scope_control: 0.05
+  cost_efficiency: 0.05
+  time_efficiency: 0.05
+
+scoring:
+  objective_weight: 1.0
+  review_weight: 0.0
+
+notes:
+  - H3 hidden invariant (HARD-TASKS-SPEC 3.3). The happy path (one partial refund)
+    is easy; the invariant is that the SUM of refunds for an event must never exceed
+    the amount paid, and a rejected over-refund must not partially apply. Hidden
+    tests exercise cumulative over-refund, zero/negative, unknown event, and the
+    no-partial-application guarantee.

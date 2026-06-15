@@ -1,0 +1,78 @@
+id: pay_authz_01
+title: Verify webhook signatures before creating invoices
+category: security_fix
+hardness_level: H3
+known_llm_failure_mode: trusts_unsigned_payload_or_uses_non_constant_time_or_wrong_payload
+repo: payments
+base_commit: HEAD
+language: python
+framework: pytest
+prompt_file: prompt.md
+
+prompts:
+  minimal: prompt_minimal.md
+  strong: prompt_strong.md
+  workflow: prompt_workflow.md
+
+context_requirement:
+  min_context_tokens: 4000
+  preferred_context_tokens: 100000
+
+execution:
+  timeout_minutes: 20
+  max_cost_usd: 3.00
+  network: disabled
+  package_install: false
+
+scope:
+  allowed_paths:
+    - src/
+    - tests/
+  forbidden_paths:
+    - src/payments/storage.py
+    - src/payments/models.py
+    - src/payments/webhook.py
+  max_files_modified: 1
+  max_lines_changed: 45
+  forbidden_changes:
+    - Do not modify webhook.py, storage.py, or models.py.
+    - Do not weaken, skip, or delete tests.
+    - Do not use a non-constant-time signature comparison (use hmac.compare_digest).
+  forbidden_patterns:
+    - pattern: "@pytest\\.mark\\.skip"
+      label: test_removed_or_weakened
+
+tests:
+  baseline:
+    - pytest -q tests/
+  public:
+    - public_tests.py
+  hidden:
+    - hidden_tests.py
+
+acceptance_criteria:
+  - expected_signature returns the hex HMAC-SHA256 of f"{event_id}:{amount}" keyed by the secret.
+  - process_signed_webhook with a valid signature creates exactly one invoice for the event.
+  - An invalid signature, a tampered amount, or a wrong secret raises PermissionError and creates no invoice.
+  - verify_signature returns False (not an exception) for a bad signature and uses a constant-time compare.
+  - A valid signature replayed twice is idempotent: still one invoice for the event.
+
+scoring_weights:
+  verified_success: 0.50
+  hidden_test_score: 0.25
+  regression_avoidance: 0.10
+  scope_control: 0.05
+  cost_efficiency: 0.05
+  time_efficiency: 0.05
+
+scoring:
+  objective_weight: 1.0
+  review_weight: 0.0
+
+notes:
+  - H3 security fix (HARD-TASKS-SPEC 3.3). The happy path (verify one valid
+    signature) is easy; the discriminators are that the canonical payload must bind
+    both event_id and amount (so amount tampering is caught), that the compare must
+    be constant time (hmac.compare_digest, not ==), that verify_signature returns
+    False rather than raising on a bad signature, and that a rejected delivery
+    creates no invoice while a valid replay stays idempotent.

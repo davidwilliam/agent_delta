@@ -1,6 +1,8 @@
 id: task_009
 title: Total credits and debits across a large multi-schema ledger
 category: medium_feature
+hardness_level: H4
+known_llm_failure_mode: ignores_authoritative_source_in_long_context
 difficulty: 4
 repo: long_context
 base_commit: HEAD

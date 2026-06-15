@@ -1,6 +1,9 @@
 id: task_006
 title: Write tests for normalize_spaces
 category: test_writing
+tier: supplementary
+hardness_level: H1
+known_llm_failure_mode: weak_tests_miss_planted_mutants
 task_type: test_writing
 difficulty: 3
 repo: python_package

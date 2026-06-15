@@ -1,0 +1,76 @@
+id: ts_invariant_02
+title: Apply a list of discounts without ever driving the total negative
+category: hidden_invariant_preservation
+hardness_level: H3
+known_llm_failure_mode: applies_discounts_independently_misses_running_clamp
+repo: pricing_ts
+base_commit: HEAD
+language: typescript
+framework: node-test
+prompt_file: prompt.md
+
+prompts:
+  minimal: prompt_minimal.md
+  strong: prompt_strong.md
+  workflow: prompt_workflow.md
+
+context_requirement:
+  min_context_tokens: 4000
+  preferred_context_tokens: 100000
+
+execution:
+  timeout_minutes: 20
+  max_cost_usd: 3.00
+  network: disabled
+  package_install: false
+
+scope:
+  allowed_paths:
+    - src/
+    - tests/
+  forbidden_paths:
+    - src/money.ts
+  max_files_modified: 1
+  max_lines_changed: 18
+  forbidden_changes:
+    - Do not change the existing applyDiscount function.
+    - Do not change the shape of the Discount type.
+    - Do not change the rounding behaviour in money.ts.
+    - Do not weaken, skip, or delete tests.
+  forbidden_patterns:
+    - pattern: "\\.skip\\(|\\.todo\\("
+      label: test_removed_or_weakened
+
+tests:
+  baseline:
+    - npm run --silent build && node --test tests/*.test.mjs
+  public:
+    - public_tests.mjs
+  hidden:
+    - hidden_tests.mjs
+
+acceptance_criteria:
+  - applyDiscounts applies discounts in sequence to a running total.
+  - The running total never drops below 0 after any step.
+  - Percent discounts compound on the current running total.
+  - An empty discount list returns the subtotal unchanged.
+  - The addition is in discount.ts; applyDiscount, the Discount type, and money.ts are unchanged.
+
+scoring_weights:
+  verified_success: 0.50
+  hidden_test_score: 0.25
+  regression_avoidance: 0.10
+  scope_control: 0.05
+  cost_efficiency: 0.05
+  time_efficiency: 0.05
+
+scoring:
+  objective_weight: 1.0
+  review_weight: 0.0
+
+notes:
+  - H3 hidden invariant. The naive approach applies each discount independently
+    against the original subtotal or clamps only the final result, which breaks the
+    running-clamp invariant when discounts stack. Hidden tests exercise the empty
+    list, over-100 percent, fixed-equal-to-subtotal, parity with applyDiscount, and
+    a never-negative check across stacked combinations.

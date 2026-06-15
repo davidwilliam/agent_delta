@@ -1,0 +1,80 @@
+id: mk_minimal_01
+title: Fix quoted-comma handling in the CSV row parser
+category: minimal_diff_repair
+hardness_level: H2
+known_llm_failure_mode: naive_split_ignores_quotes_or_agent_rewrites_parser
+repo: python_package
+base_commit: HEAD
+language: python
+framework: pytest
+prompt_file: prompt.md
+
+prompts:
+  minimal: prompt_minimal.md
+  strong: prompt_strong.md
+  workflow: prompt_workflow.md
+
+context_requirement:
+  min_context_tokens: 4000
+  preferred_context_tokens: 100000
+
+execution:
+  timeout_minutes: 20
+  max_cost_usd: 3.00
+  network: disabled
+  package_install: false
+
+scope:
+  allowed_paths:
+    - src/
+    - tests/
+  forbidden_paths: []
+  max_files_modified: 1
+  max_lines_changed: 30
+  forbidden_changes:
+    - Fix parse_row in place; do not rewrite it into a different module.
+    - Do not import the stdlib csv module; implement the parsing yourself.
+    - Do not weaken, skip, or delete tests.
+  forbidden_patterns:
+    - pattern: "@pytest\\.mark\\.skip"
+      label: test_removed_or_weakened
+    - pattern: "import csv|from csv"
+      label: forbidden_dependency
+
+tests:
+  baseline:
+    - pytest -q tests/
+  public:
+    - public_tests.py
+  hidden:
+    - hidden_tests.py
+
+acceptance_criteria:
+  - parse_row splits a line on commas at the top level only.
+  - A comma inside a double-quoted field is part of the field, not a separator.
+  - Surrounding double quotes are stripped from a quoted field.
+  - A doubled double-quote inside a quoted field becomes one literal quote.
+  - Leading and trailing spaces inside a field are preserved.
+  - An empty line yields a single empty field; a trailing comma yields a trailing empty field.
+
+scoring_weights:
+  verified_success: 0.50
+  hidden_test_score: 0.25
+  regression_avoidance: 0.10
+  scope_control: 0.05
+  cost_efficiency: 0.05
+  time_efficiency: 0.05
+
+scoring:
+  objective_weight: 1.0
+  review_weight: 0.0
+
+notes:
+  - H2 minimal-diff repair (HARD-TASKS-SPEC 3.2). The naive `line.split(",")`
+    passes the plain case but mis-splits a quoted comma and leaves the surrounding
+    quotes in place. The fix is a small char-by-char state machine in csvlite.py.
+    Importing the stdlib csv module is forbidden; the task is to fix the parser.
+    Hidden tests cover the quoted comma, stripped quotes, doubled-quote escape, an
+    empty quoted field, a trailing field, and preserved interior spaces.
+
+expected_behavior_file: expected_behavior.md

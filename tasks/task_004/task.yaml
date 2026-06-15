@@ -1,6 +1,8 @@
 id: task_004
 title: Extract the empty-input check into a shared validation helper
 category: multi_file_refactor
+hardness_level: H2
+known_llm_failure_mode: duplicates_logic_instead_of_sharing_helper
 difficulty: 3
 repo: python_package
 base_commit: HEAD

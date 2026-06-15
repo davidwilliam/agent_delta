@@ -1,0 +1,78 @@
+id: pay_minimal_01
+title: Fix off-by-one in proration
+category: minimal_diff_repair
+hardness_level: H2
+known_llm_failure_mode: off_by_one_denominator_or_agent_rewrites
+repo: payments
+base_commit: HEAD
+language: python
+framework: pytest
+prompt_file: prompt.md
+
+prompts:
+  minimal: prompt_minimal.md
+  strong: prompt_strong.md
+  workflow: prompt_workflow.md
+
+context_requirement:
+  min_context_tokens: 4000
+  preferred_context_tokens: 100000
+
+execution:
+  timeout_minutes: 20
+  max_cost_usd: 3.00
+  network: disabled
+  package_install: false
+
+scope:
+  allowed_paths:
+    - src/
+    - tests/
+  forbidden_paths:
+    - src/payments/storage.py
+    - src/payments/models.py
+    - src/payments/webhook.py
+  max_files_modified: 1
+  max_lines_changed: 5
+  forbidden_changes:
+    - Make the smallest fix; do not rewrite the proration function or add new functions.
+    - Do not change the Invoice model or the storage seed/state.
+    - Do not weaken, skip, or delete tests.
+  forbidden_patterns:
+    - pattern: "@pytest\\.mark\\.skip"
+      label: test_removed_or_weakened
+
+tests:
+  baseline:
+    - pytest -q tests/
+  public:
+    - public_tests.py
+  hidden:
+    - hidden_tests.py
+
+acceptance_criteria:
+  - proration(amount, days_used, days_total) returns amount * days_used // days_total.
+  - proration(1000, 15, 30) == 500 and proration(1000, 30, 30) == 1000.
+  - proration(1000, 0, 30) == 0.
+  - The denominator is days_total, not days_total - 1.
+  - The fix is a one-token change; the function is not rewritten.
+
+scoring_weights:
+  verified_success: 0.50
+  hidden_test_score: 0.25
+  regression_avoidance: 0.10
+  scope_control: 0.05
+  cost_efficiency: 0.05
+  time_efficiency: 0.05
+
+scoring:
+  objective_weight: 1.0
+  review_weight: 0.0
+
+notes:
+  - H2 minimal-diff repair (HARD-TASKS-SPEC). proration has an off-by-one in the
+    denominator, dividing by days_total - 1 instead of days_total. The correct fix
+    is a single-token change (remove the - 1). The failure mode is either keeping the
+    off-by-one or over-correcting by rewriting the whole function, adding helpers, or
+    changing the floor division. max_lines_changed is tight (5) to reward a minimal
+    diff.

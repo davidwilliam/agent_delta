@@ -1,6 +1,9 @@
 id: go_task_001
 title: Fix Truncate returning one byte too few past the string length
 category: small_bug_fix
+tier: supplementary
+hardness_level: H1
+known_llm_failure_mode: off_by_one_at_byte_boundary
 difficulty: 2
 repo: go_cli
 base_commit: HEAD

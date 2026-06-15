@@ -1,6 +1,8 @@
 id: task_008
 title: Migrate report off the deprecated avg helper
 category: dependency_migration
+hardness_level: H2
+known_llm_failure_mode: upgrades_unrelated_or_breaks_existing_callers
 difficulty: 3
 repo: python_package
 base_commit: HEAD

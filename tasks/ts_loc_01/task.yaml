@@ -1,0 +1,76 @@
+id: ts_loc_01
+title: Fix wrong order totals caused by a rounding helper
+category: multi_file_bug_localization
+hardness_level: H2
+known_llm_failure_mode: patches_summary_symptom_instead_of_rounding_root_cause
+repo: pricing_ts
+base_commit: HEAD
+language: typescript
+framework: node-test
+prompt_file: prompt.md
+
+prompts:
+  minimal: prompt_minimal.md
+  strong: prompt_strong.md
+  workflow: prompt_workflow.md
+
+context_requirement:
+  min_context_tokens: 4000
+  preferred_context_tokens: 100000
+
+execution:
+  timeout_minutes: 20
+  max_cost_usd: 3.00
+  network: disabled
+  package_install: false
+
+scope:
+  allowed_paths:
+    - src/
+    - tests/
+  forbidden_paths:
+    - src/summary.ts
+    - src/money.ts
+    - src/cart.ts
+  max_files_modified: 1
+  max_lines_changed: 8
+  forbidden_changes:
+    - Fix the root cause in the rounding helper; do not patch summary.ts.
+    - Do not change the OrderSummary shape or the orderSummary signature.
+    - Do not weaken, skip, or delete tests.
+  forbidden_patterns:
+    - pattern: "\\.skip\\(|\\.todo\\("
+      label: test_removed_or_weakened
+
+tests:
+  baseline:
+    - npm run --silent build && node --test tests/*.test.mjs
+  public:
+    - public_tests.mjs
+  hidden:
+    - hidden_tests.mjs
+
+acceptance_criteria:
+  - orderSummary produces tax rounded to the nearest cent, not truncated.
+  - The total always equals subtotal plus tax.
+  - Cases where truncation and rounding agree keep working.
+  - The fix is in src/rounding.ts only; summary.ts, money.ts, and cart.ts are unchanged.
+
+scoring_weights:
+  verified_success: 0.50
+  hidden_test_score: 0.25
+  regression_avoidance: 0.10
+  scope_control: 0.05
+  cost_efficiency: 0.05
+  time_efficiency: 0.05
+
+scoring:
+  objective_weight: 1.0
+  review_weight: 0.0
+
+notes:
+  - H2 multi-file localization. The symptom is wrong tax and total in orderSummary
+    (src/summary.ts), but the root cause is roundCents in src/rounding.ts truncating
+    instead of rounding to the nearest cent. The correct, minimal fix swaps
+    Math.trunc for Math.round in rounding.ts. Patching summary.ts is forbidden and
+    the symptom-level patch does not address the shared helper.

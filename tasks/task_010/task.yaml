@@ -1,6 +1,9 @@
 id: task_010
 title: Implement merge_intervals with full edge-case handling
 category: medium_feature
+tier: supplementary
+hardness_level: H1
+known_llm_failure_mode: misses_adjacent_or_unsorted_interval_edges
 difficulty: 4
 repo: python_package
 base_commit: HEAD

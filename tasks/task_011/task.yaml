@@ -1,6 +1,9 @@
 id: task_011
 title: Implement int_to_roman and roman_to_int
 category: medium_feature
+tier: supplementary
+hardness_level: H1
+known_llm_failure_mode: misses_subtractive_notation_edge_cases
 difficulty: 4
 repo: python_package
 base_commit: HEAD

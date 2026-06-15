@@ -1,0 +1,77 @@
+id: pay_state_01
+title: Add a payment status lifecycle for invoices
+category: state_machine
+hardness_level: H5
+known_llm_failure_mode: allows_illegal_transition_or_misses_terminal_state
+repo: payments
+base_commit: HEAD
+language: python
+framework: pytest
+prompt_file: prompt.md
+
+prompts:
+  minimal: prompt_minimal.md
+  strong: prompt_strong.md
+  workflow: prompt_workflow.md
+
+context_requirement:
+  min_context_tokens: 4000
+  preferred_context_tokens: 100000
+
+execution:
+  timeout_minutes: 20
+  max_cost_usd: 3.00
+  network: disabled
+  package_install: false
+
+scope:
+  allowed_paths:
+    - src/
+    - tests/
+  forbidden_paths:
+    - src/payments/storage.py
+    - src/payments/models.py
+    - src/payments/webhook.py
+  max_files_modified: 1
+  max_lines_changed: 50
+  forbidden_changes:
+    - Do not modify the Invoice model, storage, or webhook.
+    - Do not weaken, skip, or delete tests.
+  forbidden_patterns:
+    - pattern: "@pytest\\.mark\\.skip"
+      label: test_removed_or_weakened
+
+tests:
+  baseline:
+    - pytest -q tests/
+  public:
+    - public_tests.py
+  hidden:
+    - hidden_tests.py
+
+acceptance_criteria:
+  - status(event_id) returns "paid" by default once the event has an invoice, and raises KeyError when no invoice exists.
+  - transition(event_id, new_status) allows only the legal transitions and records the new status, returning it.
+  - An illegal transition raises ValueError and does not change the recorded status.
+  - The "refunded" status is terminal, so every transition out of it raises ValueError.
+  - audit() returns the (event_id, from, to) transitions in the order they happened, and distinct events track independently.
+
+scoring_weights:
+  verified_success: 0.50
+  hidden_test_score: 0.25
+  regression_avoidance: 0.10
+  scope_control: 0.05
+  cost_efficiency: 0.05
+  time_efficiency: 0.05
+
+scoring:
+  objective_weight: 1.0
+  review_weight: 0.0
+
+notes:
+  - H5 state machine (HARD-TASKS-SPEC 3.5). The happy path (paid then disputed) is
+    easy; the difficulty is the full legal-transition set with a terminal state. The
+    legal transitions are (paid, disputed), (disputed, paid), (disputed, refunded),
+    and (paid, refunded); "refunded" is terminal so nothing transitions out of it.
+    Hidden tests exercise the terminal guard, the unknown-event KeyError on both
+    status and transition, the ordered audit trail, and per-event independence.

@@ -1,0 +1,80 @@
+id: saas_loc_01
+title: Fix the dashboard active-project count
+category: multi_file_bug_localization
+hardness_level: H2
+known_llm_failure_mode: patches_dashboard_symptom_instead_of_usage_helper
+repo: saas
+base_commit: HEAD
+language: python
+framework: pytest
+prompt_file: prompt.md
+
+prompts:
+  minimal: prompt_minimal.md
+  strong: prompt_strong.md
+  workflow: prompt_workflow.md
+
+context_requirement:
+  min_context_tokens: 4000
+  preferred_context_tokens: 100000
+
+execution:
+  timeout_minutes: 20
+  max_cost_usd: 3.00
+  network: disabled
+  package_install: false
+
+scope:
+  allowed_paths:
+    - src/
+    - tests/
+  forbidden_paths:
+    - src/saasapp/dashboard.py
+    - src/saasapp/storage.py
+  max_files_modified: 1
+  max_lines_changed: 8
+  forbidden_changes:
+    - Do not edit dashboard.py; the symptom shows there but the bug is not there.
+    - Do not change the storage seed or state.
+    - Do not weaken, skip, or delete tests.
+  forbidden_patterns:
+    - pattern: "@pytest\\.mark\\.skip"
+      label: test_removed_or_weakened
+
+tests:
+  baseline:
+    - pytest -q tests/
+  public:
+    - public_tests.py
+  hidden:
+    - hidden_tests.py
+
+acceptance_criteria:
+  - dashboard.project_counts(tenant_id)["active"] counts only non-archived projects for that tenant.
+  - For "acme" the active count is 1 (only p1; p2 is archived).
+  - For "globex" the active count is 1 (only p3; p4 is archived).
+  - A tenant whose projects are all archived reports an active count of 0.
+  - The root cause is fixed in usage.active_projects; dashboard.py is left unchanged.
+
+scoring_weights:
+  verified_success: 0.50
+  hidden_test_score: 0.25
+  regression_avoidance: 0.10
+  scope_control: 0.05
+  cost_efficiency: 0.05
+  time_efficiency: 0.05
+
+scoring:
+  objective_weight: 1.0
+  review_weight: 0.0
+
+notes:
+  - H2 multi-file localization (HARD-TASKS-SPEC). The symptom appears in
+    dashboard.project_counts, but the real defect is in the usage.active_projects
+    helper it calls, which forgets to exclude archived projects. The cheap fix is to
+    subtract archived projects in dashboard.py; that is forbidden and only masks the
+    bug for one caller. The correct fix filters archived projects in usage.py so
+    every consumer of active_projects benefits. Hidden tests check globex, an
+    all-archived tenant, and that archived projects are never counted.
+
+expected_behavior_file: expected_behavior.md

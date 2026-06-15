@@ -1,0 +1,76 @@
+id: ts_state_01
+title: Add an order status state machine
+category: state_machine
+hardness_level: H4
+known_llm_failure_mode: allows_illegal_or_skip_transition_or_mutates_terminal_state
+repo: pricing_ts
+base_commit: HEAD
+language: typescript
+framework: node-test
+prompt_file: prompt.md
+
+prompts:
+  minimal: prompt_minimal.md
+  strong: prompt_strong.md
+  workflow: prompt_workflow.md
+
+context_requirement:
+  min_context_tokens: 4000
+  preferred_context_tokens: 100000
+
+execution:
+  timeout_minutes: 20
+  max_cost_usd: 3.00
+  network: disabled
+  package_install: false
+
+scope:
+  allowed_paths:
+    - src/
+    - tests/
+  forbidden_paths:
+    - src/money.ts
+    - src/discount.ts
+  max_files_modified: 2
+  max_lines_changed: 45
+  forbidden_changes:
+    - Do not modify existing modules other than adding the order re-export to index.ts.
+    - Do not weaken, skip, or delete tests.
+    - Do not change the legal transition table described in the prompt.
+  forbidden_patterns:
+    - pattern: "\\.skip\\(|\\.todo\\("
+      label: test_removed_or_weakened
+
+tests:
+  baseline:
+    - npm run --silent build && node --test tests/*.test.mjs
+  public:
+    - public_tests.mjs
+  hidden:
+    - hidden_tests.mjs
+
+acceptance_criteria:
+  - The legal transitions pending->paid, paid->shipped, shipped->delivered, pending->cancelled, and paid->cancelled all succeed.
+  - delivered and cancelled are terminal: any transition out of them throws.
+  - Skipping a step (for example pending->shipped or pending->delivered) throws.
+  - canTransition is true exactly when transition does not throw.
+  - The change is confined to a new src/order.ts plus a single re-export line in src/index.ts; money.ts and discount.ts are unchanged.
+
+scoring_weights:
+  verified_success: 0.50
+  hidden_test_score: 0.25
+  regression_avoidance: 0.10
+  scope_control: 0.05
+  cost_efficiency: 0.05
+  time_efficiency: 0.05
+
+scoring:
+  objective_weight: 1.0
+  review_weight: 0.0
+
+notes:
+  - H4 state machine. The happy-path chain pending->paid->shipped->delivered is
+    easy, but models often forget the cancel edges, allow step skipping, or treat
+    terminal states as transitionable. Hidden tests exercise both cancel edges,
+    both terminal states against every target, and the skip cases, and assert that
+    canTransition agrees with transition.

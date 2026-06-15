@@ -1,6 +1,9 @@
 id: task_001
 title: Add a median function to mathkit.stats
 category: small_bug_fix
+tier: supplementary
+hardness_level: H1
+known_llm_failure_mode: misses_even_length_median_or_empty_input
 difficulty: 1
 repo: python_package
 base_commit: HEAD

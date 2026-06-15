@@ -1,6 +1,9 @@
 id: task_013
 title: Implement wildcard is_match (* and ?)
 category: medium_feature
+tier: supplementary
+hardness_level: H2
+known_llm_failure_mode: greedy_star_backtracking_errors
 difficulty: 5
 repo: python_package
 base_commit: HEAD

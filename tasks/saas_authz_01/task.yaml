@@ -1,0 +1,80 @@
+id: saas_authz_01
+title: Enforce tenant scope on project share links
+category: security_fix
+hardness_level: H3
+known_llm_failure_mode: share_token_skips_tenant_check_cross_tenant_leak
+repo: saas
+base_commit: HEAD
+language: python
+framework: pytest
+prompt_file: prompt.md
+
+prompts:
+  minimal: prompt_minimal.md
+  strong: prompt_strong.md
+  workflow: prompt_workflow.md
+
+context_requirement:
+  min_context_tokens: 4000
+  preferred_context_tokens: 100000
+
+execution:
+  timeout_minutes: 20
+  max_cost_usd: 3.00
+  network: disabled
+  package_install: false
+
+scope:
+  allowed_paths:
+    - src/
+    - tests/
+  forbidden_paths:
+    - src/saasapp/storage.py
+  max_files_modified: 1
+  max_lines_changed: 12
+  forbidden_changes:
+    - Do not change the storage seed or user/project tenants.
+    - Do not weaken, skip, or delete tests.
+    - Do not broaden access; tokens must stay scoped to the project's tenant.
+  forbidden_patterns:
+    - pattern: "@pytest\\.mark\\.skip"
+      label: test_removed_or_weakened
+
+tests:
+  baseline:
+    - pytest -q tests/
+  public:
+    - public_tests.py
+  hidden:
+    - hidden_tests.py
+
+acceptance_criteria:
+  - sharing.access_via_token(user, token) returns the project only when the user is in the same tenant as the project.
+  - A user from a different tenant accessing a token raises PermissionError and gets no project back.
+  - An unknown token still raises KeyError.
+  - An admin in the project's tenant can access the token.
+  - Cross-tenant access is denied in both directions; same-tenant access returns the correct project.
+
+scoring_weights:
+  verified_success: 0.50
+  hidden_test_score: 0.25
+  regression_avoidance: 0.10
+  scope_control: 0.05
+  cost_efficiency: 0.05
+  time_efficiency: 0.05
+
+scoring:
+  objective_weight: 1.0
+  review_weight: 0.0
+
+notes:
+  - H3 security fix (HARD-TASKS-SPEC). Share tokens map to a project but
+    access_via_token never checks the accessing user's tenant, so any user holding a
+    token can read another tenant's project (cross-tenant leak). The fix adds a tenant
+    check so the user's tenant_id must equal the project's tenant_id, else PermissionError.
+    The easy mistake is to keep returning the project unconditionally, or to check the
+    owner instead of the tenant, or to drop the KeyError for unknown tokens. Hidden
+    tests exercise unknown tokens, an admin in the tenant, and cross-tenant denial in
+    both directions.
+
+expected_behavior_file: expected_behavior.md

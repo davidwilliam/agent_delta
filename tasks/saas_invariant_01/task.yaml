@@ -1,0 +1,77 @@
+id: saas_invariant_01
+title: Enforce a per-tenant seat quota
+category: hidden_invariant_preservation
+hardness_level: H3
+known_llm_failure_mode: counts_assignments_but_misses_quota_or_idempotency
+repo: saas
+base_commit: HEAD
+language: python
+framework: pytest
+prompt_file: prompt.md
+
+prompts:
+  minimal: prompt_minimal.md
+  strong: prompt_strong.md
+  workflow: prompt_workflow.md
+
+context_requirement:
+  min_context_tokens: 4000
+  preferred_context_tokens: 100000
+
+execution:
+  timeout_minutes: 20
+  max_cost_usd: 3.00
+  network: disabled
+  package_install: false
+
+scope:
+  allowed_paths:
+    - src/
+    - tests/
+  forbidden_paths:
+    - src/saasapp/storage.py
+    - src/saasapp/models.py
+  max_files_modified: 1
+  max_lines_changed: 40
+  forbidden_changes:
+    - Do not change storage.py, models.py, or the storage seed/state.
+    - Do not weaken, skip, or delete tests.
+    - Do not double-count a user who already holds a seat.
+  forbidden_patterns:
+    - pattern: "@pytest\\.mark\\.skip"
+      label: test_removed_or_weakened
+
+tests:
+  baseline:
+    - pytest -q tests/
+  public:
+    - public_tests.py
+  hidden:
+    - hidden_tests.py
+
+acceptance_criteria:
+  - assign(tenant_id, user_id) assigns a seat and returns the new assigned count.
+  - The number of distinct assigned users for a tenant never exceeds its seat limit.
+  - Assigning a user who already holds a seat is a no-op and does not raise.
+  - An over-limit assignment raises and does not add the user or change state.
+  - Distinct tenants are independent; limit()/assign() raise for an unknown tenant.
+
+scoring_weights:
+  verified_success: 0.50
+  hidden_test_score: 0.25
+  regression_avoidance: 0.10
+  scope_control: 0.05
+  cost_efficiency: 0.05
+  time_efficiency: 0.05
+
+scoring:
+  objective_weight: 1.0
+  review_weight: 0.0
+
+notes:
+  - H3 hidden invariant (HARD-TASKS-SPEC 3.3). The happy path (assign up to the
+    limit) is easy; the invariant is that the number of DISTINCT assigned users for a
+    tenant must never exceed its seat limit, that re-assigning an existing user is
+    idempotent (no double-count), and that a rejected over-limit assign must not
+    partially apply. Hidden tests exercise idempotency, per-tenant isolation, the
+    no-partial-application guarantee, and unknown tenants.

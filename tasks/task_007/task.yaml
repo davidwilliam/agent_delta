@@ -1,6 +1,8 @@
 id: task_007
 title: Build a summary module (summarize, describe, top_n)
 category: long_horizon
+hardness_level: H2
+known_llm_failure_mode: incomplete_multi_function_implementation
 difficulty: 4
 repo: python_package
 base_commit: HEAD

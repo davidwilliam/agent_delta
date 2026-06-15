@@ -1,0 +1,74 @@
+id: mk_invariant_01
+title: Apply transactions while keeping the balance non-negative
+category: hidden_invariant_preservation
+hardness_level: H3
+known_llm_failure_mode: applies_all_transactions_misses_overdraw_guard_and_atomicity
+repo: python_package
+base_commit: HEAD
+language: python
+framework: pytest
+prompt_file: prompt.md
+
+prompts:
+  minimal: prompt_minimal.md
+  strong: prompt_strong.md
+  workflow: prompt_workflow.md
+
+context_requirement:
+  min_context_tokens: 4000
+  preferred_context_tokens: 100000
+
+execution:
+  timeout_minutes: 20
+  max_cost_usd: 3.00
+  network: disabled
+  package_install: false
+
+scope:
+  allowed_paths:
+    - src/
+    - tests/
+  forbidden_paths: []
+  max_files_modified: 1
+  max_lines_changed: 35
+  forbidden_changes:
+    - Do not weaken, skip, or delete tests.
+    - Keep apply_transactions a small, pure function (no shared mutable state).
+  forbidden_patterns:
+    - pattern: "@pytest\\.mark\\.skip"
+      label: test_removed_or_weakened
+
+tests:
+  baseline:
+    - pytest -q tests/
+  public:
+    - public_tests.py
+  hidden:
+    - hidden_tests.py
+
+acceptance_criteria:
+  - apply_transactions(start_balance, transactions) returns the final balance after applying each transaction in order.
+  - A withdrawal that would drive the balance below zero is rejected with ValueError and is not applied (no partial application).
+  - A negative start_balance raises ValueError.
+  - An empty transaction list returns start_balance unchanged.
+  - A mix of deposits and withdrawals that stays non-negative returns the correct final balance.
+
+scoring_weights:
+  verified_success: 0.50
+  hidden_test_score: 0.25
+  regression_avoidance: 0.10
+  scope_control: 0.05
+  cost_efficiency: 0.05
+  time_efficiency: 0.05
+
+scoring:
+  objective_weight: 1.0
+  review_weight: 0.0
+
+notes:
+  - H3 hidden invariant (HARD-TASKS-SPEC 3.3). The happy path (sum the transactions)
+    is easy; the invariant is that a running balance must never go below zero, and a
+    withdrawal that would overdraw must raise without being applied (atomic reject).
+    Hidden tests exercise withdrawal exactly to zero, a negative start_balance, an
+    overdraw partway through with no partial application, an empty list, and a valid
+    mixed sequence.

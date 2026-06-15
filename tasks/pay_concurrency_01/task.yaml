@@ -1,0 +1,78 @@
+id: pay_concurrency_01
+title: Make wallet credits safe under concurrent updates
+category: concurrency_idempotency
+hardness_level: H5
+known_llm_failure_mode: unlocked_read_modify_write_loses_concurrent_updates
+repo: payments
+base_commit: HEAD
+language: python
+framework: pytest
+prompt_file: prompt.md
+
+prompts:
+  minimal: prompt_minimal.md
+  strong: prompt_strong.md
+  workflow: prompt_workflow.md
+
+context_requirement:
+  min_context_tokens: 4000
+  preferred_context_tokens: 100000
+
+execution:
+  timeout_minutes: 20
+  max_cost_usd: 3.00
+  network: disabled
+  package_install: false
+
+scope:
+  allowed_paths:
+    - src/
+    - tests/
+  forbidden_paths:
+    - src/payments/storage.py
+    - src/payments/models.py
+    - src/payments/webhook.py
+  max_files_modified: 1
+  max_lines_changed: 30
+  forbidden_changes:
+    - Do not remove or reduce the simulated latency in wallet.credit.
+    - Do not weaken, skip, or delete tests.
+    - Do not change other modules.
+  forbidden_patterns:
+    - pattern: "@pytest\\.mark\\.skip"
+      label: test_removed_or_weakened
+
+tests:
+  baseline:
+    - pytest -q tests/
+  public:
+    - public_tests.py
+  hidden:
+    - hidden_tests.py
+
+acceptance_criteria:
+  - Concurrent credits to the same account never lose updates; the final balance equals the sum of all credits.
+  - Sequential credits accumulate correctly.
+  - Distinct accounts remain independent under concurrency.
+  - credit returns the new balance for the account.
+  - The simulated latency in wallet.credit is preserved.
+
+scoring_weights:
+  verified_success: 0.50
+  hidden_test_score: 0.25
+  regression_avoidance: 0.10
+  scope_control: 0.05
+  cost_efficiency: 0.05
+  time_efficiency: 0.05
+
+scoring:
+  objective_weight: 1.0
+  review_weight: 0.0
+
+notes:
+  - H5 concurrency. The base credit does an unlocked read-modify-write under
+    simulated latency, so concurrent credits to one account read the same starting
+    balance and lose updates. Only proper synchronization (for example a lock around
+    the read-modify-write) passes; removing the latency is forbidden. Hidden tests
+    exercise higher thread counts, account independence, interleaved accounts, and
+    the return value.

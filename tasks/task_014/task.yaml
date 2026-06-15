@@ -1,6 +1,9 @@
 id: task_014
 title: Implement calc (integer arithmetic expression evaluator)
 category: medium_feature
+tier: supplementary
+hardness_level: H2
+known_llm_failure_mode: operator_precedence_or_paren_errors
 difficulty: 5
 repo: python_package
 base_commit: HEAD

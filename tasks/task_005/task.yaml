@@ -1,6 +1,8 @@
 id: task_005
 title: Fix path traversal in read_fixture
 category: security_fix
+hardness_level: H3
+known_llm_failure_mode: blocks_visible_exploit_only_misses_encoded_bypass
 difficulty: 3
 repo: python_package
 base_commit: HEAD

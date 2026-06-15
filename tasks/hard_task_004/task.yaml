@@ -8,6 +8,10 @@ base_commit: HEAD
 language: python
 framework: pytest
 prompt_file: prompt.md
+prompts:
+  minimal: prompt_minimal.md
+  strong: prompt_strong.md
+  workflow: prompt_workflow.md
 
 context_requirement:
   min_context_tokens: 8000

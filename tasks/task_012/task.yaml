@@ -1,6 +1,9 @@
 id: task_012
 title: Implement simplify_path (Unix path canonicalization)
 category: medium_feature
+tier: supplementary
+hardness_level: H1
+known_llm_failure_mode: misses_dotdot_or_trailing_slash_edges
 difficulty: 5
 repo: python_package
 base_commit: HEAD

@@ -1,0 +1,79 @@
+id: pay_loc_01
+title: Fix the understated gross total in the payment summary
+category: multi_file_bug_localization
+hardness_level: H2
+known_llm_failure_mode: patches_reporting_symptom_instead_of_aggregate_helper
+repo: payments
+base_commit: HEAD
+language: python
+framework: pytest
+prompt_file: prompt.md
+
+prompts:
+  minimal: prompt_minimal.md
+  strong: prompt_strong.md
+  workflow: prompt_workflow.md
+
+context_requirement:
+  min_context_tokens: 4000
+  preferred_context_tokens: 100000
+
+execution:
+  timeout_minutes: 20
+  max_cost_usd: 3.00
+  network: disabled
+  package_install: false
+
+scope:
+  allowed_paths:
+    - src/
+    - tests/
+  forbidden_paths:
+    - src/payments/reporting.py
+    - src/payments/storage.py
+    - src/payments/models.py
+  max_files_modified: 1
+  max_lines_changed: 8
+  forbidden_changes:
+    - Do not edit reporting.py; fix the root cause in the aggregate helper.
+    - Do not change the Invoice model or the storage seed/state.
+    - Do not weaken, skip, or delete tests.
+  forbidden_patterns:
+    - pattern: "@pytest\\.mark\\.skip"
+      label: test_removed_or_weakened
+
+tests:
+  baseline:
+    - pytest -q tests/
+  public:
+    - public_tests.py
+  hidden:
+    - hidden_tests.py
+
+acceptance_criteria:
+  - summary()["gross"] equals the sum of all invoice amounts, not a value that drops the first invoice.
+  - summary()["count"] equals the number of invoices.
+  - A single invoice produces a gross equal to that invoice's amount.
+  - Zero invoices produce a gross of 0.
+  - The fix is in aggregate.gross_total; reporting.py is unchanged.
+
+scoring_weights:
+  verified_success: 0.50
+  hidden_test_score: 0.25
+  regression_avoidance: 0.10
+  scope_control: 0.05
+  cost_efficiency: 0.05
+  time_efficiency: 0.05
+
+scoring:
+  objective_weight: 1.0
+  review_weight: 0.0
+
+notes:
+  - H2 multi-file localization (HARD-TASKS-SPEC). summary() lives in reporting.py but
+    delegates the arithmetic to aggregate.gross_total, which slices INVOICES[1:] and
+    silently drops the first invoice. The visible symptom (an understated gross) is
+    in reporting, but the root cause is in aggregate. The failure mode is patching
+    the symptom in reporting.py instead of fixing the helper. Editing reporting.py is
+    forbidden, so the agent must localize across files and correct gross_total to sum
+    all invoices.

@@ -1,0 +1,76 @@
+id: mk_contract_01
+title: Keep the legacy val alias consistent in record dicts
+category: cross_file_contract
+hardness_level: H2
+known_llm_failure_mode: breaks_backward_compatible_alias
+repo: python_package
+base_commit: HEAD
+language: python
+framework: pytest
+prompt_file: prompt.md
+
+prompts:
+  minimal: prompt_minimal.md
+  strong: prompt_strong.md
+  workflow: prompt_workflow.md
+
+context_requirement:
+  min_context_tokens: 4000
+  preferred_context_tokens: 100000
+
+execution:
+  timeout_minutes: 20
+  max_cost_usd: 3.00
+  network: disabled
+  package_install: false
+
+scope:
+  allowed_paths:
+    - src/
+    - tests/
+  forbidden_paths: []
+  max_files_modified: 1
+  max_lines_changed: 5
+  forbidden_changes:
+    - Keep the legacy val alias; do not drop the key or rename it.
+    - Do not weaken, skip, or delete tests.
+  forbidden_patterns:
+    - pattern: "@pytest\\.mark\\.skip"
+      label: test_removed_or_weakened
+
+tests:
+  baseline:
+    - pytest -q tests/
+  public:
+    - public_tests.py
+  hidden:
+    - hidden_tests.py
+
+acceptance_criteria:
+  - to_dict(name, value) returns a dict with exactly the keys name, value, and val.
+  - The legacy val key always equals the value key.
+  - The name key holds the given name and the value key holds the given value.
+  - The alias holds for any value, including 0, a negative number, and a string.
+  - No extra keys are added and no keys are removed.
+
+scoring_weights:
+  verified_success: 0.50
+  hidden_test_score: 0.25
+  regression_avoidance: 0.10
+  scope_control: 0.05
+  cost_efficiency: 0.05
+  time_efficiency: 0.05
+
+scoring:
+  objective_weight: 1.0
+  review_weight: 0.0
+
+notes:
+  - H2 cross-file contract (HARD-TASKS-SPEC 3.2). record.to_dict returns a legacy
+    "val" alias that downstream consumers expect to mirror "value", but it is wired
+    to None. The fix is to set "val" to value so the alias is consistent. The common
+    failure is to drop or rename the legacy key, breaking backward compatibility.
+    Hidden tests confirm the alias holds for several values (including 0, a negative
+    number, and a string) and that the key set is exactly name/value/val.
+
+expected_behavior_file: expected_behavior.md

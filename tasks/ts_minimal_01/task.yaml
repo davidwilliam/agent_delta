@@ -1,0 +1,77 @@
+id: ts_minimal_01
+title: Distribute the remainder when splitting a total
+category: minimal_diff_repair
+hardness_level: H2
+known_llm_failure_mode: drops_remainder_parts_do_not_sum_to_total
+repo: pricing_ts
+base_commit: HEAD
+language: typescript
+framework: node-test
+prompt_file: prompt.md
+
+prompts:
+  minimal: prompt_minimal.md
+  strong: prompt_strong.md
+  workflow: prompt_workflow.md
+
+context_requirement:
+  min_context_tokens: 4000
+  preferred_context_tokens: 100000
+
+execution:
+  timeout_minutes: 20
+  max_cost_usd: 3.00
+  network: disabled
+  package_install: false
+
+scope:
+  allowed_paths:
+    - src/
+    - tests/
+  forbidden_paths:
+    - src/money.ts
+    - src/cart.ts
+  max_files_modified: 1
+  max_lines_changed: 12
+  forbidden_changes:
+    - Do not change money.ts or cart.ts.
+    - Do not weaken, skip, or delete tests.
+    - Do not change the splitEvenly signature.
+  forbidden_patterns:
+    - pattern: "\\.skip\\(|\\.todo\\("
+      label: test_removed_or_weakened
+
+tests:
+  baseline:
+    - npm run --silent build && node --test tests/*.test.mjs
+  public:
+    - public_tests.mjs
+  hidden:
+    - hidden_tests.mjs
+
+acceptance_criteria:
+  - splitEvenly returns n integer parts that sum exactly to totalCents.
+  - The largest and smallest parts differ by at most 1.
+  - The first remainder parts each receive one extra cent.
+  - n == 1 returns the whole total as a single part, and a total of 0 returns all zeros.
+  - The fix stays in src/split.ts; money.ts and cart.ts are unchanged.
+
+scoring_weights:
+  verified_success: 0.50
+  hidden_test_score: 0.25
+  regression_avoidance: 0.10
+  scope_control: 0.05
+  cost_efficiency: 0.05
+  time_efficiency: 0.05
+
+scoring:
+  objective_weight: 1.0
+  review_weight: 0.0
+
+notes:
+  - H2 minimal diff repair. The base splitEvenly floors each part and drops the
+    remainder, so the parts do not sum to totalCents whenever n does not divide it.
+    The visible exact-division behaviour looks fine, but hidden tests check that the
+    parts sum to the total and differ by at most 1 across remainders. The minimal
+    correct fix computes the remainder and gives the first remainder parts one extra
+    cent.

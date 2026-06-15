@@ -1,0 +1,76 @@
+id: saas_state_01
+title: Add a trial account state to the lifecycle
+category: state_machine
+hardness_level: H5
+known_llm_failure_mode: adds_state_but_misses_transition_guard_or_audit
+repo: saas
+base_commit: HEAD
+language: python
+framework: pytest
+prompt_file: prompt.md
+
+prompts:
+  minimal: prompt_minimal.md
+  strong: prompt_strong.md
+  workflow: prompt_workflow.md
+
+context_requirement:
+  min_context_tokens: 4000
+  preferred_context_tokens: 100000
+
+execution:
+  timeout_minutes: 20
+  max_cost_usd: 3.00
+  network: disabled
+  package_install: false
+
+scope:
+  allowed_paths:
+    - src/
+    - tests/
+  forbidden_paths:
+    - src/saasapp/storage.py
+  max_files_modified: 1
+  max_lines_changed: 15
+  forbidden_changes:
+    - Do not change the existing transitions or the storage seed.
+    - Do not weaken, skip, or delete tests.
+  forbidden_patterns:
+    - pattern: "@pytest\\.mark\\.skip"
+      label: test_removed_or_weakened
+
+tests:
+  baseline:
+    - pytest -q tests/
+  public:
+    - public_tests.py
+  hidden:
+    - hidden_tests.py
+
+acceptance_criteria:
+  - A trial account state is added so that ("trial","active") and ("trial","closed") are legal transitions.
+  - The existing ("active","closed") and ("closed","active") transitions keep working.
+  - ("active","trial") and ("closed","trial") remain illegal and raise ValueError.
+  - Every successful transition still appends (tenant, from, to) to storage.AUDIT.
+  - The change is confined to lifecycle.py and leaves transition()/can_transition() behavior otherwise identical.
+
+scoring_weights:
+  verified_success: 0.50
+  hidden_test_score: 0.25
+  regression_avoidance: 0.10
+  scope_control: 0.05
+  cost_efficiency: 0.05
+  time_efficiency: 0.05
+
+scoring:
+  objective_weight: 1.0
+  review_weight: 0.0
+
+notes:
+  - H5 state-machine extension. Adding the trial state is easy to start; the trap is
+    that a correct solution must add only the two new outbound transitions
+    (trial->active, trial->closed) without making the inbound transitions
+    (active->trial, closed->trial) legal, and without breaking the existing
+    active/closed transitions or the audit log. Hidden tests exercise the illegal
+    inbound transitions, the audit entry on a successful trial->active, and the
+    surviving active/closed transitions.
