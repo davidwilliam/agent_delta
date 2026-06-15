@@ -27,6 +27,30 @@ def parse_pytest_summary(output: str) -> dict[str, int]:
     return counts
 
 
+def parse_node_test(output: str) -> dict[str, int]:
+    """Parse `node --test` TAP summary (Node built-in test runner).
+
+    Node prints '# pass N', '# fail N', '# tests N'. A TypeScript compile error or
+    an import/throw before any test prints no such summary, so count that as an
+    error (the run reads as failing, not as 'no tests').
+    """
+    def grab(key: str) -> int | None:
+        m = re.search(rf"^#\s*{key}\s+(\d+)", output, re.MULTILINE)
+        return int(m.group(1)) if m else None
+
+    passed, failed = grab("pass"), grab("fail")
+    if passed is None and failed is None:
+        compile_or_crash = re.search(
+            r"error TS\d+|SyntaxError|Cannot find (module|package)|"
+            r"ERR_MODULE_NOT_FOUND|throw|is not a function|not defined",
+            output)
+        return {"passed": 0, "failed": 0, "error": 1 if compile_or_crash else 0,
+                "skipped": 0, "total": 1 if compile_or_crash else 0}
+    passed, failed = passed or 0, failed or 0
+    return {"passed": passed, "failed": failed, "error": 0, "skipped": 0,
+            "total": passed + failed}
+
+
 def parse_go_test(output: str) -> dict[str, int]:
     passed = len(re.findall(r"--- PASS:", output))
     failed = len(re.findall(r"--- FAIL:", output))
@@ -54,6 +78,16 @@ def plan(language: str, label: str, filenames: list[str], workdir: str):
         targets = {name: f"{pkg_dir}/{name}" for name in filenames}
         cmd = ["bash", "-c", f"cd {workdir} && go test -v -count=1 ./agentdelta_eval/{label}/"]
         return targets, cmd
+    if language in ("node", "typescript"):
+        # Tests are injected under the package so Node self-references the package by
+        # name (package.json "exports"). For TypeScript we compile first, then run
+        # the built-in node test runner over the injected files.
+        pkg_dir = f"{workdir}/agentdelta_eval/{label}"
+        targets = {name: f"{pkg_dir}/{name}" for name in filenames}
+        runs = " ".join(f"agentdelta_eval/{label}/{name}" for name in filenames)
+        build = "npm run --silent build && " if language == "typescript" else ""
+        cmd = ["bash", "-c", f"cd {workdir} && {build}node --test {runs}"]
+        return targets, cmd
     raise ValueError(f"Unsupported fixture language: {language!r}")
 
 
@@ -66,4 +100,6 @@ def injection(language: str, label: str, files: dict[str, str], workdir: str):
 def parse(language: str, output: str) -> dict[str, int]:
     if language == "go":
         return parse_go_test(output)
+    if language in ("node", "typescript"):
+        return parse_node_test(output)
     return parse_pytest_summary(output)

@@ -22,8 +22,19 @@ modes:
     description: Force the same explicit workflow for every model (ADDENDUM 5.3).
     workflow: true
 
+  minimal_spec:
+    description: >
+      The terse, weak-user prompt (SPEC-ADDENDUM 14, HARD-TASKS-SPEC 6.1). Uses the
+      task's author-written minimal variant when present, else the default prompt.
+      Paired with strong_spec to measure whether a newer model's advantage shrinks
+      once requirements are made explicit.
+    minimal_spec: true
+
   strong_spec:
-    description: Give every model the task's full acceptance criteria (ADDENDUM 5.4).
+    description: >
+      Give every model the task's full requirements (ADDENDUM 5.4). Uses the task's
+      author-written strong variant when present, else synthesizes one from the
+      acceptance criteria and forbidden paths.
     strong_spec: true
 
   cost_matched:

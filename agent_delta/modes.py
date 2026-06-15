@@ -72,12 +72,22 @@ def build_prompt(task, mode: str, *, scaffolded: bool = False) -> str:
             return task.prompt + forbidden
         steps = _modes_config()["scaffold_steps"]
         return f"{steps}\n\n{task.prompt}\n\n{_strong_spec_block(task)}{forbidden}"
+    # Minimal-spec mode uses the terse author variant (weak-user behaviour), or the
+    # default prompt when no minimal variant is declared.
+    if spec.get("minimal_spec"):
+        return (task.prompt_variant("minimal") or task.prompt) + forbidden
     body = task.prompt
     if spec.get("strong_spec"):
-        body = f"{body}\n\n{_strong_spec_block(task)}"
+        # Prefer an author-written strong prompt; otherwise synthesize one from the
+        # task's acceptance criteria and forbidden paths.
+        body = task.prompt_variant("strong") or f"{body}\n\n{_strong_spec_block(task)}"
     if spec.get("workflow"):
-        steps = _modes_config()["workflow_steps"]
-        body = f"{steps}\n\n{body}"
+        author = task.prompt_variant("workflow")
+        if author:
+            body = author
+        else:
+            steps = _modes_config()["workflow_steps"]
+            body = f"{steps}\n\n{body}"
     return body + forbidden
 
 

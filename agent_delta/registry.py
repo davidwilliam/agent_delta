@@ -40,6 +40,15 @@ class Task:
         return self.spec.get("hardness_level", "H1")
 
     @property
+    def tier(self) -> str:
+        """'core' (the graded hard suite) or 'supplementary' (single-file warmup).
+
+        The HARD-TASKS-SPEC 16 multi-file ratio is measured over the core tier;
+        supplementary tasks are kept for breadth but excluded from that ratio.
+        """
+        return self.spec.get("tier", "core")
+
+    @property
     def known_llm_failure_mode(self) -> str | None:
         return self.spec.get("known_llm_failure_mode")
 
@@ -82,6 +91,28 @@ class Task:
     @property
     def prompt(self) -> str:
         return (self.dir / self.spec.get("prompt_file", "prompt.md")).read_text()
+
+    @property
+    def prompts(self) -> dict[str, str]:
+        """Declared author-written prompt variants, e.g. {minimal, strong, workflow}.
+
+        HARD-TASKS-SPEC 6 / SPEC-ADDENDUM 14. Absent variants fall back to the
+        generic prompt synthesis in modes.build_prompt.
+        """
+        return self.spec.get("prompts", {})
+
+    def prompt_variant(self, kind: str) -> str | None:
+        """Return the author-written prompt of this `kind`, or None if not declared."""
+        fname = self.prompts.get(kind)
+        if not fname:
+            return None
+        path = self.dir / fname
+        return path.read_text() if path.exists() else None
+
+    @property
+    def scoring_weights(self) -> dict[str, float] | None:
+        """Per-task objective weight overrides (HARD-TASKS-SPEC 13), if declared."""
+        return self.spec.get("scoring_weights")
 
     @property
     def baseline_cmds(self) -> list[str]:
