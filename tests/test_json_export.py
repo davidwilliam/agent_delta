@@ -39,6 +39,16 @@ def test_envelope_top_level_keys():
             "sections", "suites"} <= set(d)
 
 
+def test_cross_provider_key_present_in_export():
+    # Single-file and sharded index both carry the cross_provider key (value may be
+    # null when there are not two full-cohort providers, as in this minimal bundle).
+    from agent_delta.reporting.json_export import build_sharded_export
+    d = build_report_json(_fake_bundle(), generated_at="t", baseline="b")
+    assert "cross_provider" in d
+    index, _ = build_sharded_export(_fake_bundle(), generated_at="t", baseline="b")
+    assert "cross_provider" in index
+
+
 def test_sections_match_report_sections():
     d = build_report_json(_fake_bundle(), generated_at="t", baseline="b")
     assert d["sections"] == [{"id": sid, "label": label} for sid, label in REPORT_SECTIONS]

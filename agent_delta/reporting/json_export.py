@@ -16,7 +16,9 @@ import math
 from pathlib import Path
 from typing import Any
 
-from agent_delta.reporting.html import PROVIDER_LABELS, REPORT_SECTIONS, model_provider
+from agent_delta.reporting.html import (
+    PROVIDER_LABELS, REPORT_SECTIONS, build_cross_provider, model_provider,
+)
 
 # Bump only on a BREAKING change (rename/remove/move/retype a key a consumer
 # relies on). Additive changes (new optional key, new appended section) do not bump.
@@ -40,12 +42,14 @@ def build_report_json(bundle: list[dict], *, generated_at: str, baseline: str) -
         benchmark_version = sorted(versions)
 
     suites = sorted(bundle, key=lambda b: b["report"].get("suite") or "")
+    all_records = [r for b in bundle for r in b["records"]]
     return {
         "schema_version": SCHEMA_VERSION,
         "benchmark_version": benchmark_version,
         "generated_at": generated_at,
         "baseline": baseline,
         "sections": [{"id": sid, "label": label} for sid, label in REPORT_SECTIONS],
+        "cross_provider": build_cross_provider(all_records),
         "suites": [
             {
                 "suite": b["report"].get("suite"),
@@ -144,6 +148,7 @@ def build_sharded_export(bundle: list[dict], *, generated_at: str, baseline: str
         "sections": [{"id": sid, "label": label} for sid, label in REPORT_SECTIONS],
         "providers": providers,
         "models": [{"id": m, "provider": p} for m, p in sorted(model_provider_map.items())],
+        "cross_provider": build_cross_provider([r for b in bundle for r in b["records"]]),
         "suites": suite_index,
     }
     return index, shards
