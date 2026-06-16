@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "benchmark_version": "agentdelta-v0.1",
-  "generated_at": "2026-06-16 02:42 UTC",
+  "generated_at": "2026-06-16 15:43 UTC",
   "baseline": "claude-opus-4-6",
   "sections": [
     {
@@ -66,6 +66,7 @@
       "id": "openai",
       "label": "OpenAI (Codex CLI)",
       "suites": [
+        "openai-full50-4x1",
         "openai-hardest5-4x5"
       ],
       "models": [
@@ -211,6 +212,19 @@
         "claude-sonnet-4-6"
       ],
       "file": "suites/anthropic-v0.1-pilot.json"
+    },
+    {
+      "suite": "openai-full50-4x1",
+      "provider": "openai",
+      "n_runs": 200,
+      "n_models": 4,
+      "models": [
+        "gpt-5",
+        "gpt-5-mini-2025-08-07",
+        "gpt-5.1-2025-11-13",
+        "gpt-5.4"
+      ],
+      "file": "suites/openai-full50-4x1.json"
     },
     {
       "suite": "openai-hardest5-4x5",

@@ -1,0 +1,209 @@
+{
+  "agentdelta_version": "0.1.0",
+  "date": "2026-06-16",
+  "suite": "openai-full50-4x1",
+  "inspect_version": "0.3.239",
+  "inspect_swe_version": "0.2.63",
+  "python_version": "3.14.5",
+  "docker_version": "27.4.0",
+  "host_os": "macOS-26.5.1-arm64-arm-64bit-Mach-O",
+  "agent": "codex_cli",
+  "agent_cli_version": "auto",
+  "agent_settings_hash": "sha256:7a26afb2d694167cda113c6023ec3d5a3e15a3c19c63c0ab2f13457d440f1007",
+  "models": [
+    "gpt-5.4",
+    "gpt-5.1-2025-11-13",
+    "gpt-5",
+    "gpt-5-mini-2025-08-07"
+  ],
+  "tasks": [
+    "task_006",
+    "task_007",
+    "task_008",
+    "task_009",
+    "task_010",
+    "task_011",
+    "task_012",
+    "task_013",
+    "task_014",
+    "ts_contract_01",
+    "ts_invariant_02",
+    "ts_loc_01",
+    "ts_minimal_01",
+    "ts_security_01",
+    "ts_state_01",
+    "ts_task_001"
+  ],
+  "sandbox_images": {
+    "long_context": "sha256:678924877232a2b4ef39e8a673b0d10661fee4a4d06f263989f7cf127fa2b827",
+    "pricing_ts": "sha256:00fe273cdc61137a6ced8d8ba0b6c5f756f1f824c16eea47a885b07f81cee34e",
+    "python_package": "sha256:1baa4f06daaf319c3be76350b21c0e0df1abbc74fb28e998690bef087283784d"
+  },
+  "tasks_hash": "sha256:d60b05eb0aa4c93f86d8788f7a66743ab3e2345499a22611f645cc818107960c",
+  "scoring_hash": "sha256:73972ebd6646114b768a4b9fd9f7b762ed6b21acee98bd85c9f1e7f51f986f24",
+  "fixtures_hash": "sha256:26618f201a72b9b5c795261c07284baa88f5a3801d91ee85abf563c76c9aec1a",
+  "hidden_tests_hash": "sha256:cadde40f394a1538902ddcf8b5449ac172d80f235d0f689a6098baa09714c3d8",
+  "run_order_seed": 12345,
+  "run_order": [
+    {
+      "rep": 0,
+      "task": "task_006",
+      "order": [
+        "gpt-5.1-2025-11-13",
+        "gpt-5",
+        "gpt-5-mini-2025-08-07",
+        "gpt-5.4"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "task_007",
+      "order": [
+        "gpt-5",
+        "gpt-5-mini-2025-08-07",
+        "gpt-5.1-2025-11-13",
+        "gpt-5.4"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "task_008",
+      "order": [
+        "gpt-5.1-2025-11-13",
+        "gpt-5.4",
+        "gpt-5-mini-2025-08-07",
+        "gpt-5"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "task_009",
+      "order": [
+        "gpt-5.4",
+        "gpt-5.1-2025-11-13",
+        "gpt-5-mini-2025-08-07",
+        "gpt-5"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "task_010",
+      "order": [
+        "gpt-5.1-2025-11-13",
+        "gpt-5.4",
+        "gpt-5-mini-2025-08-07",
+        "gpt-5"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "task_011",
+      "order": [
+        "gpt-5-mini-2025-08-07",
+        "gpt-5.1-2025-11-13",
+        "gpt-5.4",
+        "gpt-5"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "task_012",
+      "order": [
+        "gpt-5",
+        "gpt-5.4",
+        "gpt-5.1-2025-11-13",
+        "gpt-5-mini-2025-08-07"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "task_013",
+      "order": [
+        "gpt-5",
+        "gpt-5.1-2025-11-13",
+        "gpt-5.4",
+        "gpt-5-mini-2025-08-07"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "task_014",
+      "order": [
+        "gpt-5",
+        "gpt-5.4",
+        "gpt-5-mini-2025-08-07",
+        "gpt-5.1-2025-11-13"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "ts_contract_01",
+      "order": [
+        "gpt-5",
+        "gpt-5.1-2025-11-13",
+        "gpt-5.4",
+        "gpt-5-mini-2025-08-07"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "ts_invariant_02",
+      "order": [
+        "gpt-5.1-2025-11-13",
+        "gpt-5-mini-2025-08-07",
+        "gpt-5.4",
+        "gpt-5"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "ts_loc_01",
+      "order": [
+        "gpt-5.1-2025-11-13",
+        "gpt-5",
+        "gpt-5.4",
+        "gpt-5-mini-2025-08-07"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "ts_minimal_01",
+      "order": [
+        "gpt-5-mini-2025-08-07",
+        "gpt-5.4",
+        "gpt-5.1-2025-11-13",
+        "gpt-5"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "ts_security_01",
+      "order": [
+        "gpt-5.1-2025-11-13",
+        "gpt-5-mini-2025-08-07",
+        "gpt-5.4",
+        "gpt-5"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "ts_state_01",
+      "order": [
+        "gpt-5.4",
+        "gpt-5-mini-2025-08-07",
+        "gpt-5",
+        "gpt-5.1-2025-11-13"
+      ]
+    },
+    {
+      "rep": 0,
+      "task": "ts_task_001",
+      "order": [
+        "gpt-5.4",
+        "gpt-5-mini-2025-08-07",
+        "gpt-5.1-2025-11-13",
+        "gpt-5"
+      ]
+    }
+  ]
+}

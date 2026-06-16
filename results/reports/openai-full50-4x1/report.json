@@ -1,0 +1,556 @@
+{
+  "benchmark_version": "agentdelta-v0.1",
+  "suite": "openai-full50-4x1",
+  "agent": "codex_cli",
+  "n_tasks": 50,
+  "n_long_context_tasks": 3,
+  "n_runs": 200,
+  "n_invalid": 0,
+  "invalid_runs": [],
+  "models": [
+    "gpt-5",
+    "gpt-5-mini-2025-08-07",
+    "gpt-5.1-2025-11-13",
+    "gpt-5.4"
+  ],
+  "modes": [
+    "default"
+  ],
+  "scoring_formula": {
+    "objective_score": {
+      "verified_task_success": 0.6,
+      "hidden_test_score": 0.15,
+      "regression_avoidance": 0.1,
+      "scope_control": 0.05,
+      "cost_efficiency": 0.05,
+      "time_efficiency": 0.05
+    },
+    "full_score": {
+      "objective_score": 0.95,
+      "blinded_review": 0.05
+    },
+    "materiality": {
+      "task_success_delta_pp": 5,
+      "category_success_delta_pp": 10,
+      "cost_delta_percent": 10,
+      "latency_delta_percent": 10,
+      "regression_delta_pp": 3
+    }
+  },
+  "per_mode": {
+    "default": {
+      "models": {
+        "gpt-5.1-2025-11-13": {
+          "model_id": "gpt-5.1-2025-11-13",
+          "n_runs": 50,
+          "n_invalid": 0,
+          "failure_labels": {
+            "did_not_run_tests": 2,
+            "hidden_tests_failed": 2,
+            "incomplete_implementation": 2,
+            "public_tests_failed": 2
+          },
+          "invalid_by_reason": {},
+          "category_success": {
+            "cross_file_contract": 1.0,
+            "multi_file_bug_localization": 1.0,
+            "small_bug_fix": 1.0,
+            "medium_feature": 1.0,
+            "security_fix": 1.0,
+            "state_machine": 1.0,
+            "concurrency_idempotency": 1.0,
+            "long_context_retrieval": 0.0,
+            "hidden_invariant_preservation": 1.0,
+            "minimal_diff_repair": 1.0,
+            "multi_file_refactor": 1.0,
+            "test_writing": 1.0,
+            "long_horizon": 1.0,
+            "dependency_migration": 1.0
+          },
+          "diagnostics": {
+            "failed_command_ratio": null,
+            "exploration_edit_ratio": null,
+            "timeout_rate": 0.0,
+            "mean_time_to_first_edit_s": null,
+            "mean_time_to_first_test_s": null,
+            "mean_diff_locality": 0.96,
+            "mean_patch_entropy": 0.07855659387917828,
+            "mean_test_to_code_ratio": 0.0
+          },
+          "n_success": 48,
+          "success_rate": 0.96,
+          "success_ci95": [
+            0.8653990931249297,
+            0.9889611156723802
+          ],
+          "hidden_test_rate": 0.9883333333333333,
+          "regression_rate": 0.0,
+          "scope_control": 0.95,
+          "partial_objective_mean": 96.86111111111111,
+          "review_mean": null,
+          "cost_total_usd": 4.22220525,
+          "cost_mean_usd": 0.084444105,
+          "cost_per_success_usd": 0.087962609375,
+          "median_time_to_success_s": 114.772,
+          "wall_clock_percentiles": {
+            "median": 116.035,
+            "mean": 120.92474,
+            "p25": 93.036,
+            "p75": 141.172,
+            "p90": 171.00930000000002
+          },
+          "tokens_total_mean": 204880.16,
+          "components": {
+            "verified_success": 0.96,
+            "hidden_test_score": 0.9883333333333333,
+            "regression_avoidance": 1.0,
+            "scope_control": 0.95
+          },
+          "work": {
+            "input_tokens": 20772.98,
+            "output_tokens": 3591.34,
+            "wall_clock_seconds": 120.92474,
+            "api_calls": 15.5,
+            "tool_calls": 14.48,
+            "shell_commands": 0.0,
+            "test_runs": 0.0,
+            "file_reads": 0.0,
+            "file_edits": 0.0,
+            "retry_count": 1.28,
+            "review_passes": null
+          },
+          "cost_efficiency": 0.16366154790994838,
+          "time_efficiency": 0.567050325863451,
+          "objective_score": 90.82855936886699,
+          "review_score": null,
+          "full_score": 90.82855936886699,
+          "work_index": 76.48160305065191,
+          "quality_per_dollar": 1075.605684598907,
+          "quality_per_minute": 45.066985979312584,
+          "quality_per_work_unit": 1.1875870241463615,
+          "rank": 3
+        },
+        "gpt-5": {
+          "model_id": "gpt-5",
+          "n_runs": 50,
+          "n_invalid": 0,
+          "failure_labels": {
+            "did_not_run_tests": 2,
+            "hidden_tests_failed": 2,
+            "public_tests_failed": 2,
+            "incomplete_implementation": 1
+          },
+          "invalid_by_reason": {},
+          "category_success": {
+            "cross_file_contract": 1.0,
+            "multi_file_bug_localization": 1.0,
+            "small_bug_fix": 1.0,
+            "medium_feature": 1.0,
+            "security_fix": 0.8,
+            "state_machine": 1.0,
+            "concurrency_idempotency": 1.0,
+            "long_context_retrieval": 0.5,
+            "hidden_invariant_preservation": 1.0,
+            "minimal_diff_repair": 1.0,
+            "multi_file_refactor": 1.0,
+            "test_writing": 1.0,
+            "long_horizon": 1.0,
+            "dependency_migration": 1.0
+          },
+          "diagnostics": {
+            "failed_command_ratio": null,
+            "exploration_edit_ratio": 0.0,
+            "timeout_rate": 0.0,
+            "mean_time_to_first_edit_s": null,
+            "mean_time_to_first_test_s": null,
+            "mean_diff_locality": 0.96,
+            "mean_patch_entropy": 0.07061117452434361,
+            "mean_test_to_code_ratio": 0.0
+          },
+          "n_success": 48,
+          "success_rate": 0.96,
+          "success_ci95": [
+            0.8653990931249297,
+            0.9889611156723802
+          ],
+          "hidden_test_rate": 0.9683333333333333,
+          "regression_rate": 0.0,
+          "scope_control": 0.96,
+          "partial_objective_mean": 96.58333333333334,
+          "review_mean": null,
+          "cost_total_usd": 6.4894935,
+          "cost_mean_usd": 0.12978987,
+          "cost_per_success_usd": 0.13519778125,
+          "median_time_to_success_s": 140.3385,
+          "wall_clock_percentiles": {
+            "median": 140.3385,
+            "mean": 175.81964,
+            "p25": 102.64675,
+            "p75": 218.8385,
+            "p90": 330.5432
+          },
+          "tokens_total_mean": 287899.06,
+          "components": {
+            "verified_success": 0.96,
+            "hidden_test_score": 0.9683333333333333,
+            "regression_avoidance": 1.0,
+            "scope_control": 0.96
+          },
+          "work": {
+            "input_tokens": 25999.48,
+            "output_tokens": 6537.02,
+            "wall_clock_seconds": 175.81964,
+            "api_calls": 16.98,
+            "tool_calls": 15.98,
+            "shell_commands": 0.0,
+            "test_runs": 0.0,
+            "file_reads": 0.0,
+            "file_edits": 0.16,
+            "retry_count": 1.18,
+            "review_passes": null
+          },
+          "cost_efficiency": 0.10648175343861745,
+          "time_efficiency": 0.4637465841518899,
+          "objective_score": 89.77614168795253,
+          "review_score": null,
+          "full_score": 89.77614168795253,
+          "work_index": 100.00000000000001,
+          "quality_per_dollar": 691.7037646154706,
+          "quality_per_minute": 30.636898706408182,
+          "quality_per_work_unit": 0.8977614168795252,
+          "rank": 4
+        },
+        "gpt-5-mini-2025-08-07": {
+          "model_id": "gpt-5-mini-2025-08-07",
+          "n_runs": 50,
+          "n_invalid": 0,
+          "failure_labels": {
+            "did_not_run_tests": 3,
+            "hidden_tests_failed": 3,
+            "incomplete_implementation": 3,
+            "public_tests_failed": 3
+          },
+          "invalid_by_reason": {},
+          "category_success": {
+            "cross_file_contract": 1.0,
+            "multi_file_bug_localization": 1.0,
+            "small_bug_fix": 1.0,
+            "medium_feature": 1.0,
+            "security_fix": 1.0,
+            "state_machine": 0.8333333333333334,
+            "concurrency_idempotency": 1.0,
+            "long_context_retrieval": 0.0,
+            "hidden_invariant_preservation": 1.0,
+            "minimal_diff_repair": 1.0,
+            "multi_file_refactor": 1.0,
+            "test_writing": 1.0,
+            "long_horizon": 1.0,
+            "dependency_migration": 1.0
+          },
+          "diagnostics": {
+            "failed_command_ratio": null,
+            "exploration_edit_ratio": null,
+            "timeout_rate": 0.0,
+            "mean_time_to_first_edit_s": null,
+            "mean_time_to_first_test_s": null,
+            "mean_diff_locality": 0.9503846153846154,
+            "mean_patch_entropy": 0.14289434694707923,
+            "mean_test_to_code_ratio": 0.0
+          },
+          "n_success": 47,
+          "success_rate": 0.94,
+          "success_ci95": [
+            0.8378290831116182,
+            0.979385029651026
+          ],
+          "hidden_test_rate": 0.9616666666666667,
+          "regression_rate": 0.0,
+          "scope_control": 0.92,
+          "partial_objective_mean": 94.91666666666666,
+          "review_mean": null,
+          "cost_total_usd": 0.67661655,
+          "cost_mean_usd": 0.013532331,
+          "cost_per_success_usd": 0.014396096808510637,
+          "median_time_to_success_s": 97.959,
+          "wall_clock_percentiles": {
+            "median": 99.2185,
+            "mean": 109.2424,
+            "p25": 82.27075,
+            "p75": 118.88525,
+            "p90": 135.5592
+          },
+          "tokens_total_mean": 142778.14,
+          "components": {
+            "verified_success": 0.94,
+            "hidden_test_score": 0.9616666666666667,
+            "regression_avoidance": 1.0,
+            "scope_control": 0.92
+          },
+          "work": {
+            "input_tokens": 13862.7,
+            "output_tokens": 3465.2,
+            "wall_clock_seconds": 109.2424,
+            "api_calls": 10.98,
+            "tool_calls": 9.98,
+            "shell_commands": 0.0,
+            "test_runs": 0.0,
+            "file_reads": 0.0,
+            "file_edits": 0.0,
+            "retry_count": 1.12,
+            "review_passes": null
+          },
+          "cost_efficiency": 1.0,
+          "time_efficiency": 0.664374891536255,
+          "objective_score": 93.74687445768127,
+          "review_score": null,
+          "full_score": 93.74687445768127,
+          "work_index": 60.28923347624252,
+          "quality_per_dollar": 6927.622037746584,
+          "quality_per_minute": 51.48927950558461,
+          "quality_per_work_unit": 1.5549521705997973,
+          "rank": 2
+        },
+        "gpt-5.4": {
+          "model_id": "gpt-5.4",
+          "n_runs": 50,
+          "n_invalid": 0,
+          "failure_labels": {},
+          "invalid_by_reason": {},
+          "category_success": {
+            "cross_file_contract": 1.0,
+            "multi_file_bug_localization": 1.0,
+            "small_bug_fix": 1.0,
+            "medium_feature": 1.0,
+            "security_fix": 1.0,
+            "state_machine": 1.0,
+            "concurrency_idempotency": 1.0,
+            "long_context_retrieval": 1.0,
+            "hidden_invariant_preservation": 1.0,
+            "minimal_diff_repair": 1.0,
+            "multi_file_refactor": 1.0,
+            "test_writing": 1.0,
+            "long_horizon": 1.0,
+            "dependency_migration": 1.0
+          },
+          "diagnostics": {
+            "failed_command_ratio": null,
+            "exploration_edit_ratio": 0.0,
+            "timeout_rate": 0.0,
+            "mean_time_to_first_edit_s": null,
+            "mean_time_to_first_test_s": null,
+            "mean_diff_locality": 0.8233333333333333,
+            "mean_patch_entropy": 0.32781957157326247,
+            "mean_test_to_code_ratio": 0.8433427622669109
+          },
+          "n_success": 50,
+          "success_rate": 1.0,
+          "success_ci95": [
+            0.9286524008666414,
+            1.0
+          ],
+          "hidden_test_rate": 1.0,
+          "regression_rate": 0.0,
+          "scope_control": 0.9,
+          "partial_objective_mean": 99.44444444444443,
+          "review_mean": null,
+          "cost_total_usd": 4.610691,
+          "cost_mean_usd": 0.09221382,
+          "cost_per_success_usd": 0.09221382,
+          "median_time_to_success_s": 65.0815,
+          "wall_clock_percentiles": {
+            "median": 65.0815,
+            "mean": 67.3011,
+            "p25": 54.288000000000004,
+            "p75": 74.46674999999999,
+            "p90": 90.43
+          },
+          "tokens_total_mean": 87847.56,
+          "components": {
+            "verified_success": 1.0,
+            "hidden_test_score": 1.0,
+            "regression_avoidance": 1.0,
+            "scope_control": 0.9
+          },
+          "work": {
+            "input_tokens": 15850.04,
+            "output_tokens": 2345.04,
+            "wall_clock_seconds": 67.30109999999999,
+            "api_calls": 8.18,
+            "tool_calls": 14.08,
+            "shell_commands": 0.0,
+            "test_runs": 0.0,
+            "file_reads": 0.0,
+            "file_edits": 1.24,
+            "retry_count": 1.08,
+            "review_passes": null
+          },
+          "cost_efficiency": 0.15611647807791323,
+          "time_efficiency": 1.0,
+          "objective_score": 95.28058239038957,
+          "review_score": null,
+          "full_score": 95.28058239038957,
+          "work_index": 61.36883433420279,
+          "quality_per_dollar": 1033.2570800167434,
+          "quality_per_minute": 84.94415311820126,
+          "quality_per_work_unit": 1.5525890857158857,
+          "rank": 1
+        }
+      },
+      "baseline": "gpt-5",
+      "best_cost_per_success_usd": 0.014396096808510637,
+      "best_median_time_to_success_s": 65.0815,
+      "level1": {
+        "ranking": [
+          "gpt-5.4",
+          "gpt-5-mini-2025-08-07",
+          "gpt-5.1-2025-11-13",
+          "gpt-5"
+        ],
+        "baseline": "gpt-5",
+        "improvements": [
+          {
+            "model_b": "gpt-5.1-2025-11-13",
+            "model_a": "gpt-5",
+            "success_delta_pp": 0.0,
+            "objective_delta": 1.0524176809144592,
+            "paired": {
+              "n_pairs": 50,
+              "a_only": 1,
+              "b_only": 1,
+              "both": 47,
+              "neither": 1,
+              "p_value": 1.0
+            },
+            "raw_p_value": 1.0,
+            "holm_p_value": 1.0,
+            "material": false,
+            "materiality_reason": "success delta +0.0 pp is below the 5 pp threshold"
+          },
+          {
+            "model_b": "gpt-5-mini-2025-08-07",
+            "model_a": "gpt-5",
+            "success_delta_pp": -2.0000000000000018,
+            "objective_delta": 3.970732769728741,
+            "paired": {
+              "n_pairs": 50,
+              "a_only": 2,
+              "b_only": 1,
+              "both": 46,
+              "neither": 1,
+              "p_value": 1.0
+            },
+            "raw_p_value": 1.0,
+            "holm_p_value": 1.0,
+            "material": false,
+            "materiality_reason": "success delta -2.0 pp is below the 5 pp threshold"
+          },
+          {
+            "model_b": "gpt-5.4",
+            "model_a": "gpt-5",
+            "success_delta_pp": 4.0000000000000036,
+            "objective_delta": 5.504440702437037,
+            "paired": {
+              "n_pairs": 50,
+              "a_only": 0,
+              "b_only": 2,
+              "both": 48,
+              "neither": 0,
+              "p_value": 0.5
+            },
+            "raw_p_value": 0.5,
+            "holm_p_value": 1.0,
+            "material": false,
+            "materiality_reason": "success delta +4.0 pp is below the 5 pp threshold"
+          }
+        ]
+      },
+      "level2": {
+        "baseline": "gpt-5",
+        "work_index_components": [
+          "input_tokens",
+          "output_tokens",
+          "wall_clock_seconds",
+          "api_calls",
+          "tool_calls",
+          "file_edits",
+          "retry_count"
+        ],
+        "assessments": [],
+        "excluded": [
+          {
+            "model_b": "gpt-5.1-2025-11-13",
+            "model_a": "gpt-5",
+            "reason": "success delta +0.0 pp is below the 5 pp threshold"
+          },
+          {
+            "model_b": "gpt-5-mini-2025-08-07",
+            "model_a": "gpt-5",
+            "reason": "success delta -2.0 pp is below the 5 pp threshold"
+          },
+          {
+            "model_b": "gpt-5.4",
+            "model_a": "gpt-5",
+            "reason": "success delta +4.0 pp is below the 5 pp threshold"
+          }
+        ]
+      },
+      "cost_frontier": [
+        {
+          "model_id": "gpt-5.1-2025-11-13",
+          "x": 0.087962609375,
+          "y": 0.96,
+          "on_frontier": true
+        },
+        {
+          "model_id": "gpt-5",
+          "x": 0.13519778125,
+          "y": 0.96,
+          "on_frontier": false
+        },
+        {
+          "model_id": "gpt-5-mini-2025-08-07",
+          "x": 0.014396096808510637,
+          "y": 0.94,
+          "on_frontier": true
+        },
+        {
+          "model_id": "gpt-5.4",
+          "x": 0.09221382,
+          "y": 1.0,
+          "on_frontier": true
+        }
+      ],
+      "latency_frontier": [
+        {
+          "model_id": "gpt-5.1-2025-11-13",
+          "x": 114.772,
+          "y": 0.96,
+          "on_frontier": false
+        },
+        {
+          "model_id": "gpt-5",
+          "x": 140.3385,
+          "y": 0.96,
+          "on_frontier": false
+        },
+        {
+          "model_id": "gpt-5-mini-2025-08-07",
+          "x": 97.959,
+          "y": 0.94,
+          "on_frontier": false
+        },
+        {
+          "model_id": "gpt-5.4",
+          "x": 65.0815,
+          "y": 1.0,
+          "on_frontier": true
+        }
+      ]
+    }
+  },
+  "cross_mode": null,
+  "limitations": [
+    "Only Default Mode was run; Intrinsic vs Workflow-Equivalent gains cannot be distinguished without Equal-Budget, Matched-Workflow, or Strong-Spec modes.",
+    "Agentic Work Index components with no captured data in this run: shell_commands, test_runs, file_reads, review_passes (the index uses the remaining components)."
+  ]
+}
