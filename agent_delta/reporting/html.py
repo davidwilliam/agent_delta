@@ -648,25 +648,21 @@ def _suite_block(s: dict) -> str:
     return "".join(blocks)
 
 
-def _tab_crossprovider(all_records: list[dict]) -> str:
-    """Head-to-head across providers on the tasks both ran with a full model cohort.
+def build_cross_provider(all_records: list[dict]) -> dict | None:
+    """Computed cross-provider comparison: a like-for-like head-to-head on the tasks
+    that at least two providers each ran with a full (>=4 model) cohort.
 
-    Only tasks where at least two providers each have >=4-model data are included,
-    so the comparison is like-for-like (no provider gets credit for tasks the other
-    never ran).
+    Returns a serializable dict (the single source of truth for both the HTML panel
+    and the JSON export's `cross_provider` block), or None when there are fewer than
+    two providers or no shared full-cohort tasks.
     """
     valid = [r for r in all_records if not (r.get("execution") or {}).get("invalid")]
     ptm: dict[str, dict[str, set]] = defaultdict(lambda: defaultdict(set))
     for r in valid:
         ptm[model_provider(r["model_id"])][r["task_id"]].add(r["model_id"])
     providers = [p for p in sorted(ptm) if p != "unknown"]
-
-    head = '<section id="crossprovider" class="tab"><h1>Cross-provider comparison</h1>'
     if len(providers) < 2:
-        return (head + '<p class="muted">A second provider is needed for a cross-provider '
-                'comparison. Run a suite with another agent (for example <code>--agent '
-                'codex_cli</code>) and regenerate.</p></section>')
-
+        return None
     taskcount: dict[str, int] = defaultdict(int)
     for p in providers:
         for t, ms in ptm[p].items():
@@ -674,9 +670,7 @@ def _tab_crossprovider(all_records: list[dict]) -> str:
                 taskcount[t] += 1
     shared = sorted(t for t, c in taskcount.items() if c >= 2)
     if not shared:
-        return (head + '<p class="muted">No tasks yet have a full model cohort on two '
-                'providers. The comparison appears once both providers have run the same '
-                'tasks with their full cohort.</p></section>')
+        return None
 
     sset = set(shared)
     sv = [r for r in valid if r["task_id"] in sset]
@@ -694,46 +688,81 @@ def _tab_crossprovider(all_records: list[dict]) -> str:
         ptask[r["task_id"]][p][0] += 1; ptask[r["task_id"]][p][1] += v
         hardness[r["task_id"]] = r.get("hardness_level") or "?"
 
-    plabel = {p: PROVIDER_LABELS.get(p, p).split(" (")[0] for p in providers}
+    def _med(xs):
+        return statistics.median(xs) if xs else None
 
-    # provider summary
-    prows = []
-    for p in providers:
-        a = perprov[p]
-        prows.append([f'<strong>{_esc(PROVIDER_LABELS.get(p, p))}</strong>', str(len(a["models"])),
-                      str(a["runs"]), _pct(a["ver"] / a["runs"] if a["runs"] else None),
-                      _cost(_mean(a["cost"])), _time(statistics.median(a["time"]) if a["time"] else None)])
-    summary = _table(["Provider", "Models", "Runs", "Verified", "Mean $/run", "Median time"], prows,
-                     aligns=["", "num", "num", "num", "num", "num"],
-                     row_attrs=[f'data-provider="{p}"' for p in providers])
+    def _rate(ver, runs):
+        return (ver / runs) if runs else None
 
-    # per-model
-    mrows = []; mattrs = []
-    for m in sorted(permodel, key=lambda x: (model_provider(x), x)):
-        b = permodel[m]
-        mrows.append([f'<strong>{_esc(m)}</strong>', _esc(plabel[model_provider(m)]),
-                      f'{b["ver"]}/{b["runs"]}', _pct(b["ver"] / b["runs"] if b["runs"] else None),
-                      _cost(_mean(b["cost"])), _time(statistics.median(b["time"]) if b["time"] else None)])
-        mattrs.append(f'data-provider="{model_provider(m)}"')
-    permodel_tbl = _table(["Model", "Provider", "Verified", "Success", "Mean $/run", "Median time"],
-                          mrows, aligns=["", "", "num", "num", "num", "num"], row_attrs=mattrs)
+    return {
+        "shared_task_count": len(shared),
+        "shared_tasks": shared,
+        "providers": [
+            {"id": p, "label": PROVIDER_LABELS.get(p, p), "models": sorted(perprov[p]["models"]),
+             "runs": perprov[p]["runs"], "verified": perprov[p]["ver"],
+             "verified_rate": _rate(perprov[p]["ver"], perprov[p]["runs"]),
+             "mean_cost_usd": _mean(perprov[p]["cost"]), "median_time_s": _med(perprov[p]["time"])}
+            for p in providers],
+        "models": [
+            {"model_id": m, "provider": model_provider(m), "runs": permodel[m]["runs"],
+             "verified": permodel[m]["ver"], "verified_rate": _rate(permodel[m]["ver"], permodel[m]["runs"]),
+             "mean_cost_usd": _mean(permodel[m]["cost"]), "median_time_s": _med(permodel[m]["time"])}
+            for m in sorted(permodel, key=lambda x: (model_provider(x), x))],
+        "per_task": [
+            {"task_id": t, "hardness_level": hardness.get(t, "?"),
+             "providers": {p: {"runs": ptask[t][p][0], "verified": ptask[t][p][1],
+                               "verified_rate": _rate(ptask[t][p][1], ptask[t][p][0])}
+                           for p in providers}}
+            for t in shared],
+    }
 
-    # per-task side by side
-    trows = []
-    for t in shared:
-        cells = [f'<strong>{_esc(t)}</strong>', _esc(hardness.get(t, "?"))]
-        for p in providers:
-            runs, ver = ptask[t][p]
-            cells.append(_pct(ver / runs if runs else None))
-        trows.append(cells)
-    pertask_tbl = _table(["Task", "H"] + [plabel[p] for p in providers], trows,
-                         aligns=["", "", *["num"] * len(providers)])
+
+def _tab_crossprovider(all_records: list[dict]) -> str:
+    """Render the cross-provider panel from build_cross_provider (same source the
+    JSON export uses, so the HTML and JSON can never diverge)."""
+    head = '<section id="crossprovider" class="tab"><h1>Cross-provider comparison</h1>'
+    cp = build_cross_provider(all_records)
+    if cp is None:
+        present = sorted({model_provider(r["model_id"]) for r in all_records
+                          if not (r.get("execution") or {}).get("invalid")} - {"unknown"})
+        msg = ("A second provider is needed for a cross-provider comparison. Run a suite with "
+               "another agent (for example <code>--agent codex_cli</code>) and regenerate."
+               if len(present) < 2 else
+               "No tasks yet have a full model cohort on two providers. The comparison appears once "
+               "both providers have run the same tasks with their full cohort.")
+        return f'{head}<p class="muted">{msg}</p></section>'
+
+    providers = [p["id"] for p in cp["providers"]]
+    plabel = {p["id"]: p["label"].split(" (")[0] for p in cp["providers"]}
+
+    summary = _table(
+        ["Provider", "Models", "Runs", "Verified", "Mean $/run", "Median time"],
+        [[f'<strong>{_esc(p["label"])}</strong>', str(len(p["models"])), str(p["runs"]),
+          _pct(p["verified_rate"]), _cost(p["mean_cost_usd"]), _time(p["median_time_s"])]
+         for p in cp["providers"]],
+        aligns=["", "num", "num", "num", "num", "num"],
+        row_attrs=[f'data-provider="{p["id"]}"' for p in cp["providers"]])
+
+    permodel_tbl = _table(
+        ["Model", "Provider", "Verified", "Success", "Mean $/run", "Median time"],
+        [[f'<strong>{_esc(m["model_id"])}</strong>', _esc(plabel.get(m["provider"], m["provider"])),
+          f'{m["verified"]}/{m["runs"]}', _pct(m["verified_rate"]),
+          _cost(m["mean_cost_usd"]), _time(m["median_time_s"])] for m in cp["models"]],
+        aligns=["", "", "num", "num", "num", "num"],
+        row_attrs=[f'data-provider="{m["provider"]}"' for m in cp["models"]])
+
+    pertask_tbl = _table(
+        ["Task", "H"] + [plabel[p] for p in providers],
+        [[f'<strong>{_esc(row["task_id"])}</strong>', _esc(row["hardness_level"]),
+          *[_pct(row["providers"][p]["verified_rate"]) for p in providers]]
+         for row in cp["per_task"]],
+        aligns=["", "", *["num"] * len(providers)])
 
     return f"""{head}
-      <p class="lede">A like-for-like comparison on the <strong>{len(shared)} tasks</strong> that
-      both providers ran with a full model cohort. This is the hard tier (concurrency, state-machine,
-      and multi-file tasks). Long-context retrieval, the one place models have diverged so far, is not
-      yet in this set on both providers; it joins automatically once the matching runs land.</p>
+      <p class="lede">A like-for-like comparison on the <strong>{cp["shared_task_count"]} tasks</strong>
+      that both providers ran with a full model cohort. Equal high rates mean the tier does not separate
+      the providers on capability (read the per-model mean cost for the efficiency difference); where
+      rates diverge, notably long-context retrieval, capability does separate them.</p>
       <h2>By provider</h2>
       {summary}
       <h2>By model</h2>
@@ -741,8 +770,8 @@ def _tab_crossprovider(all_records: list[dict]) -> str:
       <h2>Per task (verified rate, each provider's full cohort)</h2>
       {pertask_tbl}
       <p class="muted">Verified rate is over all of a provider's runs (models x repetitions) on each
-      task. Equal, high rates mean the tier does not separate the providers on capability; read the
-      per-model mean cost above for the efficiency difference.</p>
+      task. This same comparison is in the JSON export under the top-level <code>cross_provider</code>
+      key.</p>
     </section>"""
 
 
