@@ -180,8 +180,10 @@ Markdown report (and `report.json`). `--results` defaults from the suite name.
 
 `report-html [--suites a,b,c] [--baseline MODEL] [--output PATH] [--min-runs N]`
 generates one self-contained HTML report across all suites (results-first overview,
-per-model, per-suite, statistics, raw runs, methodology, stack, reproducibility,
-about). Multiple providers (Claude Code, Codex CLI) appear side by side, with a
+per-model, cross-provider, per-suite, statistics, raw runs, methodology, stack,
+reproducibility, about). The cross-provider section compares providers like-for-like
+on the tasks both ran with a full model cohort. Multiple providers (Claude Code,
+Codex CLI) appear side by side, with a
 sidebar **provider filter** (All / Anthropic / OpenAI / ...). Suites named `*smoke*`
 are excluded unless listed explicitly in `--suites`. On every run it also writes the
 machine-readable exports below, so they never drift from the rendered report.

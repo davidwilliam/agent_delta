@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "benchmark_version": "agentdelta-v0.1",
-  "generated_at": "2026-06-16 15:43 UTC",
+  "generated_at": "2026-06-16 15:56 UTC",
   "baseline": "claude-opus-4-6",
   "sections": [
     {
@@ -11,6 +11,10 @@
     {
       "id": "models",
       "label": "Per-model"
+    },
+    {
+      "id": "crossprovider",
+      "label": "Cross-provider"
     },
     {
       "id": "suites",

@@ -13,6 +13,7 @@ from __future__ import annotations
 import html
 import math
 import statistics
+from collections import defaultdict
 from typing import Any
 
 ACCENT = "#c75b39"
@@ -29,6 +30,7 @@ REPO_URL = "https://github.com/davidwilliam/agent_delta"
 REPORT_SECTIONS: list[tuple[str, str]] = [
     ("overview", "Results"),
     ("models", "Per-model"),
+    ("crossprovider", "Cross-provider"),
     ("suites", "Per-suite"),
     ("stats", "Statistics"),
     ("raw", "Raw runs"),
@@ -644,6 +646,104 @@ def _suite_block(s: dict) -> str:
                 blocks.append(_table(["Model", "Axis", "Success", "On frontier"], prows,
                                      aligns=["", "num", "num", "center"]))
     return "".join(blocks)
+
+
+def _tab_crossprovider(all_records: list[dict]) -> str:
+    """Head-to-head across providers on the tasks both ran with a full model cohort.
+
+    Only tasks where at least two providers each have >=4-model data are included,
+    so the comparison is like-for-like (no provider gets credit for tasks the other
+    never ran).
+    """
+    valid = [r for r in all_records if not (r.get("execution") or {}).get("invalid")]
+    ptm: dict[str, dict[str, set]] = defaultdict(lambda: defaultdict(set))
+    for r in valid:
+        ptm[model_provider(r["model_id"])][r["task_id"]].add(r["model_id"])
+    providers = [p for p in sorted(ptm) if p != "unknown"]
+
+    head = '<section id="crossprovider" class="tab"><h1>Cross-provider comparison</h1>'
+    if len(providers) < 2:
+        return (head + '<p class="muted">A second provider is needed for a cross-provider '
+                'comparison. Run a suite with another agent (for example <code>--agent '
+                'codex_cli</code>) and regenerate.</p></section>')
+
+    taskcount: dict[str, int] = defaultdict(int)
+    for p in providers:
+        for t, ms in ptm[p].items():
+            if len(ms) >= 4:
+                taskcount[t] += 1
+    shared = sorted(t for t, c in taskcount.items() if c >= 2)
+    if not shared:
+        return (head + '<p class="muted">No tasks yet have a full model cohort on two '
+                'providers. The comparison appears once both providers have run the same '
+                'tasks with their full cohort.</p></section>')
+
+    sset = set(shared)
+    sv = [r for r in valid if r["task_id"] in sset]
+    perprov = defaultdict(lambda: {"runs": 0, "ver": 0, "cost": [], "time": [], "models": set()})
+    permodel = defaultdict(lambda: {"runs": 0, "ver": 0, "cost": [], "time": []})
+    ptask = defaultdict(lambda: defaultdict(lambda: [0, 0]))
+    hardness = {}
+    for r in sv:
+        p = model_provider(r["model_id"]); m = r["model_id"]
+        v = int(r["scoring"]["verified_success"])
+        c = (r.get("usage") or {}).get("estimated_cost_usd") or 0
+        t = (r.get("execution") or {}).get("wall_clock_seconds") or 0
+        a = perprov[p]; a["runs"] += 1; a["ver"] += v; a["cost"].append(c); a["time"].append(t); a["models"].add(m)
+        b = permodel[m]; b["runs"] += 1; b["ver"] += v; b["cost"].append(c); b["time"].append(t)
+        ptask[r["task_id"]][p][0] += 1; ptask[r["task_id"]][p][1] += v
+        hardness[r["task_id"]] = r.get("hardness_level") or "?"
+
+    plabel = {p: PROVIDER_LABELS.get(p, p).split(" (")[0] for p in providers}
+
+    # provider summary
+    prows = []
+    for p in providers:
+        a = perprov[p]
+        prows.append([f'<strong>{_esc(PROVIDER_LABELS.get(p, p))}</strong>', str(len(a["models"])),
+                      str(a["runs"]), _pct(a["ver"] / a["runs"] if a["runs"] else None),
+                      _cost(_mean(a["cost"])), _time(statistics.median(a["time"]) if a["time"] else None)])
+    summary = _table(["Provider", "Models", "Runs", "Verified", "Mean $/run", "Median time"], prows,
+                     aligns=["", "num", "num", "num", "num", "num"],
+                     row_attrs=[f'data-provider="{p}"' for p in providers])
+
+    # per-model
+    mrows = []; mattrs = []
+    for m in sorted(permodel, key=lambda x: (model_provider(x), x)):
+        b = permodel[m]
+        mrows.append([f'<strong>{_esc(m)}</strong>', _esc(plabel[model_provider(m)]),
+                      f'{b["ver"]}/{b["runs"]}', _pct(b["ver"] / b["runs"] if b["runs"] else None),
+                      _cost(_mean(b["cost"])), _time(statistics.median(b["time"]) if b["time"] else None)])
+        mattrs.append(f'data-provider="{model_provider(m)}"')
+    permodel_tbl = _table(["Model", "Provider", "Verified", "Success", "Mean $/run", "Median time"],
+                          mrows, aligns=["", "", "num", "num", "num", "num"], row_attrs=mattrs)
+
+    # per-task side by side
+    trows = []
+    for t in shared:
+        cells = [f'<strong>{_esc(t)}</strong>', _esc(hardness.get(t, "?"))]
+        for p in providers:
+            runs, ver = ptask[t][p]
+            cells.append(_pct(ver / runs if runs else None))
+        trows.append(cells)
+    pertask_tbl = _table(["Task", "H"] + [plabel[p] for p in providers], trows,
+                         aligns=["", "", *["num"] * len(providers)])
+
+    return f"""{head}
+      <p class="lede">A like-for-like comparison on the <strong>{len(shared)} tasks</strong> that
+      both providers ran with a full model cohort. This is the hard tier (concurrency, state-machine,
+      and multi-file tasks). Long-context retrieval, the one place models have diverged so far, is not
+      yet in this set on both providers; it joins automatically once the matching runs land.</p>
+      <h2>By provider</h2>
+      {summary}
+      <h2>By model</h2>
+      {permodel_tbl}
+      <h2>Per task (verified rate, each provider's full cohort)</h2>
+      {pertask_tbl}
+      <p class="muted">Verified rate is over all of a provider's runs (models x repetitions) on each
+      task. Equal, high rates mean the tier does not separate the providers on capability; read the
+      per-model mean cost above for the efficiency difference.</p>
+    </section>"""
 
 
 def _suite_provider(s: dict) -> str:
@@ -1283,6 +1383,7 @@ def render_html(suites: list[dict], *, generated_at: str = "") -> str:
     body = "".join([
         _tab_overview(suites, all_records, gmodels),
         _tab_models(gmodels, suites),
+        _tab_crossprovider(all_records),
         _tab_suites(suites),
         _tab_stats(suites),
         _tab_raw(all_records),
