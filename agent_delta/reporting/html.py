@@ -677,7 +677,6 @@ def build_cross_provider(all_records: list[dict]) -> dict | None:
     perprov = defaultdict(lambda: {"runs": 0, "ver": 0, "cost": [], "time": [], "models": set()})
     permodel = defaultdict(lambda: {"runs": 0, "ver": 0, "cost": [], "time": []})
     ptask = defaultdict(lambda: defaultdict(lambda: [0, 0]))
-    hardness = {}
     for r in sv:
         p = model_provider(r["model_id"]); m = r["model_id"]
         v = int(r["scoring"]["verified_success"])
@@ -686,7 +685,16 @@ def build_cross_provider(all_records: list[dict]) -> dict | None:
         a = perprov[p]; a["runs"] += 1; a["ver"] += v; a["cost"].append(c); a["time"].append(t); a["models"].add(m)
         b = permodel[m]; b["runs"] += 1; b["ver"] += v; b["cost"].append(c); b["time"].append(t)
         ptask[r["task_id"]][p][0] += 1; ptask[r["task_id"]][p][1] += v
-        hardness[r["task_id"]] = r.get("hardness_level") or "?"
+
+    # Hardness from the authoritative task definition, not from records (older
+    # suites predate hardness labels, so their records carry no hardness_level).
+    hardness = {}
+    for t in shared:
+        try:
+            from agent_delta.registry import load_task
+            hardness[t] = load_task(t).hardness_level
+        except Exception:
+            hardness[t] = "?"
 
     def _med(xs):
         return statistics.median(xs) if xs else None
