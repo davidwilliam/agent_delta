@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "benchmark_version": "agentdelta-v0.1",
-  "generated_at": "2026-06-16 19:05 UTC",
+  "generated_at": "2026-06-16 19:16 UTC",
   "baseline": "claude-opus-4-6",
   "sections": [
     {
@@ -388,7 +388,7 @@
       },
       {
         "task_id": "task_001",
-        "hardness_level": "?",
+        "hardness_level": "H1",
         "providers": {
           "anthropic": {
             "runs": 9,
@@ -404,7 +404,7 @@
       },
       {
         "task_id": "task_003",
-        "hardness_level": "?",
+        "hardness_level": "H1",
         "providers": {
           "anthropic": {
             "runs": 9,
@@ -420,7 +420,7 @@
       },
       {
         "task_id": "task_005",
-        "hardness_level": "?",
+        "hardness_level": "H3",
         "providers": {
           "anthropic": {
             "runs": 9,
@@ -452,7 +452,7 @@
       },
       {
         "task_id": "task_010",
-        "hardness_level": "?",
+        "hardness_level": "H1",
         "providers": {
           "anthropic": {
             "runs": 17,
@@ -468,7 +468,7 @@
       },
       {
         "task_id": "task_011",
-        "hardness_level": "?",
+        "hardness_level": "H1",
         "providers": {
           "anthropic": {
             "runs": 17,
@@ -484,7 +484,7 @@
       },
       {
         "task_id": "task_012",
-        "hardness_level": "?",
+        "hardness_level": "H1",
         "providers": {
           "anthropic": {
             "runs": 9,
@@ -500,7 +500,7 @@
       },
       {
         "task_id": "task_013",
-        "hardness_level": "?",
+        "hardness_level": "H2",
         "providers": {
           "anthropic": {
             "runs": 9,
@@ -516,7 +516,7 @@
       },
       {
         "task_id": "task_014",
-        "hardness_level": "?",
+        "hardness_level": "H2",
         "providers": {
           "anthropic": {
             "runs": 9,
