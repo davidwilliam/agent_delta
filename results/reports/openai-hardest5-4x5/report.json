@@ -1,0 +1,493 @@
+{
+  "benchmark_version": "agentdelta-v0.1",
+  "suite": "openai-hardest5-4x5",
+  "agent": "codex_cli",
+  "n_tasks": 5,
+  "n_long_context_tasks": 0,
+  "n_runs": 100,
+  "n_invalid": 0,
+  "invalid_runs": [],
+  "models": [
+    "gpt-5",
+    "gpt-5-mini-2025-08-07",
+    "gpt-5.1-2025-11-13",
+    "gpt-5.4"
+  ],
+  "modes": [
+    "default"
+  ],
+  "scoring_formula": {
+    "objective_score": {
+      "verified_task_success": 0.6,
+      "hidden_test_score": 0.15,
+      "regression_avoidance": 0.1,
+      "scope_control": 0.05,
+      "cost_efficiency": 0.05,
+      "time_efficiency": 0.05
+    },
+    "full_score": {
+      "objective_score": 0.95,
+      "blinded_review": 0.05
+    },
+    "materiality": {
+      "task_success_delta_pp": 5,
+      "category_success_delta_pp": 10,
+      "cost_delta_percent": 10,
+      "latency_delta_percent": 10,
+      "regression_delta_pp": 3
+    }
+  },
+  "per_mode": {
+    "default": {
+      "models": {
+        "gpt-5.1-2025-11-13": {
+          "model_id": "gpt-5.1-2025-11-13",
+          "n_runs": 25,
+          "n_invalid": 0,
+          "failure_labels": {},
+          "invalid_by_reason": {},
+          "category_success": {
+            "concurrency_idempotency": 1.0,
+            "state_machine": 1.0
+          },
+          "diagnostics": {
+            "failed_command_ratio": null,
+            "exploration_edit_ratio": null,
+            "timeout_rate": 0.0,
+            "mean_time_to_first_edit_s": null,
+            "mean_time_to_first_test_s": null,
+            "mean_diff_locality": 0.9,
+            "mean_patch_entropy": 0.19270944046799443,
+            "mean_test_to_code_ratio": 0.0
+          },
+          "n_success": 25,
+          "success_rate": 1.0,
+          "success_ci95": [
+            0.8668077490609515,
+            0.9999999999999999
+          ],
+          "hidden_test_rate": 1.0,
+          "regression_rate": 0.0,
+          "scope_control": 0.9,
+          "partial_objective_mean": 99.44444444444443,
+          "review_mean": null,
+          "cost_total_usd": 2.2680105,
+          "cost_mean_usd": 0.09072042,
+          "cost_per_success_usd": 0.09072042,
+          "median_time_to_success_s": 125.109,
+          "wall_clock_percentiles": {
+            "median": 125.109,
+            "mean": 133.08776,
+            "p25": 109.131,
+            "p75": 157.175,
+            "p90": 176.69680000000002
+          },
+          "tokens_total_mean": 233402.68,
+          "components": {
+            "verified_success": 1.0,
+            "hidden_test_score": 1.0,
+            "regression_avoidance": 1.0,
+            "scope_control": 0.9
+          },
+          "work": {
+            "input_tokens": 17370.64,
+            "output_tokens": 4253.48,
+            "wall_clock_seconds": 133.08776,
+            "api_calls": 17.28,
+            "tool_calls": 16.28,
+            "shell_commands": 0.0,
+            "test_runs": 0.0,
+            "file_reads": 0.0,
+            "file_edits": 0.0,
+            "retry_count": 1.08,
+            "review_passes": null
+          },
+          "cost_efficiency": 0.15102588810766088,
+          "time_efficiency": 0.5202903068524247,
+          "objective_score": 92.85658097480042,
+          "review_score": null,
+          "full_score": 92.85658097480042,
+          "work_index": 63.459912453713414,
+          "quality_per_dollar": 1023.5466389463412,
+          "quality_per_minute": 41.86256390886754,
+          "quality_per_work_unit": 1.4632321001471353,
+          "rank": 3
+        },
+        "gpt-5": {
+          "model_id": "gpt-5",
+          "n_runs": 25,
+          "n_invalid": 0,
+          "failure_labels": {},
+          "invalid_by_reason": {},
+          "category_success": {
+            "concurrency_idempotency": 1.0,
+            "state_machine": 1.0
+          },
+          "diagnostics": {
+            "failed_command_ratio": null,
+            "exploration_edit_ratio": null,
+            "timeout_rate": 0.0,
+            "mean_time_to_first_edit_s": null,
+            "mean_time_to_first_test_s": null,
+            "mean_diff_locality": 0.9,
+            "mean_patch_entropy": 0.1966581951701025,
+            "mean_test_to_code_ratio": 0.0
+          },
+          "n_success": 25,
+          "success_rate": 1.0,
+          "success_ci95": [
+            0.8668077490609515,
+            0.9999999999999999
+          ],
+          "hidden_test_rate": 1.0,
+          "regression_rate": 0.0,
+          "scope_control": 0.86,
+          "partial_objective_mean": 99.22222222222223,
+          "review_mean": null,
+          "cost_total_usd": 4.37541575,
+          "cost_mean_usd": 0.17501663,
+          "cost_per_success_usd": 0.17501663,
+          "median_time_to_success_s": 174.074,
+          "wall_clock_percentiles": {
+            "median": 174.074,
+            "mean": 219.73372000000003,
+            "p25": 123.156,
+            "p75": 277.288,
+            "p90": 383.7024
+          },
+          "tokens_total_mean": 403937.8,
+          "components": {
+            "verified_success": 1.0,
+            "hidden_test_score": 1.0,
+            "regression_avoidance": 1.0,
+            "scope_control": 0.86
+          },
+          "work": {
+            "input_tokens": 35878.52,
+            "output_tokens": 8522.64,
+            "wall_clock_seconds": 219.73372,
+            "api_calls": 21.56,
+            "tool_calls": 20.56,
+            "shell_commands": 0.0,
+            "test_runs": 0.0,
+            "file_reads": 0.0,
+            "file_edits": 0.0,
+            "retry_count": 1.16,
+            "review_passes": null
+          },
+          "cost_efficiency": 0.07828474356979676,
+          "time_efficiency": 0.37393866976113604,
+          "objective_score": 91.56111706665466,
+          "review_score": null,
+          "full_score": 91.56111706665466,
+          "work_index": 100.0,
+          "quality_per_dollar": 523.1566684071945,
+          "quality_per_minute": 25.001474621188226,
+          "quality_per_work_unit": 0.9156111706665466,
+          "rank": 4
+        },
+        "gpt-5-mini-2025-08-07": {
+          "model_id": "gpt-5-mini-2025-08-07",
+          "n_runs": 25,
+          "n_invalid": 0,
+          "failure_labels": {},
+          "invalid_by_reason": {},
+          "category_success": {
+            "concurrency_idempotency": 1.0,
+            "state_machine": 1.0
+          },
+          "diagnostics": {
+            "failed_command_ratio": null,
+            "exploration_edit_ratio": null,
+            "timeout_rate": 0.0,
+            "mean_time_to_first_edit_s": null,
+            "mean_time_to_first_test_s": null,
+            "mean_diff_locality": 0.8607843137254902,
+            "mean_patch_entropy": 0.37568758561189675,
+            "mean_test_to_code_ratio": 0.0
+          },
+          "n_success": 25,
+          "success_rate": 1.0,
+          "success_ci95": [
+            0.8668077490609515,
+            0.9999999999999999
+          ],
+          "hidden_test_rate": 1.0,
+          "regression_rate": 0.0,
+          "scope_control": 0.78,
+          "partial_objective_mean": 98.77777777777777,
+          "review_mean": null,
+          "cost_total_usd": 0.3425283,
+          "cost_mean_usd": 0.013701132,
+          "cost_per_success_usd": 0.013701132,
+          "median_time_to_success_s": 97.062,
+          "wall_clock_percentiles": {
+            "median": 97.062,
+            "mean": 99.61128,
+            "p25": 84.878,
+            "p75": 111.035,
+            "p90": 125.3374
+          },
+          "tokens_total_mean": 138649.72,
+          "components": {
+            "verified_success": 1.0,
+            "hidden_test_score": 1.0,
+            "regression_avoidance": 1.0,
+            "scope_control": 0.78
+          },
+          "work": {
+            "input_tokens": 13861.36,
+            "output_tokens": 3603.08,
+            "wall_clock_seconds": 99.61128000000001,
+            "api_calls": 11.32,
+            "tool_calls": 10.32,
+            "shell_commands": 0.0,
+            "test_runs": 0.0,
+            "file_reads": 0.0,
+            "file_edits": 0.0,
+            "retry_count": 0.96,
+            "review_passes": null
+          },
+          "cost_efficiency": 1.0,
+          "time_efficiency": 0.6706332035194,
+          "objective_score": 97.25316601759701,
+          "review_score": null,
+          "full_score": 97.25316601759701,
+          "work_index": 47.634809105439416,
+          "quality_per_dollar": 7098.184735217281,
+          "quality_per_minute": 58.579610271605986,
+          "quality_per_work_unit": 2.0416407212282013,
+          "rank": 1
+        },
+        "gpt-5.4": {
+          "model_id": "gpt-5.4",
+          "n_runs": 25,
+          "n_invalid": 0,
+          "failure_labels": {},
+          "invalid_by_reason": {},
+          "category_success": {
+            "concurrency_idempotency": 1.0,
+            "state_machine": 1.0
+          },
+          "diagnostics": {
+            "failed_command_ratio": null,
+            "exploration_edit_ratio": 0.0,
+            "timeout_rate": 0.0,
+            "mean_time_to_first_edit_s": null,
+            "mean_time_to_first_test_s": null,
+            "mean_diff_locality": 0.88,
+            "mean_patch_entropy": 0.22972942922760484,
+            "mean_test_to_code_ratio": 0.04888888888888889
+          },
+          "n_success": 25,
+          "success_rate": 1.0,
+          "success_ci95": [
+            0.8668077490609515,
+            0.9999999999999999
+          ],
+          "hidden_test_rate": 1.0,
+          "regression_rate": 0.0,
+          "scope_control": 0.9,
+          "partial_objective_mean": 99.44444444444443,
+          "review_mean": null,
+          "cost_total_usd": 2.0686955,
+          "cost_mean_usd": 0.08274782,
+          "cost_per_success_usd": 0.08274782,
+          "median_time_to_success_s": 65.093,
+          "wall_clock_percentiles": {
+            "median": 65.093,
+            "mean": 67.1254,
+            "p25": 61.154,
+            "p75": 72.935,
+            "p90": 78.12540000000001
+          },
+          "tokens_total_mean": 75520.12,
+          "components": {
+            "verified_success": 1.0,
+            "hidden_test_score": 1.0,
+            "regression_avoidance": 1.0,
+            "scope_control": 0.9
+          },
+          "work": {
+            "input_tokens": 13172.6,
+            "output_tokens": 2320.64,
+            "wall_clock_seconds": 67.1254,
+            "api_calls": 8.16,
+            "tool_calls": 13.76,
+            "shell_commands": 0.0,
+            "test_runs": 0.0,
+            "file_reads": 0.0,
+            "file_edits": 1.12,
+            "retry_count": 1.0,
+            "review_passes": null
+          },
+          "cost_efficiency": 0.16557695417232743,
+          "time_efficiency": 1.0,
+          "objective_score": 95.32788477086164,
+          "review_score": null,
+          "full_score": 95.32788477086164,
+          "work_index": 48.5165024293221,
+          "quality_per_dollar": 1152.028957027045,
+          "quality_per_minute": 85.20877471496183,
+          "quality_per_work_unit": 1.964854843148132,
+          "rank": 2
+        }
+      },
+      "baseline": "gpt-5",
+      "best_cost_per_success_usd": 0.013701132,
+      "best_median_time_to_success_s": 65.093,
+      "level1": {
+        "ranking": [
+          "gpt-5-mini-2025-08-07",
+          "gpt-5.4",
+          "gpt-5.1-2025-11-13",
+          "gpt-5"
+        ],
+        "baseline": "gpt-5",
+        "improvements": [
+          {
+            "model_b": "gpt-5.1-2025-11-13",
+            "model_a": "gpt-5",
+            "success_delta_pp": 0.0,
+            "objective_delta": 1.2954639081457628,
+            "paired": {
+              "n_pairs": 25,
+              "a_only": 0,
+              "b_only": 0,
+              "both": 25,
+              "neither": 0,
+              "p_value": 1.0
+            },
+            "raw_p_value": 1.0,
+            "holm_p_value": 1.0,
+            "material": false,
+            "materiality_reason": "success delta +0.0 pp is below the 5 pp threshold"
+          },
+          {
+            "model_b": "gpt-5-mini-2025-08-07",
+            "model_a": "gpt-5",
+            "success_delta_pp": 0.0,
+            "objective_delta": 5.69204895094235,
+            "paired": {
+              "n_pairs": 25,
+              "a_only": 0,
+              "b_only": 0,
+              "both": 25,
+              "neither": 0,
+              "p_value": 1.0
+            },
+            "raw_p_value": 1.0,
+            "holm_p_value": 1.0,
+            "material": false,
+            "materiality_reason": "success delta +0.0 pp is below the 5 pp threshold"
+          },
+          {
+            "model_b": "gpt-5.4",
+            "model_a": "gpt-5",
+            "success_delta_pp": 0.0,
+            "objective_delta": 3.766767704206984,
+            "paired": {
+              "n_pairs": 25,
+              "a_only": 0,
+              "b_only": 0,
+              "both": 25,
+              "neither": 0,
+              "p_value": 1.0
+            },
+            "raw_p_value": 1.0,
+            "holm_p_value": 1.0,
+            "material": false,
+            "materiality_reason": "success delta +0.0 pp is below the 5 pp threshold"
+          }
+        ]
+      },
+      "level2": {
+        "baseline": "gpt-5",
+        "work_index_components": [
+          "input_tokens",
+          "output_tokens",
+          "wall_clock_seconds",
+          "api_calls",
+          "tool_calls",
+          "file_edits",
+          "retry_count"
+        ],
+        "assessments": [],
+        "excluded": [
+          {
+            "model_b": "gpt-5.1-2025-11-13",
+            "model_a": "gpt-5",
+            "reason": "success delta +0.0 pp is below the 5 pp threshold"
+          },
+          {
+            "model_b": "gpt-5-mini-2025-08-07",
+            "model_a": "gpt-5",
+            "reason": "success delta +0.0 pp is below the 5 pp threshold"
+          },
+          {
+            "model_b": "gpt-5.4",
+            "model_a": "gpt-5",
+            "reason": "success delta +0.0 pp is below the 5 pp threshold"
+          }
+        ]
+      },
+      "cost_frontier": [
+        {
+          "model_id": "gpt-5.1-2025-11-13",
+          "x": 0.09072042,
+          "y": 1.0,
+          "on_frontier": false
+        },
+        {
+          "model_id": "gpt-5",
+          "x": 0.17501663,
+          "y": 1.0,
+          "on_frontier": false
+        },
+        {
+          "model_id": "gpt-5-mini-2025-08-07",
+          "x": 0.013701132,
+          "y": 1.0,
+          "on_frontier": true
+        },
+        {
+          "model_id": "gpt-5.4",
+          "x": 0.08274782,
+          "y": 1.0,
+          "on_frontier": false
+        }
+      ],
+      "latency_frontier": [
+        {
+          "model_id": "gpt-5.1-2025-11-13",
+          "x": 125.109,
+          "y": 1.0,
+          "on_frontier": false
+        },
+        {
+          "model_id": "gpt-5",
+          "x": 174.074,
+          "y": 1.0,
+          "on_frontier": false
+        },
+        {
+          "model_id": "gpt-5-mini-2025-08-07",
+          "x": 97.062,
+          "y": 1.0,
+          "on_frontier": false
+        },
+        {
+          "model_id": "gpt-5.4",
+          "x": 65.093,
+          "y": 1.0,
+          "on_frontier": true
+        }
+      ]
+    }
+  },
+  "cross_mode": null,
+  "limitations": [
+    "Only Default Mode was run; Intrinsic vs Workflow-Equivalent gains cannot be distinguished without Equal-Budget, Matched-Workflow, or Strong-Spec modes.",
+    "Agentic Work Index components with no captured data in this run: shell_commands, test_runs, file_reads, review_passes (the index uses the remaining components)."
+  ]
+}
