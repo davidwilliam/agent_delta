@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "benchmark_version": "agentdelta-v0.1",
-  "generated_at": "2026-06-16 15:56 UTC",
+  "generated_at": "2026-06-16 18:55 UTC",
   "baseline": "claude-opus-4-6",
   "sections": [
     {
@@ -52,6 +52,7 @@
       "suites": [
         "anthropic-hard50-smoke",
         "anthropic-hardest5-4x5",
+        "anthropic-longcontext-4x5",
         "anthropic-statemachine-4x10",
         "anthropic-v0.1-concurrency",
         "anthropic-v0.1-eqbudget",
@@ -138,6 +139,19 @@
         "claude-sonnet-4-6"
       ],
       "file": "suites/anthropic-hardest5-4x5.json"
+    },
+    {
+      "suite": "anthropic-longcontext-4x5",
+      "provider": "anthropic",
+      "n_runs": 60,
+      "n_models": 4,
+      "models": [
+        "claude-opus-4-6",
+        "claude-opus-4-7",
+        "claude-opus-4-8",
+        "claude-sonnet-4-6"
+      ],
+      "file": "suites/anthropic-longcontext-4x5.json"
     },
     {
       "suite": "anthropic-statemachine-4x10",
