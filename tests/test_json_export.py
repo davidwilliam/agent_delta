@@ -81,3 +81,59 @@ def test_benchmark_version_array_when_suites_disagree():
     bundle[0]["report"]["benchmark_version"] = "0.2.0"
     d = build_report_json(bundle, generated_at="t", baseline="b")
     assert d["benchmark_version"] == ["0.1.0", "0.2.0"]
+
+
+# --- sharded v2 export ---------------------------------------------------------
+def _provider_bundle():
+    return [
+        {"report": {"suite": "anthropic-x", "benchmark_version": "0.1.0",
+                    "models": ["claude-opus-4-8", "claude-sonnet-4-6"]},
+         "records": [{"task_id": "t1", "model_id": "claude-opus-4-8", "provider": "anthropic",
+                      "scoring": {"verified_success": True}}],
+         "repro": None},
+        {"report": {"suite": "openai-y", "benchmark_version": "0.1.0",
+                    "models": ["gpt-5.4", "gpt-5-mini-2025-08-07"]},
+         "records": [{"task_id": "t1", "model_id": "gpt-5.4", "provider": "openai",
+                      "scoring": {"verified_success": True}}],
+         "repro": None},
+    ]
+
+
+def test_model_provider_inference():
+    from agent_delta.reporting.html import model_provider
+    assert model_provider("claude-opus-4-8") == "anthropic"
+    assert model_provider("gpt-5.4") == "openai"
+    assert model_provider("gemini-2.5-pro") == "google"
+    assert model_provider("mystery") == "unknown"
+
+
+def test_sharded_export_index_and_shards():
+    from agent_delta.reporting.json_export import EXPORT_SCHEMA_VERSION, build_sharded_export
+    index, shards = build_sharded_export(_provider_bundle(), generated_at="t", baseline="b")
+    assert index["schema_version"] == EXPORT_SCHEMA_VERSION == 2
+    # one shard per suite, each with provider + report/records.
+    assert set(shards) == {"anthropic-x", "openai-y"}
+    assert shards["openai-y"]["provider"] == "openai"
+    assert shards["anthropic-x"]["provider"] == "anthropic"
+    # index suites point to shard files and carry provider + counts.
+    by = {s["suite"]: s for s in index["suites"]}
+    assert by["openai-y"]["file"] == "suites/openai-y.json"
+    assert by["openai-y"]["provider"] == "openai" and by["openai-y"]["n_runs"] == 1
+    # providers index groups suites + models.
+    provs = {p["id"]: p for p in index["providers"]}
+    assert set(provs) == {"anthropic", "openai"}
+    assert provs["openai"]["suites"] == ["openai-y"]
+    assert "gpt-5.4" in provs["openai"]["models"]
+    assert provs["anthropic"]["label"].startswith("Anthropic")
+
+
+def test_write_sharded_export(tmp_path):
+    import json as _json
+    from agent_delta.reporting.json_export import build_sharded_export, write_sharded_export
+    index, shards = build_sharded_export(_provider_bundle(), generated_at="t", baseline="b")
+    out = write_sharded_export(index, shards, tmp_path / "export")
+    idx = _json.loads((out / "index.json").read_text())
+    assert idx["schema_version"] == 2 and len(idx["suites"]) == 2
+    for s in idx["suites"]:
+        shard = _json.loads((out / s["file"]).read_text())  # each file referenced exists + parses
+        assert shard["suite"] == s["suite"] and "report" in shard

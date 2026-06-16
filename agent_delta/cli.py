@@ -336,7 +336,9 @@ def report_html_cmd(suites: str | None, baseline: str, output: str | None, min_r
     JSON (the website's source of truth) can never drift from the rendered report.
     """
     from agent_delta.reporting import render_html
-    from agent_delta.reporting.json_export import build_report_json, dump_report_json
+    from agent_delta.reporting.json_export import (
+        build_report_json, build_sharded_export, dump_report_json, write_sharded_export,
+    )
 
     bundle = _collect_report_bundle(suites, baseline, min_runs)
     generated = _now_utc()
@@ -346,10 +348,16 @@ def report_html_cmd(suites: str | None, baseline: str, output: str | None, min_r
     out.write_text(doc)
     click.secho(f"\nWrote {out} ({len(doc) // 1024} KB, {len(bundle)} suites)", fg="green")
 
+    # v1 single-file export (transition; deprecated in favour of the sharded export).
     json_out = out.with_suffix(".json")
     data = build_report_json(bundle, generated_at=generated, baseline=baseline)
     json_out.write_text(dump_report_json(data))
     click.secho(f"Wrote {json_out} ({len(json_out.read_text()) // 1024} KB)", fg="green")
+
+    # v2 sharded export (index + one shard per suite) - the sustainable source.
+    index, shards = build_sharded_export(bundle, generated_at=generated, baseline=baseline)
+    export_dir = write_sharded_export(index, shards, out.parent / "export")
+    click.secho(f"Wrote {export_dir}/ (index.json + {len(shards)} suite shards)", fg="green")
 
 
 @main.command("report-json")
@@ -369,6 +377,31 @@ def report_json_cmd(suites: str | None, baseline: str, output: str | None, min_r
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(dump_report_json(data))
     click.secho(f"Wrote {out} ({len(out.read_text()) // 1024} KB, {len(bundle)} suites)", fg="green")
+
+
+@main.command("report-export")
+@click.option("--suites", default=None,
+              help="Comma-separated suite names (default: every suite under results/raw).")
+@click.option("--baseline", default="claude-opus-4-6",
+              help="Baseline model ID for amplification (falls back to oldest if absent).")
+@click.option("--output", default=None,
+              help="Export directory (default: results/reports/export).")
+@click.option("--min-runs", default=1, type=int, help="Skip suites with fewer than this many runs.")
+def report_export_cmd(suites: str | None, baseline: str, output: str | None, min_runs: int) -> None:
+    """Generate the sharded JSON export: index.json + one shard per suite (schema v2).
+
+    The sustainable, provider-tagged source for downstream consumers: read index.json,
+    then lazy-load only the suite shards (or providers) you need.
+    """
+    from agent_delta.reporting.json_export import build_sharded_export, write_sharded_export
+
+    bundle = _collect_report_bundle(suites, baseline, min_runs)
+    index, shards = build_sharded_export(bundle, generated_at=_now_utc(), baseline=baseline)
+    out = Path(output) if output else (config.RESULTS_DIR / "reports" / "export")
+    export_dir = write_sharded_export(index, shards, out)
+    provs = ", ".join(p["id"] for p in index["providers"])
+    click.secho(f"Wrote {export_dir}/ (index.json + {len(shards)} suite shards; providers: {provs})",
+                fg="green")
 
 
 @main.command("report")

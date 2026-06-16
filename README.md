@@ -180,17 +180,29 @@ Markdown report (and `report.json`). `--results` defaults from the suite name.
 `report-html [--suites a,b,c] [--baseline MODEL] [--output PATH] [--min-runs N]`
 generates one self-contained HTML report across all suites (results-first overview,
 per-model, per-suite, statistics, raw runs, methodology, stack, reproducibility,
-about). Suites named `*smoke*` are excluded unless listed explicitly in `--suites`.
-It also writes a machine-readable `agentdelta-report.json` next to the HTML on every
-run, so the JSON never drifts from the rendered report.
+about). Multiple providers (Claude Code, Codex CLI) appear side by side, with a
+sidebar **provider filter** (All / Anthropic / OpenAI / ...). Suites named `*smoke*`
+are excluded unless listed explicitly in `--suites`. On every run it also writes the
+machine-readable exports below, so they never drift from the rendered report.
 
-`report-json [--suites a,b,c] [--baseline MODEL] [--output PATH] [--min-runs N]`
-writes only the JSON export (same data and code path as `report-html`). The JSON is
-the stable, versioned source of truth that downstream consumers (for example the AI
-Unmasked website) read to build their own page: a `schema_version`, a `sections`
-list mirroring the report's navigation, and per-suite `report` / `records` / `repro`
-objects identical to the per-suite files. It is strict, JS-parseable JSON (no
-NaN/Infinity). See [`docs/website_json_export.md`](docs/website_json_export.md).
+`report-export [--suites a,b,c] [--baseline MODEL] [--output DIR] [--min-runs N]`
+writes the **sharded JSON export** (schema v2), the sustainable source of truth for
+downstream consumers (for example the AI Unmasked website):
+
+```
+results/reports/export/
+  index.json              # manifest: schema_version, providers[], models[], sections[], suites[]
+  suites/<suite>.json     # one shard per suite: {suite, provider, report, records, repro}
+```
+
+A consumer reads `index.json` (small), then lazy-loads only the suite shards (or one
+provider) it needs. Adding an experiment/model/task adds one shard plus one index
+entry, so no single file grows unbounded. Everything is provider-tagged for filtering.
+
+`report-json [--suites ...]` writes the legacy single-file `agentdelta-report.json`
+(schema v1; the same data in one document). Kept during transition; prefer the
+sharded export. All exports are strict, JS-parseable JSON (no NaN/Infinity). See
+[`docs/website_json_export.md`](docs/website_json_export.md).
 
 ### Review and reproducibility
 

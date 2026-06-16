@@ -1,0 +1,2979 @@
+{
+  "schema_version": 2,
+  "suite": "anthropic-v0.1-hard",
+  "provider": "anthropic",
+  "report": {
+    "benchmark_version": "agentdelta-v0.1",
+    "suite": "anthropic-v0.1-hard",
+    "agent": "claude_code",
+    "n_tasks": 3,
+    "n_long_context_tasks": 0,
+    "n_runs": 24,
+    "n_invalid": 0,
+    "invalid_runs": [],
+    "models": [
+      "claude-opus-4-6",
+      "claude-opus-4-7",
+      "claude-opus-4-8",
+      "claude-sonnet-4-6"
+    ],
+    "modes": [
+      "default"
+    ],
+    "scoring_formula": {
+      "objective_score": {
+        "verified_task_success": 0.6,
+        "hidden_test_score": 0.15,
+        "regression_avoidance": 0.1,
+        "scope_control": 0.05,
+        "cost_efficiency": 0.05,
+        "time_efficiency": 0.05
+      },
+      "full_score": {
+        "objective_score": 0.95,
+        "blinded_review": 0.05
+      },
+      "materiality": {
+        "task_success_delta_pp": 5,
+        "category_success_delta_pp": 10,
+        "cost_delta_percent": 10,
+        "latency_delta_percent": 10,
+        "regression_delta_pp": 3
+      }
+    },
+    "per_mode": {
+      "default": {
+        "models": {
+          "claude-opus-4-6": {
+            "model_id": "claude-opus-4-6",
+            "n_runs": 6,
+            "n_invalid": 0,
+            "failure_labels": {},
+            "invalid_by_reason": {},
+            "category_success": {
+              "security_fix": 1.0,
+              "state_machine": 1.0,
+              "multi_file_bug_localization": 1.0
+            },
+            "diagnostics": {
+              "failed_command_ratio": 0.16666666666666666,
+              "exploration_edit_ratio": 4.083333333333333,
+              "timeout_rate": 0.0,
+              "mean_time_to_first_edit_s": null,
+              "mean_time_to_first_test_s": null,
+              "mean_diff_locality": 0.8333333333333334,
+              "mean_patch_entropy": 0.3257390004874942,
+              "mean_test_to_code_ratio": 0.0
+            },
+            "n_success": 6,
+            "success_rate": 1.0,
+            "success_ci95": [
+              0.6096657120978346,
+              1.0
+            ],
+            "hidden_test_rate": 1.0,
+            "regression_rate": 0.0,
+            "scope_control": 1.0,
+            "partial_objective_mean": 100.0,
+            "review_mean": null,
+            "cost_total_usd": 1.9322105,
+            "cost_mean_usd": 0.32203508333333336,
+            "cost_per_success_usd": 0.32203508333333336,
+            "median_time_to_success_s": 136.3945,
+            "wall_clock_percentiles": {
+              "median": 136.3945,
+              "mean": 112.81349999999999,
+              "p25": 76.36,
+              "p75": 142.309,
+              "p90": 146.82049999999998
+            },
+            "tokens_total_mean": 200506.16666666666,
+            "components": {
+              "verified_success": 1.0,
+              "hidden_test_score": 1.0,
+              "regression_avoidance": 1.0,
+              "scope_control": 1.0
+            },
+            "work": {
+              "input_tokens": 14.0,
+              "output_tokens": 3265.3333333333335,
+              "wall_clock_seconds": 112.81349999999999,
+              "api_calls": 10.666666666666666,
+              "tool_calls": 7.833333333333333,
+              "shell_commands": 1.3333333333333333,
+              "test_runs": 1.3333333333333333,
+              "file_reads": 4.5,
+              "file_edits": 1.3333333333333333,
+              "retry_count": 0.8333333333333334,
+              "review_passes": null
+            },
+            "cost_efficiency": 0.7604652029372575,
+            "time_efficiency": 0.39528719999706735,
+            "objective_score": 95.77876201467163,
+            "review_score": null,
+            "full_score": 95.77876201467163,
+            "work_index": 87.16908734077617,
+            "quality_per_dollar": 297.4171665499332,
+            "quality_per_minute": 50.94005345885287,
+            "quality_per_work_unit": 1.098769815499353,
+            "rank": 4
+          },
+          "claude-sonnet-4-6": {
+            "model_id": "claude-sonnet-4-6",
+            "n_runs": 6,
+            "n_invalid": 0,
+            "failure_labels": {},
+            "invalid_by_reason": {},
+            "category_success": {
+              "security_fix": 1.0,
+              "state_machine": 1.0,
+              "multi_file_bug_localization": 1.0
+            },
+            "diagnostics": {
+              "failed_command_ratio": 0.0,
+              "exploration_edit_ratio": 3.3333333333333335,
+              "timeout_rate": 0.0,
+              "mean_time_to_first_edit_s": null,
+              "mean_time_to_first_test_s": null,
+              "mean_diff_locality": 0.8333333333333334,
+              "mean_patch_entropy": 0.3235175602290048,
+              "mean_test_to_code_ratio": 0.0
+            },
+            "n_success": 6,
+            "success_rate": 1.0,
+            "success_ci95": [
+              0.6096657120978346,
+              1.0
+            ],
+            "hidden_test_rate": 1.0,
+            "regression_rate": 0.0,
+            "scope_control": 1.0,
+            "partial_objective_mean": 100.0,
+            "review_mean": null,
+            "cost_total_usd": 1.46937885,
+            "cost_mean_usd": 0.244896475,
+            "cost_per_success_usd": 0.244896475,
+            "median_time_to_success_s": 127.867,
+            "wall_clock_percentiles": {
+              "median": 127.867,
+              "mean": 130.56216666666666,
+              "p25": 116.5375,
+              "p75": 139.51375000000002,
+              "p90": 148.70850000000002
+            },
+            "tokens_total_mean": 238182.0,
+            "components": {
+              "verified_success": 1.0,
+              "hidden_test_score": 1.0,
+              "regression_avoidance": 1.0,
+              "scope_control": 1.0
+            },
+            "work": {
+              "input_tokens": 16.833333333333332,
+              "output_tokens": 5251.666666666667,
+              "wall_clock_seconds": 130.56216666666668,
+              "api_calls": 12.5,
+              "tool_calls": 7.833333333333333,
+              "shell_commands": 1.1666666666666667,
+              "test_runs": 1.0,
+              "file_reads": 4.0,
+              "file_edits": 1.5,
+              "retry_count": 1.3333333333333333,
+              "review_passes": null
+            },
+            "cost_efficiency": 1.0,
+            "time_efficiency": 0.4216490572235213,
+            "objective_score": 97.10824528611761,
+            "review_score": null,
+            "full_score": 97.10824528611761,
+            "work_index": 100.0,
+            "quality_per_dollar": 396.527738041626,
+            "quality_per_minute": 44.62621037871146,
+            "quality_per_work_unit": 0.9710824528611761,
+            "rank": 3
+          },
+          "claude-opus-4-8": {
+            "model_id": "claude-opus-4-8",
+            "n_runs": 6,
+            "n_invalid": 0,
+            "failure_labels": {},
+            "invalid_by_reason": {},
+            "category_success": {
+              "security_fix": 1.0,
+              "state_machine": 1.0,
+              "multi_file_bug_localization": 1.0
+            },
+            "diagnostics": {
+              "failed_command_ratio": 0.0,
+              "exploration_edit_ratio": 5.833333333333333,
+              "timeout_rate": 0.0,
+              "mean_time_to_first_edit_s": null,
+              "mean_time_to_first_test_s": null,
+              "mean_diff_locality": 0.8333333333333334,
+              "mean_patch_entropy": 0.318144667641655,
+              "mean_test_to_code_ratio": 0.0
+            },
+            "n_success": 6,
+            "success_rate": 1.0,
+            "success_ci95": [
+              0.6096657120978346,
+              1.0
+            ],
+            "hidden_test_rate": 1.0,
+            "regression_rate": 0.0,
+            "scope_control": 1.0,
+            "partial_objective_mean": 100.0,
+            "review_mean": null,
+            "cost_total_usd": 1.48155325,
+            "cost_mean_usd": 0.24692554166666666,
+            "cost_per_success_usd": 0.24692554166666666,
+            "median_time_to_success_s": 53.915,
+            "wall_clock_percentiles": {
+              "median": 53.915,
+              "mean": 54.472,
+              "p25": 51.999,
+              "p75": 57.252250000000004,
+              "p90": 59.7265
+            },
+            "tokens_total_mean": 176259.83333333334,
+            "components": {
+              "verified_success": 1.0,
+              "hidden_test_score": 1.0,
+              "regression_avoidance": 1.0,
+              "scope_control": 1.0
+            },
+            "work": {
+              "input_tokens": 12.333333333333334,
+              "output_tokens": 1424.0,
+              "wall_clock_seconds": 54.472,
+              "api_calls": 6.166666666666667,
+              "tool_calls": 10.166666666666666,
+              "shell_commands": 1.5,
+              "test_runs": 1.0,
+              "file_reads": 7.333333333333333,
+              "file_edits": 1.3333333333333333,
+              "retry_count": 1.0,
+              "review_passes": null
+            },
+            "cost_efficiency": 0.9917826780778889,
+            "time_efficiency": 1.0,
+            "objective_score": 99.95891339038945,
+            "review_score": null,
+            "full_score": 99.95891339038945,
+            "work_index": 69.62649071391253,
+            "quality_per_dollar": 404.8139885234208,
+            "quality_per_minute": 110.10307687295064,
+            "quality_per_work_unit": 1.4356448582352004,
+            "rank": 1
+          },
+          "claude-opus-4-7": {
+            "model_id": "claude-opus-4-7",
+            "n_runs": 6,
+            "n_invalid": 0,
+            "failure_labels": {},
+            "invalid_by_reason": {},
+            "category_success": {
+              "security_fix": 1.0,
+              "state_machine": 1.0,
+              "multi_file_bug_localization": 1.0
+            },
+            "diagnostics": {
+              "failed_command_ratio": 0.0,
+              "exploration_edit_ratio": 4.833333333333333,
+              "timeout_rate": 0.0,
+              "mean_time_to_first_edit_s": null,
+              "mean_time_to_first_test_s": null,
+              "mean_diff_locality": 0.8333333333333334,
+              "mean_patch_entropy": 0.318144667641655,
+              "mean_test_to_code_ratio": 0.0
+            },
+            "n_success": 6,
+            "success_rate": 1.0,
+            "success_ci95": [
+              0.6096657120978346,
+              1.0
+            ],
+            "hidden_test_rate": 1.0,
+            "regression_rate": 0.0,
+            "scope_control": 1.0,
+            "partial_objective_mean": 100.0,
+            "review_mean": null,
+            "cost_total_usd": 1.4802570000000002,
+            "cost_mean_usd": 0.24670950000000003,
+            "cost_per_success_usd": 0.24670950000000003,
+            "median_time_to_success_s": 64.759,
+            "wall_clock_percentiles": {
+              "median": 64.759,
+              "mean": 66.53483333333334,
+              "p25": 61.71125,
+              "p75": 71.5515,
+              "p90": 75.97
+            },
+            "tokens_total_mean": 221327.16666666666,
+            "components": {
+              "verified_success": 1.0,
+              "hidden_test_score": 1.0,
+              "regression_avoidance": 1.0,
+              "scope_control": 1.0
+            },
+            "work": {
+              "input_tokens": 12.666666666666666,
+              "output_tokens": 1494.6666666666667,
+              "wall_clock_seconds": 66.53483333333334,
+              "api_calls": 7.666666666666667,
+              "tool_calls": 11.333333333333334,
+              "shell_commands": 2.5,
+              "test_runs": 1.0,
+              "file_reads": 7.5,
+              "file_edits": 1.3333333333333333,
+              "retry_count": 1.5,
+              "review_passes": null
+            },
+            "cost_efficiency": 0.9926511747622202,
+            "time_efficiency": 0.8325483716549051,
+            "objective_score": 99.12599773208562,
+            "review_score": null,
+            "full_score": 99.12599773208562,
+            "work_index": 79.03775838972211,
+            "quality_per_dollar": 401.7923822636972,
+            "quality_per_minute": 89.39016701414754,
+            "quality_per_work_unit": 1.254160033781724,
+            "rank": 2
+          }
+        },
+        "baseline": "claude-opus-4-6",
+        "best_cost_per_success_usd": 0.244896475,
+        "best_median_time_to_success_s": 53.915,
+        "level1": {
+          "ranking": [
+            "claude-opus-4-8",
+            "claude-opus-4-7",
+            "claude-sonnet-4-6",
+            "claude-opus-4-6"
+          ],
+          "baseline": "claude-opus-4-6",
+          "improvements": [
+            {
+              "model_b": "claude-sonnet-4-6",
+              "model_a": "claude-opus-4-6",
+              "success_delta_pp": 0.0,
+              "objective_delta": 1.32948327144598,
+              "paired": {
+                "n_pairs": 6,
+                "a_only": 0,
+                "b_only": 0,
+                "both": 6,
+                "neither": 0,
+                "p_value": 1.0
+              },
+              "raw_p_value": 1.0,
+              "holm_p_value": 1.0,
+              "material": false,
+              "materiality_reason": "success delta +0.0 pp is below the 5 pp threshold"
+            },
+            {
+              "model_b": "claude-opus-4-8",
+              "model_a": "claude-opus-4-6",
+              "success_delta_pp": 0.0,
+              "objective_delta": 4.180151375717827,
+              "paired": {
+                "n_pairs": 6,
+                "a_only": 0,
+                "b_only": 0,
+                "both": 6,
+                "neither": 0,
+                "p_value": 1.0
+              },
+              "raw_p_value": 1.0,
+              "holm_p_value": 1.0,
+              "material": false,
+              "materiality_reason": "success delta +0.0 pp is below the 5 pp threshold"
+            },
+            {
+              "model_b": "claude-opus-4-7",
+              "model_a": "claude-opus-4-6",
+              "success_delta_pp": 0.0,
+              "objective_delta": 3.3472357174139944,
+              "paired": {
+                "n_pairs": 6,
+                "a_only": 0,
+                "b_only": 0,
+                "both": 6,
+                "neither": 0,
+                "p_value": 1.0
+              },
+              "raw_p_value": 1.0,
+              "holm_p_value": 1.0,
+              "material": false,
+              "materiality_reason": "success delta +0.0 pp is below the 5 pp threshold"
+            }
+          ]
+        },
+        "level2": {
+          "baseline": "claude-opus-4-6",
+          "work_index_components": [
+            "input_tokens",
+            "output_tokens",
+            "wall_clock_seconds",
+            "api_calls",
+            "tool_calls",
+            "shell_commands",
+            "test_runs",
+            "file_reads",
+            "file_edits",
+            "retry_count"
+          ],
+          "assessments": [],
+          "excluded": [
+            {
+              "model_b": "claude-sonnet-4-6",
+              "model_a": "claude-opus-4-6",
+              "reason": "success delta +0.0 pp is below the 5 pp threshold"
+            },
+            {
+              "model_b": "claude-opus-4-8",
+              "model_a": "claude-opus-4-6",
+              "reason": "success delta +0.0 pp is below the 5 pp threshold"
+            },
+            {
+              "model_b": "claude-opus-4-7",
+              "model_a": "claude-opus-4-6",
+              "reason": "success delta +0.0 pp is below the 5 pp threshold"
+            }
+          ]
+        },
+        "cost_frontier": [
+          {
+            "model_id": "claude-opus-4-6",
+            "x": 0.32203508333333336,
+            "y": 1.0,
+            "on_frontier": false
+          },
+          {
+            "model_id": "claude-sonnet-4-6",
+            "x": 0.244896475,
+            "y": 1.0,
+            "on_frontier": true
+          },
+          {
+            "model_id": "claude-opus-4-8",
+            "x": 0.24692554166666666,
+            "y": 1.0,
+            "on_frontier": false
+          },
+          {
+            "model_id": "claude-opus-4-7",
+            "x": 0.24670950000000003,
+            "y": 1.0,
+            "on_frontier": false
+          }
+        ],
+        "latency_frontier": [
+          {
+            "model_id": "claude-opus-4-6",
+            "x": 136.3945,
+            "y": 1.0,
+            "on_frontier": false
+          },
+          {
+            "model_id": "claude-sonnet-4-6",
+            "x": 127.867,
+            "y": 1.0,
+            "on_frontier": false
+          },
+          {
+            "model_id": "claude-opus-4-8",
+            "x": 53.915,
+            "y": 1.0,
+            "on_frontier": true
+          },
+          {
+            "model_id": "claude-opus-4-7",
+            "x": 64.759,
+            "y": 1.0,
+            "on_frontier": false
+          }
+        ]
+      }
+    },
+    "cross_mode": null,
+    "limitations": [
+      "Only Default Mode was run; Intrinsic vs Workflow-Equivalent gains cannot be distinguished without Equal-Budget, Matched-Workflow, or Strong-Spec modes.",
+      "Agentic Work Index components with no captured data in this run: review_passes (the index uses the remaining components)."
+    ]
+  },
+  "records": [
+    {
+      "run_id": "2026-06-15T01-36-33-371205-00-00_task-hard_task_001_claude-opus-4-6_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "hard_task_001",
+      "task_category": "security_fix",
+      "hardness_level": "H3",
+      "known_llm_failure_mode": "patches_controller_symptom_instead_of_policy_root_cause",
+      "repo": "saas",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-6",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T01:36:33.371205+00:00",
+        "completed_at": "2026-06-15T01:38:54.907886+00:00",
+        "wall_clock_seconds": 141.538,
+        "working_seconds": 141.193,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 17,
+        "output_tokens": 4005,
+        "total_tokens": 234023,
+        "cache_read_tokens": 184405,
+        "cache_write_tokens": 45596,
+        "reasoning_tokens": 232,
+        "estimated_cost_usd": 0.4773875
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 2,
+        "lines_removed": 1,
+        "modified_files": [
+          "src/saasapp/policy.py"
+        ],
+        "api_calls": 13,
+        "tool_calls": 8,
+        "shell_commands": 1,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 5,
+        "file_edits": 1,
+        "retry_count": 0,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "agent": 1,
+          "read": 5,
+          "edit": 1,
+          "bash": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 2,
+        "lines_removed": 1,
+        "test_lines_changed": 0,
+        "code_lines_changed": 3,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 4,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 4
+        },
+        "hidden_tests": {
+          "passed": 5,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 5
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T01-38-57-247667-00-00_task-hard_task_001_claude-sonnet-4-6_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "hard_task_001",
+      "task_category": "security_fix",
+      "hardness_level": "H3",
+      "known_llm_failure_mode": "patches_controller_symptom_instead_of_policy_root_cause",
+      "repo": "saas",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-sonnet-4-6",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T01:38:57.247667+00:00",
+        "completed_at": "2026-06-15T01:41:16.889009+00:00",
+        "wall_clock_seconds": 139.643,
+        "working_seconds": 139.375,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 16,
+        "output_tokens": 5963,
+        "total_tokens": 252527,
+        "cache_read_tokens": 201106,
+        "cache_write_tokens": 45442,
+        "reasoning_tokens": 962,
+        "estimated_cost_usd": 0.32023229999999997
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 2,
+        "lines_removed": 1,
+        "modified_files": [
+          "src/saasapp/policy.py"
+        ],
+        "api_calls": 12,
+        "tool_calls": 12,
+        "shell_commands": 1,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 9,
+        "file_edits": 1,
+        "retry_count": 0,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "agent": 1,
+          "read": 8,
+          "glob": 1,
+          "edit": 1,
+          "bash": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 2,
+        "lines_removed": 1,
+        "test_lines_changed": 0,
+        "code_lines_changed": 3,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 4,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 4
+        },
+        "hidden_tests": {
+          "passed": 5,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 5
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T01-41-19-223970-00-00_task-hard_task_001_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "hard_task_001",
+      "task_category": "security_fix",
+      "hardness_level": "H3",
+      "known_llm_failure_mode": "patches_controller_symptom_instead_of_policy_root_cause",
+      "repo": "saas",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T01:41:19.223970+00:00",
+        "completed_at": "2026-06-15T01:42:11.140267+00:00",
+        "wall_clock_seconds": 51.917,
+        "working_seconds": 51.773,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 10,
+        "output_tokens": 1570,
+        "total_tokens": 149536,
+        "cache_read_tokens": 116244,
+        "cache_write_tokens": 31712,
+        "reasoning_tokens": 49,
+        "estimated_cost_usd": 0.295622
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 3,
+        "lines_removed": 1,
+        "modified_files": [
+          "src/saasapp/policy.py"
+        ],
+        "api_calls": 5,
+        "tool_calls": 12,
+        "shell_commands": 2,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 9,
+        "file_edits": 1,
+        "retry_count": 0,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "read": 9,
+          "bash": 2,
+          "edit": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 3,
+        "lines_removed": 1,
+        "test_lines_changed": 0,
+        "code_lines_changed": 4,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 4,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 4
+        },
+        "hidden_tests": {
+          "passed": 5,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 5
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T01-42-12-842468-00-00_task-hard_task_001_claude-opus-4-7_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "hard_task_001",
+      "task_category": "security_fix",
+      "hardness_level": "H3",
+      "known_llm_failure_mode": "patches_controller_symptom_instead_of_policy_root_cause",
+      "repo": "saas",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-7",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T01:42:12.842468+00:00",
+        "completed_at": "2026-06-15T01:43:14.785331+00:00",
+        "wall_clock_seconds": 61.943,
+        "working_seconds": 61.213,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 13,
+        "output_tokens": 1208,
+        "total_tokens": 224125,
+        "cache_read_tokens": 193815,
+        "cache_write_tokens": 29089,
+        "reasoning_tokens": 35,
+        "estimated_cost_usd": 0.30897875
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 2,
+        "lines_removed": 1,
+        "modified_files": [
+          "src/saasapp/policy.py"
+        ],
+        "api_calls": 8,
+        "tool_calls": 7,
+        "shell_commands": 3,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 3,
+        "file_edits": 1,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "bash": 3,
+          "read": 3,
+          "edit": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 2,
+        "lines_removed": 1,
+        "test_lines_changed": 0,
+        "code_lines_changed": 3,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 4,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 4
+        },
+        "hidden_tests": {
+          "passed": 5,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 5
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T01-43-17-133339-00-00_task-hard_task_002_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "hard_task_002",
+      "task_category": "state_machine",
+      "hardness_level": "H5",
+      "known_llm_failure_mode": "enum_or_transition_only_change_misses_enforcement_side_effects",
+      "repo": "saas",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T01:43:17.133339+00:00",
+        "completed_at": "2026-06-15T01:44:14.941114+00:00",
+        "wall_clock_seconds": 57.808,
+        "working_seconds": 57.207,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 14,
+        "output_tokens": 1771,
+        "total_tokens": 204571,
+        "cache_read_tokens": 197060,
+        "cache_write_tokens": 5726,
+        "reasoning_tokens": 122,
+        "estimated_cost_usd": 0.1786625
+      },
+      "agent_behavior": {
+        "files_modified": 2,
+        "lines_added": 6,
+        "lines_removed": 2,
+        "modified_files": [
+          "src/saasapp/lifecycle.py",
+          "src/saasapp/service.py"
+        ],
+        "api_calls": 7,
+        "tool_calls": 13,
+        "shell_commands": 1,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 10,
+        "file_edits": 2,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "read": 9,
+          "glob": 1,
+          "edit": 2,
+          "bash": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 2,
+        "hunks": 2,
+        "lines_added": 6,
+        "lines_removed": 2,
+        "test_lines_changed": 0,
+        "code_lines_changed": 8,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 0.5,
+        "patch_entropy": 0.954434002924965
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 3,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 3
+        },
+        "hidden_tests": {
+          "passed": 5,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 5
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T01-44-17-107385-00-00_task-hard_task_002_claude-sonnet-4-6_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "hard_task_002",
+      "task_category": "state_machine",
+      "hardness_level": "H5",
+      "known_llm_failure_mode": "enum_or_transition_only_change_misses_enforcement_side_effects",
+      "repo": "saas",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-sonnet-4-6",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T01:44:17.107385+00:00",
+        "completed_at": "2026-06-15T01:46:54.879676+00:00",
+        "wall_clock_seconds": 157.774,
+        "working_seconds": 155.979,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 25,
+        "output_tokens": 6383,
+        "total_tokens": 346592,
+        "cache_read_tokens": 326756,
+        "cache_write_tokens": 13428,
+        "reasoning_tokens": 360,
+        "estimated_cost_usd": 0.2442018
+      },
+      "agent_behavior": {
+        "files_modified": 2,
+        "lines_added": 8,
+        "lines_removed": 5,
+        "modified_files": [
+          "src/saasapp/lifecycle.py",
+          "src/saasapp/service.py"
+        ],
+        "api_calls": 19,
+        "tool_calls": 10,
+        "shell_commands": 2,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 4,
+        "file_edits": 2,
+        "retry_count": 3,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "agent": 2,
+          "read": 4,
+          "bash": 2,
+          "edit": 2
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 2,
+        "hunks": 2,
+        "lines_added": 8,
+        "lines_removed": 5,
+        "test_lines_changed": 0,
+        "code_lines_changed": 13,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 0.5,
+        "patch_entropy": 0.9612366047228759
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 3,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 3
+        },
+        "hidden_tests": {
+          "passed": 5,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 5
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T01-46-56-950046-00-00_task-hard_task_002_claude-opus-4-7_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "hard_task_002",
+      "task_category": "state_machine",
+      "hardness_level": "H5",
+      "known_llm_failure_mode": "enum_or_transition_only_change_misses_enforcement_side_effects",
+      "repo": "saas",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-7",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T01:46:56.950046+00:00",
+        "completed_at": "2026-06-15T01:48:16.012518+00:00",
+        "wall_clock_seconds": 79.063,
+        "working_seconds": 77.394,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 13,
+        "output_tokens": 2342,
+        "total_tokens": 244877,
+        "cache_read_tokens": 235245,
+        "cache_write_tokens": 7277,
+        "reasoning_tokens": 108,
+        "estimated_cost_usd": 0.22171875000000002
+      },
+      "agent_behavior": {
+        "files_modified": 2,
+        "lines_added": 7,
+        "lines_removed": 1,
+        "modified_files": [
+          "src/saasapp/lifecycle.py",
+          "src/saasapp/service.py"
+        ],
+        "api_calls": 8,
+        "tool_calls": 21,
+        "shell_commands": 3,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 16,
+        "file_edits": 2,
+        "retry_count": 3,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "bash": 3,
+          "read": 16,
+          "edit": 2
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 2,
+        "hunks": 2,
+        "lines_added": 7,
+        "lines_removed": 1,
+        "test_lines_changed": 0,
+        "code_lines_changed": 8,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 0.5,
+        "patch_entropy": 0.954434002924965
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 3,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 3
+        },
+        "hidden_tests": {
+          "passed": 5,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 5
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T01-48-18-089059-00-00_task-hard_task_002_claude-opus-4-6_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "hard_task_002",
+      "task_category": "state_machine",
+      "hardness_level": "H5",
+      "known_llm_failure_mode": "enum_or_transition_only_change_misses_enforcement_side_effects",
+      "repo": "saas",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-6",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T01:48:18.089059+00:00",
+        "completed_at": "2026-06-15T01:50:29.378356+00:00",
+        "wall_clock_seconds": 131.251,
+        "working_seconds": 130.469,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 17,
+        "output_tokens": 4311,
+        "total_tokens": 228914,
+        "cache_read_tokens": 182859,
+        "cache_write_tokens": 41727,
+        "reasoning_tokens": 181,
+        "estimated_cost_usd": 0.46008325
+      },
+      "agent_behavior": {
+        "files_modified": 2,
+        "lines_added": 10,
+        "lines_removed": 6,
+        "modified_files": [
+          "src/saasapp/lifecycle.py",
+          "src/saasapp/service.py"
+        ],
+        "api_calls": 13,
+        "tool_calls": 6,
+        "shell_commands": 1,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 2,
+        "file_edits": 2,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "agent": 1,
+          "read": 2,
+          "edit": 2,
+          "bash": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 2,
+        "hunks": 2,
+        "lines_added": 10,
+        "lines_removed": 6,
+        "test_lines_changed": 0,
+        "code_lines_changed": 16,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 0.5,
+        "patch_entropy": 1.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 3,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 3
+        },
+        "hidden_tests": {
+          "passed": 5,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 5
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T01-50-31-793315-00-00_task-hard_task_003_claude-opus-4-7_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "hard_task_003",
+      "task_category": "multi_file_bug_localization",
+      "hardness_level": "H2",
+      "known_llm_failure_mode": "patches_symptom_in_service_not_shared_helper_root_cause",
+      "repo": "saas",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-7",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T01:50:31.793315+00:00",
+        "completed_at": "2026-06-15T01:51:33.427952+00:00",
+        "wall_clock_seconds": 61.634,
+        "working_seconds": 60.979,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 12,
+        "output_tokens": 853,
+        "total_tokens": 194611,
+        "cache_read_tokens": 191532,
+        "cache_write_tokens": 2214,
+        "reasoning_tokens": 26,
+        "estimated_cost_usd": 0.1309885
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 1,
+        "lines_removed": 2,
+        "modified_files": [
+          "src/saasapp/ownership.py"
+        ],
+        "api_calls": 7,
+        "tool_calls": 6,
+        "shell_commands": 2,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 3,
+        "file_edits": 1,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "bash": 2,
+          "read": 3,
+          "edit": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 1,
+        "lines_removed": 2,
+        "test_lines_changed": 0,
+        "code_lines_changed": 3,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 3,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 3
+        },
+        "hidden_tests": {
+          "passed": 4,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 4
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T01-51-35-359367-00-00_task-hard_task_003_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "hard_task_003",
+      "task_category": "multi_file_bug_localization",
+      "hardness_level": "H2",
+      "known_llm_failure_mode": "patches_symptom_in_service_not_shared_helper_root_cause",
+      "repo": "saas",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T01:51:35.359367+00:00",
+        "completed_at": "2026-06-15T01:52:27.604757+00:00",
+        "wall_clock_seconds": 52.245,
+        "working_seconds": 51.667,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 12,
+        "output_tokens": 987,
+        "total_tokens": 167740,
+        "cache_read_tokens": 137405,
+        "cache_write_tokens": 29336,
+        "reasoning_tokens": 28,
+        "estimated_cost_usd": 0.2767875
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 1,
+        "lines_removed": 2,
+        "modified_files": [
+          "src/saasapp/ownership.py"
+        ],
+        "api_calls": 6,
+        "tool_calls": 8,
+        "shell_commands": 1,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 6,
+        "file_edits": 1,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "glob": 1,
+          "read": 5,
+          "edit": 1,
+          "bash": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 1,
+        "lines_removed": 2,
+        "test_lines_changed": 0,
+        "code_lines_changed": 3,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 3,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 3
+        },
+        "hidden_tests": {
+          "passed": 4,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 4
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T01-52-29-821974-00-00_task-hard_task_003_claude-sonnet-4-6_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "hard_task_003",
+      "task_category": "multi_file_bug_localization",
+      "hardness_level": "H2",
+      "known_llm_failure_mode": "patches_symptom_in_service_not_shared_helper_root_cause",
+      "repo": "saas",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-sonnet-4-6",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T01:52:29.821974+00:00",
+        "completed_at": "2026-06-15T01:54:26.336421+00:00",
+        "wall_clock_seconds": 116.514,
+        "working_seconds": 115.675,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 15,
+        "output_tokens": 4336,
+        "total_tokens": 210629,
+        "cache_read_tokens": 166495,
+        "cache_write_tokens": 39783,
+        "reasoning_tokens": 228,
+        "estimated_cost_usd": 0.26421975
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 1,
+        "lines_removed": 2,
+        "modified_files": [
+          "src/saasapp/ownership.py"
+        ],
+        "api_calls": 11,
+        "tool_calls": 5,
+        "shell_commands": 1,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 2,
+        "file_edits": 1,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "agent": 1,
+          "read": 2,
+          "edit": 1,
+          "bash": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 1,
+        "lines_removed": 2,
+        "test_lines_changed": 0,
+        "code_lines_changed": 3,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 3,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 3
+        },
+        "hidden_tests": {
+          "passed": 4,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 4
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T01-54-28-460588-00-00_task-hard_task_003_claude-opus-4-6_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "hard_task_003",
+      "task_category": "multi_file_bug_localization",
+      "hardness_level": "H2",
+      "known_llm_failure_mode": "patches_symptom_in_service_not_shared_helper_root_cause",
+      "repo": "saas",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-6",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T01:54:28.460588+00:00",
+        "completed_at": "2026-06-15T01:55:26.523659+00:00",
+        "wall_clock_seconds": 58.063,
+        "working_seconds": 57.491,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 8,
+        "output_tokens": 1129,
+        "total_tokens": 133230,
+        "cache_read_tokens": 127949,
+        "cache_write_tokens": 4144,
+        "reasoning_tokens": 194,
+        "estimated_cost_usd": 0.1181395
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 1,
+        "lines_removed": 1,
+        "modified_files": [
+          "src/saasapp/ownership.py"
+        ],
+        "api_calls": 6,
+        "tool_calls": 10,
+        "shell_commands": 2,
+        "failed_shell_commands": 1,
+        "test_runs": 2,
+        "files_read": 7,
+        "file_edits": 1,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "glob": 1,
+          "read": 6,
+          "edit": 1,
+          "bash": 2
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 1,
+        "lines_removed": 1,
+        "test_lines_changed": 0,
+        "code_lines_changed": 2,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 3,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 3
+        },
+        "hidden_tests": {
+          "passed": 4,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 4
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T01-55-28-569758-00-00_task-hard_task_001_claude-sonnet-4-6_rep-01",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "hard_task_001",
+      "task_category": "security_fix",
+      "hardness_level": "H3",
+      "known_llm_failure_mode": "patches_controller_symptom_instead_of_policy_root_cause",
+      "repo": "saas",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-sonnet-4-6",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 1,
+      "execution": {
+        "started_at": "2026-06-15T01:55:28.569758+00:00",
+        "completed_at": "2026-06-15T01:57:47.695904+00:00",
+        "wall_clock_seconds": 139.126,
+        "working_seconds": 137.947,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 16,
+        "output_tokens": 5840,
+        "total_tokens": 220865,
+        "cache_read_tokens": 198413,
+        "cache_write_tokens": 16596,
+        "reasoning_tokens": 912,
+        "estimated_cost_usd": 0.2094069
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 2,
+        "lines_removed": 1,
+        "modified_files": [
+          "src/saasapp/policy.py"
+        ],
+        "api_calls": 12,
+        "tool_calls": 8,
+        "shell_commands": 1,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 5,
+        "file_edits": 1,
+        "retry_count": 2,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "agent": 1,
+          "read": 5,
+          "edit": 1,
+          "bash": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 2,
+        "lines_removed": 1,
+        "test_lines_changed": 0,
+        "code_lines_changed": 3,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 4,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 4
+        },
+        "hidden_tests": {
+          "passed": 5,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 5
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T01-57-50-336119-00-00_task-hard_task_001_claude-opus-4-7_rep-01",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "hard_task_001",
+      "task_category": "security_fix",
+      "hardness_level": "H3",
+      "known_llm_failure_mode": "patches_controller_symptom_instead_of_policy_root_cause",
+      "repo": "saas",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-7",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 1,
+      "execution": {
+        "started_at": "2026-06-15T01:57:50.336119+00:00",
+        "completed_at": "2026-06-15T01:58:57.910771+00:00",
+        "wall_clock_seconds": 67.575,
+        "working_seconds": 67.005,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 13,
+        "output_tokens": 1325,
+        "total_tokens": 224771,
+        "cache_read_tokens": 194250,
+        "cache_write_tokens": 29183,
+        "reasoning_tokens": 72,
+        "estimated_cost_usd": 0.31270875
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 2,
+        "lines_removed": 1,
+        "modified_files": [
+          "src/saasapp/policy.py"
+        ],
+        "api_calls": 8,
+        "tool_calls": 7,
+        "shell_commands": 2,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 4,
+        "file_edits": 1,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "bash": 2,
+          "read": 4,
+          "edit": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 2,
+        "lines_removed": 1,
+        "test_lines_changed": 0,
+        "code_lines_changed": 3,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 4,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 4
+        },
+        "hidden_tests": {
+          "passed": 5,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 5
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T01-59-00-063033-00-00_task-hard_task_001_claude-opus-4-6_rep-01",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "hard_task_001",
+      "task_category": "security_fix",
+      "hardness_level": "H3",
+      "known_llm_failure_mode": "patches_controller_symptom_instead_of_policy_root_cause",
+      "repo": "saas",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-6",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 1,
+      "execution": {
+        "started_at": "2026-06-15T01:59:00.063033+00:00",
+        "completed_at": "2026-06-15T02:01:22.629222+00:00",
+        "wall_clock_seconds": 142.566,
+        "working_seconds": 141.842,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 16,
+        "output_tokens": 4866,
+        "total_tokens": 232713,
+        "cache_read_tokens": 205896,
+        "cache_write_tokens": 21935,
+        "reasoning_tokens": 286,
+        "estimated_cost_usd": 0.36177175000000006
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 2,
+        "lines_removed": 1,
+        "modified_files": [
+          "src/saasapp/policy.py"
+        ],
+        "api_calls": 12,
+        "tool_calls": 6,
+        "shell_commands": 1,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 3,
+        "file_edits": 1,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "agent": 1,
+          "read": 2,
+          "glob": 1,
+          "edit": 1,
+          "bash": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 2,
+        "lines_removed": 1,
+        "test_lines_changed": 0,
+        "code_lines_changed": 3,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 4,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 4
+        },
+        "hidden_tests": {
+          "passed": 5,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 5
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T02-01-24-624384-00-00_task-hard_task_001_claude-opus-4-8_rep-01",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "hard_task_001",
+      "task_category": "security_fix",
+      "hardness_level": "H3",
+      "known_llm_failure_mode": "patches_controller_symptom_instead_of_policy_root_cause",
+      "repo": "saas",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 1,
+      "execution": {
+        "started_at": "2026-06-15T02:01:24.624384+00:00",
+        "completed_at": "2026-06-15T02:02:12.256496+00:00",
+        "wall_clock_seconds": 47.632,
+        "working_seconds": 47.057,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 10,
+        "output_tokens": 1259,
+        "total_tokens": 141982,
+        "cache_read_tokens": 111283,
+        "cache_write_tokens": 29430,
+        "reasoning_tokens": 74,
+        "estimated_cost_usd": 0.271104
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 4,
+        "lines_removed": 1,
+        "modified_files": [
+          "src/saasapp/policy.py"
+        ],
+        "api_calls": 5,
+        "tool_calls": 8,
+        "shell_commands": 2,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 5,
+        "file_edits": 1,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "read": 5,
+          "bash": 2,
+          "edit": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 4,
+        "lines_removed": 1,
+        "test_lines_changed": 0,
+        "code_lines_changed": 5,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 4,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 4
+        },
+        "hidden_tests": {
+          "passed": 5,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 5
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T02-02-14-429000-00-00_task-hard_task_002_claude-opus-4-8_rep-01",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "hard_task_002",
+      "task_category": "state_machine",
+      "hardness_level": "H5",
+      "known_llm_failure_mode": "enum_or_transition_only_change_misses_enforcement_side_effects",
+      "repo": "saas",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 1,
+      "execution": {
+        "started_at": "2026-06-15T02:02:14.429000+00:00",
+        "completed_at": "2026-06-15T02:03:16.073921+00:00",
+        "wall_clock_seconds": 61.645,
+        "working_seconds": 60.995,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 14,
+        "output_tokens": 1923,
+        "total_tokens": 200796,
+        "cache_read_tokens": 194636,
+        "cache_write_tokens": 4223,
+        "reasoning_tokens": 166,
+        "estimated_cost_usd": 0.17185674999999997
+      },
+      "agent_behavior": {
+        "files_modified": 2,
+        "lines_added": 7,
+        "lines_removed": 1,
+        "modified_files": [
+          "src/saasapp/lifecycle.py",
+          "src/saasapp/service.py"
+        ],
+        "api_calls": 7,
+        "tool_calls": 11,
+        "shell_commands": 1,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 8,
+        "file_edits": 2,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "read": 6,
+          "glob": 2,
+          "edit": 2,
+          "bash": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 2,
+        "hunks": 2,
+        "lines_added": 7,
+        "lines_removed": 1,
+        "test_lines_changed": 0,
+        "code_lines_changed": 8,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 0.5,
+        "patch_entropy": 0.954434002924965
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 3,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 3
+        },
+        "hidden_tests": {
+          "passed": 5,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 5
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T02-03-18-547135-00-00_task-hard_task_002_claude-opus-4-6_rep-01",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "hard_task_002",
+      "task_category": "state_machine",
+      "hardness_level": "H5",
+      "known_llm_failure_mode": "enum_or_transition_only_change_misses_enforcement_side_effects",
+      "repo": "saas",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-6",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 1,
+      "execution": {
+        "started_at": "2026-06-15T02:03:18.547135+00:00",
+        "completed_at": "2026-06-15T02:05:49.622700+00:00",
+        "wall_clock_seconds": 151.075,
+        "working_seconds": 150.298,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 18,
+        "output_tokens": 4185,
+        "total_tokens": 240996,
+        "cache_read_tokens": 225807,
+        "cache_write_tokens": 10986,
+        "reasoning_tokens": 171,
+        "estimated_cost_usd": 0.286281
+      },
+      "agent_behavior": {
+        "files_modified": 2,
+        "lines_added": 7,
+        "lines_removed": 1,
+        "modified_files": [
+          "src/saasapp/lifecycle.py",
+          "src/saasapp/service.py"
+        ],
+        "api_calls": 14,
+        "tool_calls": 7,
+        "shell_commands": 1,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 3,
+        "file_edits": 2,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "agent": 1,
+          "read": 3,
+          "edit": 2,
+          "bash": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 2,
+        "hunks": 2,
+        "lines_added": 7,
+        "lines_removed": 1,
+        "test_lines_changed": 0,
+        "code_lines_changed": 8,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 0.5,
+        "patch_entropy": 0.954434002924965
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 3,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 3
+        },
+        "hidden_tests": {
+          "passed": 5,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 5
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T02-05-51-330638-00-00_task-hard_task_002_claude-sonnet-4-6_rep-01",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "hard_task_002",
+      "task_category": "state_machine",
+      "hardness_level": "H5",
+      "known_llm_failure_mode": "enum_or_transition_only_change_misses_enforcement_side_effects",
+      "repo": "saas",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-sonnet-4-6",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 1,
+      "execution": {
+        "started_at": "2026-06-15T02:05:51.330638+00:00",
+        "completed_at": "2026-06-15T02:07:47.938309+00:00",
+        "wall_clock_seconds": 116.608,
+        "working_seconds": 115.886,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 16,
+        "output_tokens": 4200,
+        "total_tokens": 224347,
+        "cache_read_tokens": 179065,
+        "cache_write_tokens": 41066,
+        "reasoning_tokens": 464,
+        "estimated_cost_usd": 0.27076500000000003
+      },
+      "agent_behavior": {
+        "files_modified": 2,
+        "lines_added": 7,
+        "lines_removed": 5,
+        "modified_files": [
+          "src/saasapp/lifecycle.py",
+          "src/saasapp/service.py"
+        ],
+        "api_calls": 12,
+        "tool_calls": 8,
+        "shell_commands": 1,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 3,
+        "file_edits": 3,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "agent": 1,
+          "read": 3,
+          "edit": 3,
+          "bash": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 2,
+        "hunks": 2,
+        "lines_added": 7,
+        "lines_removed": 5,
+        "test_lines_changed": 0,
+        "code_lines_changed": 12,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 0.5,
+        "patch_entropy": 0.9798687566511528
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 3,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 3
+        },
+        "hidden_tests": {
+          "passed": 5,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 5
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T02-07-50-047218-00-00_task-hard_task_002_claude-opus-4-7_rep-01",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "hard_task_002",
+      "task_category": "state_machine",
+      "hardness_level": "H5",
+      "known_llm_failure_mode": "enum_or_transition_only_change_misses_enforcement_side_effects",
+      "repo": "saas",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-7",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 1,
+      "execution": {
+        "started_at": "2026-06-15T02:07:50.047218+00:00",
+        "completed_at": "2026-06-15T02:09:02.924588+00:00",
+        "wall_clock_seconds": 72.877,
+        "working_seconds": 71.739,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 13,
+        "output_tokens": 2303,
+        "total_tokens": 244728,
+        "cache_read_tokens": 208775,
+        "cache_write_tokens": 33637,
+        "reasoning_tokens": 122,
+        "estimated_cost_usd": 0.37225875
+      },
+      "agent_behavior": {
+        "files_modified": 2,
+        "lines_added": 7,
+        "lines_removed": 1,
+        "modified_files": [
+          "src/saasapp/lifecycle.py",
+          "src/saasapp/service.py"
+        ],
+        "api_calls": 8,
+        "tool_calls": 21,
+        "shell_commands": 3,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 16,
+        "file_edits": 2,
+        "retry_count": 2,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "bash": 3,
+          "read": 16,
+          "edit": 2
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 2,
+        "hunks": 2,
+        "lines_added": 7,
+        "lines_removed": 1,
+        "test_lines_changed": 0,
+        "code_lines_changed": 8,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 0.5,
+        "patch_entropy": 0.954434002924965
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 3,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 3
+        },
+        "hidden_tests": {
+          "passed": 5,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 5
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T02-09-04-999896-00-00_task-hard_task_003_claude-sonnet-4-6_rep-01",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "hard_task_003",
+      "task_category": "multi_file_bug_localization",
+      "hardness_level": "H2",
+      "known_llm_failure_mode": "patches_symptom_in_service_not_shared_helper_root_cause",
+      "repo": "saas",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-sonnet-4-6",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 1,
+      "execution": {
+        "started_at": "2026-06-15T02:09:04.999896+00:00",
+        "completed_at": "2026-06-15T02:10:58.754422+00:00",
+        "wall_clock_seconds": 113.708,
+        "working_seconds": 113.081,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 13,
+        "output_tokens": 4788,
+        "total_tokens": 174132,
+        "cache_read_tokens": 158347,
+        "cache_write_tokens": 10984,
+        "reasoning_tokens": 223,
+        "estimated_cost_usd": 0.1605531
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 1,
+        "lines_removed": 2,
+        "modified_files": [
+          "src/saasapp/ownership.py"
+        ],
+        "api_calls": 9,
+        "tool_calls": 4,
+        "shell_commands": 1,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 1,
+        "file_edits": 1,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "agent": 1,
+          "read": 1,
+          "edit": 1,
+          "bash": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 1,
+        "lines_removed": 2,
+        "test_lines_changed": 0,
+        "code_lines_changed": 3,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 3,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 3
+        },
+        "hidden_tests": {
+          "passed": 4,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 4
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T02-11-00-392899-00-00_task-hard_task_003_claude-opus-4-8_rep-01",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "hard_task_003",
+      "task_category": "multi_file_bug_localization",
+      "hardness_level": "H2",
+      "known_llm_failure_mode": "patches_symptom_in_service_not_shared_helper_root_cause",
+      "repo": "saas",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 1,
+      "execution": {
+        "started_at": "2026-06-15T02:11:00.392899+00:00",
+        "completed_at": "2026-06-15T02:11:55.978656+00:00",
+        "wall_clock_seconds": 55.585,
+        "working_seconds": 54.458,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 14,
+        "output_tokens": 1034,
+        "total_tokens": 192934,
+        "cache_read_tokens": 163076,
+        "cache_write_tokens": 28810,
+        "reasoning_tokens": 90,
+        "estimated_cost_usd": 0.2875205
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 1,
+        "lines_removed": 2,
+        "modified_files": [
+          "src/saasapp/ownership.py"
+        ],
+        "api_calls": 7,
+        "tool_calls": 9,
+        "shell_commands": 2,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 6,
+        "file_edits": 1,
+        "retry_count": 2,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "glob": 1,
+          "read": 5,
+          "bash": 2,
+          "edit": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 1,
+        "lines_removed": 2,
+        "test_lines_changed": 0,
+        "code_lines_changed": 3,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 3,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 3
+        },
+        "hidden_tests": {
+          "passed": 4,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 4
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T02-11-57-940568-00-00_task-hard_task_003_claude-opus-4-7_rep-01",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "hard_task_003",
+      "task_category": "multi_file_bug_localization",
+      "hardness_level": "H2",
+      "known_llm_failure_mode": "patches_symptom_in_service_not_shared_helper_root_cause",
+      "repo": "saas",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-7",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 1,
+      "execution": {
+        "started_at": "2026-06-15T02:11:57.940568+00:00",
+        "completed_at": "2026-06-15T02:12:54.057919+00:00",
+        "wall_clock_seconds": 56.117,
+        "working_seconds": 55.522,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 12,
+        "output_tokens": 937,
+        "total_tokens": 194851,
+        "cache_read_tokens": 191612,
+        "cache_write_tokens": 2290,
+        "reasoning_tokens": 100,
+        "estimated_cost_usd": 0.13360350000000004
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 1,
+        "lines_removed": 2,
+        "modified_files": [
+          "src/saasapp/ownership.py"
+        ],
+        "api_calls": 7,
+        "tool_calls": 6,
+        "shell_commands": 2,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 3,
+        "file_edits": 1,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "bash": 2,
+          "read": 3,
+          "edit": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 1,
+        "lines_removed": 2,
+        "test_lines_changed": 0,
+        "code_lines_changed": 3,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 3,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 3
+        },
+        "hidden_tests": {
+          "passed": 4,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 4
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T02-12-56-300775-00-00_task-hard_task_003_claude-opus-4-6_rep-01",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "hard_task_003",
+      "task_category": "multi_file_bug_localization",
+      "hardness_level": "H2",
+      "known_llm_failure_mode": "patches_symptom_in_service_not_shared_helper_root_cause",
+      "repo": "saas",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-6",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 1,
+      "execution": {
+        "started_at": "2026-06-15T02:12:56.300775+00:00",
+        "completed_at": "2026-06-15T02:13:48.689505+00:00",
+        "wall_clock_seconds": 52.388,
+        "working_seconds": 51.772,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 8,
+        "output_tokens": 1096,
+        "total_tokens": 133161,
+        "cache_read_tokens": 108565,
+        "cache_write_tokens": 23492,
+        "reasoning_tokens": 186,
+        "estimated_cost_usd": 0.2285475
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 1,
+        "lines_removed": 1,
+        "modified_files": [
+          "src/saasapp/ownership.py"
+        ],
+        "api_calls": 6,
+        "tool_calls": 10,
+        "shell_commands": 2,
+        "failed_shell_commands": 1,
+        "test_runs": 2,
+        "files_read": 7,
+        "file_edits": 1,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "glob": 1,
+          "read": 6,
+          "edit": 1,
+          "bash": 2
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 1,
+        "lines_removed": 1,
+        "test_lines_changed": 0,
+        "code_lines_changed": 2,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 3,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 3
+        },
+        "hidden_tests": {
+          "passed": 4,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 4
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    }
+  ],
+  "repro": {
+    "agentdelta_version": "0.1.0",
+    "date": "2026-06-15",
+    "suite": "anthropic-v0.1-hard",
+    "inspect_version": "0.3.239",
+    "inspect_swe_version": "0.2.63",
+    "python_version": "3.14.5",
+    "docker_version": "27.4.0",
+    "host_os": "macOS-26.5.1-arm64-arm-64bit-Mach-O",
+    "agent": "claude_code",
+    "agent_cli_version": "2.1.153",
+    "agent_settings_hash": "sha256:8eafc658ce71d702ab6136c729ebddfe5b6977b67607c4bbfd28383c56ac5a34",
+    "models": [
+      "claude-opus-4-8",
+      "claude-opus-4-7",
+      "claude-opus-4-6",
+      "claude-sonnet-4-6"
+    ],
+    "tasks": [
+      "hard_task_001",
+      "hard_task_002",
+      "hard_task_003"
+    ],
+    "sandbox_images": {
+      "saas": "sha256:203543efa3628609554ef7cc15bae4dbb6518b4b789d3423eb77155725766d4e"
+    },
+    "tasks_hash": "sha256:401a13fef69fe3cd045e0100f0d0dfd73c96989a7a59524b68b711dbd97bb57d",
+    "scoring_hash": "sha256:c4aea89e5b179a09cfcc0ec5a4c4eae1c4fec9a8a18394d438baa924af762220",
+    "fixtures_hash": "sha256:bb0aa5c33b84a91700aec39dd4ff56f86acd81afaca6fa1fb5b6a038067c5c38",
+    "hidden_tests_hash": "sha256:2a9512085805e83b59a5e5e478bd2b6eb9f08331f0b9b43f23a070b9f84a4dbf",
+    "run_order_seed": 42,
+    "run_order": [
+      {
+        "rep": 0,
+        "task": "hard_task_001",
+        "order": [
+          "claude-opus-4-6",
+          "claude-sonnet-4-6",
+          "claude-opus-4-8",
+          "claude-opus-4-7"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "hard_task_002",
+        "order": [
+          "claude-opus-4-8",
+          "claude-sonnet-4-6",
+          "claude-opus-4-7",
+          "claude-opus-4-6"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "hard_task_003",
+        "order": [
+          "claude-opus-4-7",
+          "claude-opus-4-8",
+          "claude-sonnet-4-6",
+          "claude-opus-4-6"
+        ]
+      },
+      {
+        "rep": 1,
+        "task": "hard_task_001",
+        "order": [
+          "claude-sonnet-4-6",
+          "claude-opus-4-7",
+          "claude-opus-4-6",
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 1,
+        "task": "hard_task_002",
+        "order": [
+          "claude-opus-4-8",
+          "claude-opus-4-6",
+          "claude-sonnet-4-6",
+          "claude-opus-4-7"
+        ]
+      },
+      {
+        "rep": 1,
+        "task": "hard_task_003",
+        "order": [
+          "claude-sonnet-4-6",
+          "claude-opus-4-8",
+          "claude-opus-4-7",
+          "claude-opus-4-6"
+        ]
+      }
+    ]
+  }
+}

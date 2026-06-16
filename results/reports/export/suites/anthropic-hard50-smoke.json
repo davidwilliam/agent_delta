@@ -1,0 +1,5566 @@
+{
+  "schema_version": 2,
+  "suite": "anthropic-hard50-smoke",
+  "provider": "anthropic",
+  "report": {
+    "benchmark_version": "agentdelta-v0.1",
+    "suite": "anthropic-hard50-smoke",
+    "agent": "claude_code",
+    "n_tasks": 50,
+    "n_long_context_tasks": 3,
+    "n_runs": 50,
+    "n_invalid": 0,
+    "invalid_runs": [],
+    "models": [
+      "claude-opus-4-8"
+    ],
+    "modes": [
+      "default"
+    ],
+    "scoring_formula": {
+      "objective_score": {
+        "verified_task_success": 0.6,
+        "hidden_test_score": 0.15,
+        "regression_avoidance": 0.1,
+        "scope_control": 0.05,
+        "cost_efficiency": 0.05,
+        "time_efficiency": 0.05
+      },
+      "full_score": {
+        "objective_score": 0.95,
+        "blinded_review": 0.05
+      },
+      "materiality": {
+        "task_success_delta_pp": 5,
+        "category_success_delta_pp": 10,
+        "cost_delta_percent": 10,
+        "latency_delta_percent": 10,
+        "regression_delta_pp": 3
+      }
+    },
+    "per_mode": {
+      "default": {
+        "models": {
+          "claude-opus-4-8": {
+            "model_id": "claude-opus-4-8",
+            "n_runs": 50,
+            "n_invalid": 0,
+            "failure_labels": {
+              "hidden_tests_failed": 4,
+              "public_tests_failed": 4,
+              "incomplete_implementation": 2,
+              "overbroad_edit": 1
+            },
+            "invalid_by_reason": {},
+            "category_success": {
+              "cross_file_contract": 1.0,
+              "multi_file_bug_localization": 1.0,
+              "small_bug_fix": 1.0,
+              "medium_feature": 1.0,
+              "security_fix": 0.8,
+              "state_machine": 0.8333333333333334,
+              "concurrency_idempotency": 1.0,
+              "long_context_retrieval": 1.0,
+              "hidden_invariant_preservation": 0.6,
+              "minimal_diff_repair": 1.0,
+              "multi_file_refactor": 1.0,
+              "test_writing": 1.0,
+              "long_horizon": 1.0,
+              "dependency_migration": 1.0
+            },
+            "diagnostics": {
+              "failed_command_ratio": 0.005833333333333333,
+              "exploration_edit_ratio": 3.8833333333333333,
+              "timeout_rate": 0.0,
+              "mean_time_to_first_edit_s": null,
+              "mean_time_to_first_test_s": null,
+              "mean_diff_locality": 0.96,
+              "mean_patch_entropy": 0.06742640530985705,
+              "mean_test_to_code_ratio": 0.0
+            },
+            "n_success": 46,
+            "success_rate": 0.92,
+            "success_ci95": [
+              0.8116175308165717,
+              0.968450485911407
+            ],
+            "hidden_test_rate": 0.9166666666666667,
+            "regression_rate": 0.0,
+            "scope_control": 0.96,
+            "partial_objective_mean": 93.05555555555554,
+            "review_mean": null,
+            "cost_total_usd": 8.45979625,
+            "cost_mean_usd": 0.169195925,
+            "cost_per_success_usd": 0.18390861413043477,
+            "median_time_to_success_s": 54.525999999999996,
+            "wall_clock_percentiles": {
+              "median": 57.8595,
+              "mean": 68.59228,
+              "p25": 49.14425,
+              "p75": 79.4785,
+              "p90": 101.6958
+            },
+            "tokens_total_mean": 187623.92,
+            "components": {
+              "verified_success": 0.92,
+              "hidden_test_score": 0.9166666666666667,
+              "regression_avoidance": 1.0,
+              "scope_control": 0.96
+            },
+            "work": {
+              "input_tokens": 12.72,
+              "output_tokens": 2066.78,
+              "wall_clock_seconds": 68.59228,
+              "api_calls": 6.56,
+              "tool_calls": 8.52,
+              "shell_commands": 2.14,
+              "test_runs": 0.94,
+              "file_reads": 4.88,
+              "file_edits": 1.5,
+              "retry_count": 1.08,
+              "review_passes": null
+            },
+            "cost_efficiency": 1.0,
+            "time_efficiency": 1.0,
+            "objective_score": 93.75000000000001,
+            "review_score": null,
+            "full_score": 93.75000000000001,
+            "work_index": 100.0,
+            "quality_per_dollar": 554.0913588787674,
+            "quality_per_minute": 82.00631324691352,
+            "quality_per_work_unit": 0.9375000000000001,
+            "rank": 1
+          }
+        },
+        "baseline": "claude-opus-4-8",
+        "best_cost_per_success_usd": 0.18390861413043477,
+        "best_median_time_to_success_s": 54.525999999999996,
+        "level1": {
+          "ranking": [
+            "claude-opus-4-8"
+          ],
+          "baseline": "claude-opus-4-8",
+          "improvements": []
+        },
+        "level2": {
+          "baseline": "claude-opus-4-8",
+          "work_index_components": [
+            "input_tokens",
+            "output_tokens",
+            "wall_clock_seconds",
+            "api_calls",
+            "tool_calls",
+            "shell_commands",
+            "test_runs",
+            "file_reads",
+            "file_edits",
+            "retry_count"
+          ],
+          "assessments": [],
+          "excluded": []
+        },
+        "cost_frontier": [
+          {
+            "model_id": "claude-opus-4-8",
+            "x": 0.18390861413043477,
+            "y": 0.92,
+            "on_frontier": true
+          }
+        ],
+        "latency_frontier": [
+          {
+            "model_id": "claude-opus-4-8",
+            "x": 54.525999999999996,
+            "y": 0.92,
+            "on_frontier": true
+          }
+        ]
+      }
+    },
+    "cross_mode": null,
+    "limitations": [
+      "Only Default Mode was run; Intrinsic vs Workflow-Equivalent gains cannot be distinguished without Equal-Budget, Matched-Workflow, or Strong-Spec modes.",
+      "Agentic Work Index components with no captured data in this run: review_passes (the index uses the remaining components)."
+    ]
+  },
+  "records": [
+    {
+      "run_id": "2026-06-15T05-21-11-305546-00-00_task-go_contract_01_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "go_contract_01",
+      "task_category": "cross_file_contract",
+      "hardness_level": "H2",
+      "known_llm_failure_mode": "miscounts_whitespace_runs_or_unicode_or_empty",
+      "repo": "go_cli",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T05:21:11.305546+00:00",
+        "completed_at": "2026-06-15T05:21:59.321087+00:00",
+        "wall_clock_seconds": 48.016,
+        "working_seconds": 47.889,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 10,
+        "output_tokens": 677,
+        "total_tokens": 138061,
+        "cache_read_tokens": 109420,
+        "cache_write_tokens": 27954,
+        "reasoning_tokens": 18,
+        "estimated_cost_usd": 0.2463975
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 5,
+        "lines_removed": 0,
+        "modified_files": [
+          "textkit.go"
+        ],
+        "api_calls": 5,
+        "tool_calls": 4,
+        "shell_commands": 1,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 2,
+        "file_edits": 1,
+        "retry_count": 0,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "glob": 1,
+          "read": 1,
+          "edit": 1,
+          "bash": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 5,
+        "lines_removed": 0,
+        "test_lines_changed": 0,
+        "code_lines_changed": 5,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 2,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 2
+        },
+        "hidden_tests": {
+          "passed": 5,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 5
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T05-22-01-413241-00-00_task-go_loc_01_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "go_loc_01",
+      "task_category": "multi_file_bug_localization",
+      "hardness_level": "H2",
+      "known_llm_failure_mode": "patches_tidy_symptom_instead_of_collapse_helper",
+      "repo": "go_cli",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T05:22:01.413241+00:00",
+        "completed_at": "2026-06-15T05:22:57.135207+00:00",
+        "wall_clock_seconds": 55.722,
+        "working_seconds": 55.162,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 12,
+        "output_tokens": 1140,
+        "total_tokens": 168549,
+        "cache_read_tokens": 164999,
+        "cache_write_tokens": 2398,
+        "reasoning_tokens": null,
+        "estimated_cost_usd": 0.126047
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 1,
+        "lines_removed": 1,
+        "modified_files": [
+          "normalize.go"
+        ],
+        "api_calls": 6,
+        "tool_calls": 6,
+        "shell_commands": 2,
+        "failed_shell_commands": 0,
+        "test_runs": 2,
+        "files_read": 3,
+        "file_edits": 1,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "grep": 2,
+          "read": 1,
+          "edit": 1,
+          "bash": 2
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 1,
+        "lines_removed": 1,
+        "test_lines_changed": 0,
+        "code_lines_changed": 2,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 2,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 2
+        },
+        "hidden_tests": {
+          "passed": 5,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 5
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T05-22-59-296685-00-00_task-go_task_001_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "go_task_001",
+      "task_category": "small_bug_fix",
+      "hardness_level": "H1",
+      "known_llm_failure_mode": "off_by_one_at_byte_boundary",
+      "repo": "go_cli",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T05:22:59.296685+00:00",
+        "completed_at": "2026-06-15T05:23:47.784101+00:00",
+        "wall_clock_seconds": 48.488,
+        "working_seconds": 47.89,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 11,
+        "output_tokens": 1181,
+        "total_tokens": 164096,
+        "cache_read_tokens": 161141,
+        "cache_write_tokens": 1763,
+        "reasoning_tokens": 128,
+        "estimated_cost_usd": 0.12116925
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 2,
+        "lines_removed": 5,
+        "modified_files": [
+          "textkit.go"
+        ],
+        "api_calls": 6,
+        "tool_calls": 5,
+        "shell_commands": 2,
+        "failed_shell_commands": 0,
+        "test_runs": 2,
+        "files_read": 1,
+        "file_edits": 2,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "read": 1,
+          "edit": 2,
+          "bash": 2
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 2,
+        "lines_removed": 5,
+        "test_lines_changed": 0,
+        "code_lines_changed": 7,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 3,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 3
+        },
+        "hidden_tests": {
+          "passed": 4,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 4
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T05-23-49-912265-00-00_task-go_task_002_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "go_task_002",
+      "task_category": "medium_feature",
+      "hardness_level": "H1",
+      "known_llm_failure_mode": "misses_unicode_or_empty_string_edge_cases",
+      "repo": "go_cli",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T05:23:49.912265+00:00",
+        "completed_at": "2026-06-15T05:24:36.729118+00:00",
+        "wall_clock_seconds": 46.817,
+        "working_seconds": 46.286,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 7,
+        "output_tokens": 1043,
+        "total_tokens": 108802,
+        "cache_read_tokens": 106265,
+        "cache_write_tokens": 1487,
+        "reasoning_tokens": 66,
+        "estimated_cost_usd": 0.08853625
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 9,
+        "lines_removed": 0,
+        "modified_files": [
+          "textkit.go"
+        ],
+        "api_calls": 4,
+        "tool_calls": 3,
+        "shell_commands": 1,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 1,
+        "file_edits": 1,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "read": 1,
+          "edit": 1,
+          "bash": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 9,
+        "lines_removed": 0,
+        "test_lines_changed": 0,
+        "code_lines_changed": 9,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 3,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 3
+        },
+        "hidden_tests": {
+          "passed": 4,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 4
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T05-24-38-302472-00-00_task-hard_task_001_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "hard_task_001",
+      "task_category": "security_fix",
+      "hardness_level": "H3",
+      "known_llm_failure_mode": "patches_controller_symptom_instead_of_policy_root_cause",
+      "repo": "saas",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T05:24:38.302472+00:00",
+        "completed_at": "2026-06-15T05:25:36.149115+00:00",
+        "wall_clock_seconds": 57.847,
+        "working_seconds": 57.242,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 12,
+        "output_tokens": 1515,
+        "total_tokens": 174060,
+        "cache_read_tokens": 167629,
+        "cache_write_tokens": 4904,
+        "reasoning_tokens": 30,
+        "estimated_cost_usd": 0.15239950000000002
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 3,
+        "lines_removed": 1,
+        "modified_files": [
+          "src/saasapp/policy.py"
+        ],
+        "api_calls": 6,
+        "tool_calls": 14,
+        "shell_commands": 1,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 12,
+        "file_edits": 1,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "read": 10,
+          "glob": 2,
+          "edit": 1,
+          "bash": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 3,
+        "lines_removed": 1,
+        "test_lines_changed": 0,
+        "code_lines_changed": 4,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 4,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 4
+        },
+        "hidden_tests": {
+          "passed": 5,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 5
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T05-25-37-877147-00-00_task-hard_task_002_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "hard_task_002",
+      "task_category": "state_machine",
+      "hardness_level": "H5",
+      "known_llm_failure_mode": "enum_or_transition_only_change_misses_enforcement_side_effects",
+      "repo": "saas",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T05:25:37.877147+00:00",
+        "completed_at": "2026-06-15T05:26:45.329562+00:00",
+        "wall_clock_seconds": 67.453,
+        "working_seconds": 66.707,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 16,
+        "output_tokens": 1863,
+        "total_tokens": 231612,
+        "cache_read_tokens": 223824,
+        "cache_write_tokens": 5909,
+        "reasoning_tokens": 167,
+        "estimated_cost_usd": 0.19549824999999998
+      },
+      "agent_behavior": {
+        "files_modified": 2,
+        "lines_added": 6,
+        "lines_removed": 2,
+        "modified_files": [
+          "src/saasapp/lifecycle.py",
+          "src/saasapp/service.py"
+        ],
+        "api_calls": 8,
+        "tool_calls": 14,
+        "shell_commands": 1,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 11,
+        "file_edits": 2,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "glob": 3,
+          "read": 8,
+          "edit": 2,
+          "bash": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 2,
+        "hunks": 2,
+        "lines_added": 6,
+        "lines_removed": 2,
+        "test_lines_changed": 0,
+        "code_lines_changed": 8,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 0.5,
+        "patch_entropy": 0.954434002924965
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 3,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 3
+        },
+        "hidden_tests": {
+          "passed": 5,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 5
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T05-26-47-470248-00-00_task-hard_task_003_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "hard_task_003",
+      "task_category": "multi_file_bug_localization",
+      "hardness_level": "H2",
+      "known_llm_failure_mode": "patches_symptom_in_service_not_shared_helper_root_cause",
+      "repo": "saas",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T05:26:47.470248+00:00",
+        "completed_at": "2026-06-15T05:27:39.230744+00:00",
+        "wall_clock_seconds": 51.761,
+        "working_seconds": 51.191,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 12,
+        "output_tokens": 1215,
+        "total_tokens": 169935,
+        "cache_read_tokens": 164828,
+        "cache_write_tokens": 3880,
+        "reasoning_tokens": 27,
+        "estimated_cost_usd": 0.13709899999999997
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 1,
+        "lines_removed": 2,
+        "modified_files": [
+          "src/saasapp/ownership.py"
+        ],
+        "api_calls": 6,
+        "tool_calls": 10,
+        "shell_commands": 2,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 7,
+        "file_edits": 1,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "bash": 2,
+          "read": 7,
+          "edit": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 1,
+        "lines_removed": 2,
+        "test_lines_changed": 0,
+        "code_lines_changed": 3,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 3,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 3
+        },
+        "hidden_tests": {
+          "passed": 4,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 4
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T05-27-41-244101-00-00_task-hard_task_004_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "hard_task_004",
+      "task_category": "concurrency_idempotency",
+      "hardness_level": "H5",
+      "known_llm_failure_mode": "check_then_act_or_unlocked_guard_under_concurrency",
+      "repo": "payments",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T05:27:41.244101+00:00",
+        "completed_at": "2026-06-15T05:28:45.992440+00:00",
+        "wall_clock_seconds": 64.749,
+        "working_seconds": 64.117,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 14,
+        "output_tokens": 1793,
+        "total_tokens": 197888,
+        "cache_read_tokens": 192247,
+        "cache_write_tokens": 3834,
+        "reasoning_tokens": 111,
+        "estimated_cost_usd": 0.16498100000000002
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 24,
+        "lines_removed": 6,
+        "modified_files": [
+          "src/payments/webhook.py"
+        ],
+        "api_calls": 7,
+        "tool_calls": 10,
+        "shell_commands": 3,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 6,
+        "file_edits": 1,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "read": 5,
+          "glob": 1,
+          "bash": 3,
+          "edit": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 24,
+        "lines_removed": 6,
+        "test_lines_changed": 0,
+        "code_lines_changed": 30,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 3,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 3
+        },
+        "hidden_tests": {
+          "passed": 4,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 4
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T05-28-48-367921-00-00_task-lc_retrieval_01_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "lc_retrieval_01",
+      "task_category": "long_context_retrieval",
+      "hardness_level": "H4",
+      "known_llm_failure_mode": "uses_draft_or_legacy_cutoff_instead_of_authoritative",
+      "repo": "long_context",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T05:28:48.367921+00:00",
+        "completed_at": "2026-06-15T05:30:30.835110+00:00",
+        "wall_clock_seconds": 102.468,
+        "working_seconds": 101.674,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 22,
+        "output_tokens": 4329,
+        "total_tokens": 352558,
+        "cache_read_tokens": 339469,
+        "cache_write_tokens": 8738,
+        "reasoning_tokens": 586,
+        "estimated_cost_usd": 0.33268200000000003
+      },
+      "agent_behavior": {
+        "files_modified": 0,
+        "lines_added": 0,
+        "lines_removed": 0,
+        "modified_files": [],
+        "api_calls": 11,
+        "tool_calls": 17,
+        "shell_commands": 9,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 7,
+        "file_edits": 1,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "bash": 9,
+          "read": 7,
+          "write": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 0,
+        "hunks": 0,
+        "lines_added": 0,
+        "lines_removed": 0,
+        "test_lines_changed": 0,
+        "code_lines_changed": 0,
+        "test_to_code_ratio": null,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 1,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 1
+        },
+        "hidden_tests": {
+          "passed": 4,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 4
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T05-30-33-387550-00-00_task-lc_retrieval_02_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "lc_retrieval_02",
+      "task_category": "long_context_retrieval",
+      "hardness_level": "H4",
+      "known_llm_failure_mode": "ignores_authoritative_exclusion_list",
+      "repo": "long_context",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T05:30:33.387550+00:00",
+        "completed_at": "2026-06-15T05:32:52.818744+00:00",
+        "wall_clock_seconds": 139.432,
+        "working_seconds": 138.094,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 24,
+        "output_tokens": 4704,
+        "total_tokens": 387097,
+        "cache_read_tokens": 372437,
+        "cache_write_tokens": 9932,
+        "reasoning_tokens": 596,
+        "estimated_cost_usd": 0.36601349999999994
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 1,
+        "lines_removed": 0,
+        "modified_files": [
+          "src/ledger.egg-info/SOURCES.txt"
+        ],
+        "api_calls": 12,
+        "tool_calls": 16,
+        "shell_commands": 8,
+        "failed_shell_commands": 1,
+        "test_runs": 1,
+        "files_read": 7,
+        "file_edits": 1,
+        "retry_count": 2,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "bash": 8,
+          "read": 7,
+          "write": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 1,
+        "lines_removed": 0,
+        "test_lines_changed": 0,
+        "code_lines_changed": 1,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 1,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 1
+        },
+        "hidden_tests": {
+          "passed": 3,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 3
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T05-32-54-547577-00-00_task-mk_contract_01_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "mk_contract_01",
+      "task_category": "cross_file_contract",
+      "hardness_level": "H2",
+      "known_llm_failure_mode": "breaks_backward_compatible_alias",
+      "repo": "python_package",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T05:32:54.547577+00:00",
+        "completed_at": "2026-06-15T05:33:38.790887+00:00",
+        "wall_clock_seconds": 44.244,
+        "working_seconds": 43.726,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 10,
+        "output_tokens": 631,
+        "total_tokens": 133489,
+        "cache_read_tokens": 131952,
+        "cache_write_tokens": 896,
+        "reasoning_tokens": 11,
+        "estimated_cost_usd": 0.087401
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 2,
+        "lines_removed": 2,
+        "modified_files": [
+          "src/mathkit/record.py"
+        ],
+        "api_calls": 5,
+        "tool_calls": 4,
+        "shell_commands": 1,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 2,
+        "file_edits": 1,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "grep": 1,
+          "read": 1,
+          "edit": 1,
+          "bash": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 2,
+        "lines_removed": 2,
+        "test_lines_changed": 0,
+        "code_lines_changed": 4,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 2,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 2
+        },
+        "hidden_tests": {
+          "passed": 4,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 4
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T05-33-40-542228-00-00_task-mk_invariant_01_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "mk_invariant_01",
+      "task_category": "hidden_invariant_preservation",
+      "hardness_level": "H3",
+      "known_llm_failure_mode": "applies_all_transactions_misses_overdraw_guard_and_atomicity",
+      "repo": "python_package",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T05:33:40.542228+00:00",
+        "completed_at": "2026-06-15T05:35:09.823748+00:00",
+        "wall_clock_seconds": 89.282,
+        "working_seconds": 88.578,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 18,
+        "output_tokens": 2216,
+        "total_tokens": 254979,
+        "cache_read_tokens": 248864,
+        "cache_write_tokens": 3881,
+        "reasoning_tokens": 174,
+        "estimated_cost_usd": 0.20417825
+      },
+      "agent_behavior": {
+        "files_modified": 0,
+        "lines_added": 0,
+        "lines_removed": 0,
+        "modified_files": [],
+        "api_calls": 9,
+        "tool_calls": 10,
+        "shell_commands": 3,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 5,
+        "file_edits": 2,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "bash": 3,
+          "read": 5,
+          "write": 2
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 0,
+        "hunks": 0,
+        "lines_added": 0,
+        "lines_removed": 0,
+        "test_lines_changed": 0,
+        "code_lines_changed": 0,
+        "test_to_code_ratio": null,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 2,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 2
+        },
+        "hidden_tests": {
+          "passed": 5,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 5
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T05-35-11-930519-00-00_task-mk_loc_01_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "mk_loc_01",
+      "task_category": "multi_file_bug_localization",
+      "hardness_level": "H2",
+      "known_llm_failure_mode": "patches_leaderboard_symptom_instead_of_scoring_helper",
+      "repo": "python_package",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T05:35:11.930519+00:00",
+        "completed_at": "2026-06-15T05:36:27.126908+00:00",
+        "wall_clock_seconds": 75.197,
+        "working_seconds": 74.618,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 12,
+        "output_tokens": 3232,
+        "total_tokens": 170858,
+        "cache_read_tokens": 163823,
+        "cache_write_tokens": 3791,
+        "reasoning_tokens": 550,
+        "estimated_cost_usd": 0.18646525
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 1,
+        "lines_removed": 2,
+        "modified_files": [
+          "src/mathkit/scoring.py"
+        ],
+        "api_calls": 6,
+        "tool_calls": 7,
+        "shell_commands": 3,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 3,
+        "file_edits": 1,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "bash": 3,
+          "read": 2,
+          "grep": 1,
+          "edit": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 1,
+        "lines_removed": 2,
+        "test_lines_changed": 0,
+        "code_lines_changed": 3,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 2,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 2
+        },
+        "hidden_tests": {
+          "passed": 4,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 4
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T05-36-29-494515-00-00_task-mk_minimal_01_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "mk_minimal_01",
+      "task_category": "minimal_diff_repair",
+      "hardness_level": "H2",
+      "known_llm_failure_mode": "naive_split_ignores_quotes_or_agent_rewrites_parser",
+      "repo": "python_package",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T05:36:29.494515+00:00",
+        "completed_at": "2026-06-15T05:37:27.788598+00:00",
+        "wall_clock_seconds": 58.295,
+        "working_seconds": 57.69,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 14,
+        "output_tokens": 1689,
+        "total_tokens": 194803,
+        "cache_read_tokens": 190244,
+        "cache_write_tokens": 2856,
+        "reasoning_tokens": 25,
+        "estimated_cost_usd": 0.155267
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 47,
+        "lines_removed": 4,
+        "modified_files": [
+          "src/mathkit/csvlite.py"
+        ],
+        "api_calls": 7,
+        "tool_calls": 8,
+        "shell_commands": 2,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 5,
+        "file_edits": 1,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "glob": 2,
+          "read": 3,
+          "edit": 1,
+          "bash": 2
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 47,
+        "lines_removed": 4,
+        "test_lines_changed": 0,
+        "code_lines_changed": 51,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 0.5,
+        "public_tests": {
+          "passed": 2,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 2
+        },
+        "hidden_tests": {
+          "passed": 8,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 8
+        },
+        "scope_violations": [
+          "too_many_lines:51>30"
+        ],
+        "partial_objective_score": 97.22222222222221
+      }
+    },
+    {
+      "run_id": "2026-06-15T05-37-29-672706-00-00_task-pay_authz_01_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "pay_authz_01",
+      "task_category": "security_fix",
+      "hardness_level": "H3",
+      "known_llm_failure_mode": "trusts_unsigned_payload_or_uses_non_constant_time_or_wrong_payload",
+      "repo": "payments",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T05:37:29.672706+00:00",
+        "completed_at": "2026-06-15T05:38:57.433568+00:00",
+        "wall_clock_seconds": 87.762,
+        "working_seconds": 87.107,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [
+        "hidden_tests_failed",
+        "incomplete_implementation",
+        "public_tests_failed"
+      ],
+      "usage": {
+        "input_tokens": 14,
+        "output_tokens": 4409,
+        "total_tokens": 205562,
+        "cache_read_tokens": 195177,
+        "cache_write_tokens": 5962,
+        "reasoning_tokens": 225,
+        "estimated_cost_usd": 0.245146
+      },
+      "agent_behavior": {
+        "files_modified": 0,
+        "lines_added": 0,
+        "lines_removed": 0,
+        "modified_files": [],
+        "api_calls": 7,
+        "tool_calls": 14,
+        "shell_commands": 1,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 11,
+        "file_edits": 2,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "glob": 2,
+          "read": 9,
+          "write": 2,
+          "bash": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 0,
+        "hunks": 0,
+        "lines_added": 0,
+        "lines_removed": 0,
+        "test_lines_changed": 0,
+        "code_lines_changed": 0,
+        "test_to_code_ratio": null,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": false,
+        "hidden_test_score": 0.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 0,
+          "failed": 0,
+          "error": 2,
+          "skipped": 0,
+          "total": 2
+        },
+        "hidden_tests": {
+          "passed": 0,
+          "failed": 0,
+          "error": 2,
+          "skipped": 0,
+          "total": 2
+        },
+        "scope_violations": [],
+        "partial_objective_score": 16.666666666666668
+      }
+    },
+    {
+      "run_id": "2026-06-15T05-38-59-843081-00-00_task-pay_concurrency_01_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "pay_concurrency_01",
+      "task_category": "concurrency_idempotency",
+      "hardness_level": "H5",
+      "known_llm_failure_mode": "unlocked_read_modify_write_loses_concurrent_updates",
+      "repo": "payments",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T05:38:59.843081+00:00",
+        "completed_at": "2026-06-15T05:39:52.358486+00:00",
+        "wall_clock_seconds": 52.516,
+        "working_seconds": 51.975,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 10,
+        "output_tokens": 1546,
+        "total_tokens": 138649,
+        "cache_read_tokens": 134698,
+        "cache_write_tokens": 2395,
+        "reasoning_tokens": 103,
+        "estimated_cost_usd": 0.12101775
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 23,
+        "lines_removed": 5,
+        "modified_files": [
+          "src/payments/wallet.py"
+        ],
+        "api_calls": 5,
+        "tool_calls": 6,
+        "shell_commands": 1,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 4,
+        "file_edits": 1,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "glob": 2,
+          "read": 2,
+          "edit": 1,
+          "bash": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 2,
+        "lines_added": 23,
+        "lines_removed": 5,
+        "test_lines_changed": 0,
+        "code_lines_changed": 28,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 2,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 2
+        },
+        "hidden_tests": {
+          "passed": 4,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 4
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T05-39-54-846878-00-00_task-pay_concurrency_02_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "pay_concurrency_02",
+      "task_category": "concurrency_idempotency",
+      "hardness_level": "H5",
+      "known_llm_failure_mode": "unlocked_counter_returns_duplicate_ids",
+      "repo": "payments",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T05:39:54.846878+00:00",
+        "completed_at": "2026-06-15T05:40:41.215412+00:00",
+        "wall_clock_seconds": 46.369,
+        "working_seconds": 45.786,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 10,
+        "output_tokens": 1346,
+        "total_tokens": 136738,
+        "cache_read_tokens": 133667,
+        "cache_write_tokens": 1715,
+        "reasoning_tokens": 91,
+        "estimated_cost_usd": 0.11125225
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 10,
+        "lines_removed": 6,
+        "modified_files": [
+          "src/payments/sequence.py"
+        ],
+        "api_calls": 5,
+        "tool_calls": 5,
+        "shell_commands": 1,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 3,
+        "file_edits": 1,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "grep": 1,
+          "glob": 1,
+          "read": 1,
+          "edit": 1,
+          "bash": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 10,
+        "lines_removed": 6,
+        "test_lines_changed": 0,
+        "code_lines_changed": 16,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 2,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 2
+        },
+        "hidden_tests": {
+          "passed": 3,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 3
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T05-40-42-792210-00-00_task-pay_invariant_01_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "pay_invariant_01",
+      "task_category": "hidden_invariant_preservation",
+      "hardness_level": "H3",
+      "known_llm_failure_mode": "handles_single_refund_misses_cumulative_over_refund_invariant",
+      "repo": "payments",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T05:40:42.792210+00:00",
+        "completed_at": "2026-06-15T05:42:19.988924+00:00",
+        "wall_clock_seconds": 97.197,
+        "working_seconds": 96.567,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [
+        "hidden_tests_failed",
+        "public_tests_failed"
+      ],
+      "usage": {
+        "input_tokens": 16,
+        "output_tokens": 4367,
+        "total_tokens": 239340,
+        "cache_read_tokens": 228503,
+        "cache_write_tokens": 6454,
+        "reasoning_tokens": 261,
+        "estimated_cost_usd": 0.26384399999999997
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 3,
+        "lines_removed": 1,
+        "modified_files": [
+          "src/payments.egg-info/SOURCES.txt"
+        ],
+        "api_calls": 8,
+        "tool_calls": 14,
+        "shell_commands": 5,
+        "failed_shell_commands": 0,
+        "test_runs": 2,
+        "files_read": 7,
+        "file_edits": 2,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "bash": 5,
+          "read": 7,
+          "write": 2
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 2,
+        "lines_added": 3,
+        "lines_removed": 1,
+        "test_lines_changed": 0,
+        "code_lines_changed": 4,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": false,
+        "hidden_test_score": 0.16666666666666666,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 1,
+          "failed": 1,
+          "error": 0,
+          "skipped": 0,
+          "total": 2
+        },
+        "hidden_tests": {
+          "passed": 1,
+          "failed": 5,
+          "error": 0,
+          "skipped": 0,
+          "total": 6
+        },
+        "scope_violations": [],
+        "partial_objective_score": 19.444444444444443
+      }
+    },
+    {
+      "run_id": "2026-06-15T05-42-21-880720-00-00_task-pay_loc_01_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "pay_loc_01",
+      "task_category": "multi_file_bug_localization",
+      "hardness_level": "H2",
+      "known_llm_failure_mode": "patches_reporting_symptom_instead_of_aggregate_helper",
+      "repo": "payments",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T05:42:21.880720+00:00",
+        "completed_at": "2026-06-15T05:43:08.470767+00:00",
+        "wall_clock_seconds": 46.59,
+        "working_seconds": 46.069,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 12,
+        "output_tokens": 1003,
+        "total_tokens": 164625,
+        "cache_read_tokens": 161371,
+        "cache_write_tokens": 2239,
+        "reasoning_tokens": 28,
+        "estimated_cost_usd": 0.11981425
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 1,
+        "lines_removed": 2,
+        "modified_files": [
+          "src/payments/aggregate.py"
+        ],
+        "api_calls": 6,
+        "tool_calls": 9,
+        "shell_commands": 1,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 7,
+        "file_edits": 1,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "glob": 1,
+          "read": 6,
+          "edit": 1,
+          "bash": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 1,
+        "lines_removed": 2,
+        "test_lines_changed": 0,
+        "code_lines_changed": 3,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 1,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 1
+        },
+        "hidden_tests": {
+          "passed": 4,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 4
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T05-43-10-629528-00-00_task-pay_minimal_01_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "pay_minimal_01",
+      "task_category": "minimal_diff_repair",
+      "hardness_level": "H2",
+      "known_llm_failure_mode": "off_by_one_denominator_or_agent_rewrites",
+      "repo": "payments",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T05:43:10.629528+00:00",
+        "completed_at": "2026-06-15T05:44:01.993815+00:00",
+        "wall_clock_seconds": 51.365,
+        "working_seconds": 50.817,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 12,
+        "output_tokens": 736,
+        "total_tokens": 161509,
+        "cache_read_tokens": 159561,
+        "cache_write_tokens": 1200,
+        "reasoning_tokens": 56,
+        "estimated_cost_usd": 0.10574050000000002
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 1,
+        "lines_removed": 1,
+        "modified_files": [
+          "src/payments/proration.py"
+        ],
+        "api_calls": 6,
+        "tool_calls": 5,
+        "shell_commands": 1,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 2,
+        "file_edits": 2,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "grep": 1,
+          "edit": 2,
+          "read": 1,
+          "bash": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 1,
+        "lines_removed": 1,
+        "test_lines_changed": 0,
+        "code_lines_changed": 2,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 2,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 2
+        },
+        "hidden_tests": {
+          "passed": 4,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 4
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T05-44-03-526553-00-00_task-pay_state_01_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "pay_state_01",
+      "task_category": "state_machine",
+      "hardness_level": "H5",
+      "known_llm_failure_mode": "allows_illegal_transition_or_misses_terminal_state",
+      "repo": "payments",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T05:44:03.526553+00:00",
+        "completed_at": "2026-06-15T05:45:28.988937+00:00",
+        "wall_clock_seconds": 85.463,
+        "working_seconds": 84.711,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [
+        "hidden_tests_failed",
+        "incomplete_implementation",
+        "public_tests_failed"
+      ],
+      "usage": {
+        "input_tokens": 16,
+        "output_tokens": 3139,
+        "total_tokens": 233024,
+        "cache_read_tokens": 224671,
+        "cache_write_tokens": 5198,
+        "reasoning_tokens": 196,
+        "estimated_cost_usd": 0.223378
+      },
+      "agent_behavior": {
+        "files_modified": 0,
+        "lines_added": 0,
+        "lines_removed": 0,
+        "modified_files": [],
+        "api_calls": 8,
+        "tool_calls": 14,
+        "shell_commands": 3,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 10,
+        "file_edits": 1,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "bash": 3,
+          "read": 10,
+          "write": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 0,
+        "hunks": 0,
+        "lines_added": 0,
+        "lines_removed": 0,
+        "test_lines_changed": 0,
+        "code_lines_changed": 0,
+        "test_to_code_ratio": null,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": false,
+        "hidden_test_score": 0.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 0,
+          "failed": 0,
+          "error": 2,
+          "skipped": 0,
+          "total": 2
+        },
+        "hidden_tests": {
+          "passed": 0,
+          "failed": 0,
+          "error": 2,
+          "skipped": 0,
+          "total": 2
+        },
+        "scope_violations": [],
+        "partial_objective_score": 16.666666666666668
+      }
+    },
+    {
+      "run_id": "2026-06-15T05-45-31-149902-00-00_task-pay_state_02_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "pay_state_02",
+      "task_category": "state_machine",
+      "hardness_level": "H5",
+      "known_llm_failure_mode": "allows_illegal_billing_transition_or_revives_canceled",
+      "repo": "payments",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T05:45:31.149902+00:00",
+        "completed_at": "2026-06-15T05:46:16.937579+00:00",
+        "wall_clock_seconds": 45.788,
+        "working_seconds": 45.164,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 10,
+        "output_tokens": 1051,
+        "total_tokens": 135787,
+        "cache_read_tokens": 133280,
+        "cache_write_tokens": 1446,
+        "reasoning_tokens": 18,
+        "estimated_cost_usd": 0.1020025
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 3,
+        "lines_removed": 1,
+        "modified_files": [
+          "src/payments/billing_state.py"
+        ],
+        "api_calls": 5,
+        "tool_calls": 4,
+        "shell_commands": 1,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 2,
+        "file_edits": 1,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "grep": 1,
+          "read": 1,
+          "edit": 1,
+          "bash": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 3,
+        "lines_removed": 1,
+        "test_lines_changed": 0,
+        "code_lines_changed": 4,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 2,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 2
+        },
+        "hidden_tests": {
+          "passed": 5,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 5
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T05-46-19-463521-00-00_task-saas_authz_01_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "saas_authz_01",
+      "task_category": "security_fix",
+      "hardness_level": "H3",
+      "known_llm_failure_mode": "share_token_skips_tenant_check_cross_tenant_leak",
+      "repo": "saas",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T05:46:19.463521+00:00",
+        "completed_at": "2026-06-15T05:47:11.509996+00:00",
+        "wall_clock_seconds": 52.047,
+        "working_seconds": 51.456,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 14,
+        "output_tokens": 1368,
+        "total_tokens": 199133,
+        "cache_read_tokens": 193519,
+        "cache_write_tokens": 4232,
+        "reasoning_tokens": 78,
+        "estimated_cost_usd": 0.1574795
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 7,
+        "lines_removed": 2,
+        "modified_files": [
+          "src/saasapp/sharing.py"
+        ],
+        "api_calls": 7,
+        "tool_calls": 10,
+        "shell_commands": 2,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 7,
+        "file_edits": 1,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "grep": 1,
+          "bash": 2,
+          "read": 6,
+          "edit": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 7,
+        "lines_removed": 2,
+        "test_lines_changed": 0,
+        "code_lines_changed": 9,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 2,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 2
+        },
+        "hidden_tests": {
+          "passed": 4,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 4
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T05-47-14-017916-00-00_task-saas_concurrency_01_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "saas_concurrency_01",
+      "task_category": "concurrency_idempotency",
+      "hardness_level": "H5",
+      "known_llm_failure_mode": "unlocked_check_then_act_exceeds_seat_limit",
+      "repo": "saas",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T05:47:14.017916+00:00",
+        "completed_at": "2026-06-15T05:48:05.194251+00:00",
+        "wall_clock_seconds": 51.113,
+        "working_seconds": 50.606,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 10,
+        "output_tokens": 1796,
+        "total_tokens": 138986,
+        "cache_read_tokens": 134772,
+        "cache_write_tokens": 2408,
+        "reasoning_tokens": 88,
+        "estimated_cost_usd": 0.127386
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 22,
+        "lines_removed": 9,
+        "modified_files": [
+          "src/saasapp/provisioning.py"
+        ],
+        "api_calls": 5,
+        "tool_calls": 6,
+        "shell_commands": 1,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 3,
+        "file_edits": 2,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "grep": 1,
+          "glob": 1,
+          "read": 1,
+          "edit": 2,
+          "bash": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 2,
+        "lines_added": 22,
+        "lines_removed": 9,
+        "test_lines_changed": 0,
+        "code_lines_changed": 31,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 0.5,
+        "public_tests": {
+          "passed": 2,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 2
+        },
+        "hidden_tests": {
+          "passed": 4,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 4
+        },
+        "scope_violations": [
+          "too_many_lines:31>25"
+        ],
+        "partial_objective_score": 97.22222222222221
+      }
+    },
+    {
+      "run_id": "2026-06-15T05-48-06-776892-00-00_task-saas_contract_01_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "saas_contract_01",
+      "task_category": "cross_file_contract",
+      "hardness_level": "H2",
+      "known_llm_failure_mode": "updates_one_layer_misses_other_or_breaks_back_compat",
+      "repo": "saas",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T05:48:06.776892+00:00",
+        "completed_at": "2026-06-15T05:49:10.356031+00:00",
+        "wall_clock_seconds": 63.579,
+        "working_seconds": 62.987,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 10,
+        "output_tokens": 1633,
+        "total_tokens": 148317,
+        "cache_read_tokens": 141192,
+        "cache_write_tokens": 5482,
+        "reasoning_tokens": 32,
+        "estimated_cost_usd": 0.1457335
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 7,
+        "lines_removed": 1,
+        "modified_files": [
+          "src/saasapp/api.py"
+        ],
+        "api_calls": 5,
+        "tool_calls": 10,
+        "shell_commands": 1,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 7,
+        "file_edits": 2,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "glob": 2,
+          "read": 5,
+          "write": 1,
+          "edit": 1,
+          "bash": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 2,
+        "lines_added": 7,
+        "lines_removed": 1,
+        "test_lines_changed": 0,
+        "code_lines_changed": 8,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 2,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 2
+        },
+        "hidden_tests": {
+          "passed": 5,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 5
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T05-49-12-744124-00-00_task-saas_invariant_01_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "saas_invariant_01",
+      "task_category": "hidden_invariant_preservation",
+      "hardness_level": "H3",
+      "known_llm_failure_mode": "counts_assignments_but_misses_quota_or_idempotency",
+      "repo": "saas",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T05:49:12.744124+00:00",
+        "completed_at": "2026-06-15T05:52:23.169298+00:00",
+        "wall_clock_seconds": 190.424,
+        "working_seconds": 189.694,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [
+        "hidden_tests_failed",
+        "overbroad_edit",
+        "public_tests_failed"
+      ],
+      "usage": {
+        "input_tokens": 22,
+        "output_tokens": 10809,
+        "total_tokens": 376442,
+        "cache_read_tokens": 350855,
+        "cache_write_tokens": 14756,
+        "reasoning_tokens": 1282,
+        "estimated_cost_usd": 0.5379875000000001
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 41,
+        "lines_removed": 5,
+        "modified_files": [
+          "src/saasapp/provisioning.py"
+        ],
+        "api_calls": 11,
+        "tool_calls": 17,
+        "shell_commands": 7,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 9,
+        "file_edits": 1,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "bash": 7,
+          "glob": 1,
+          "read": 8,
+          "write": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 2,
+        "lines_added": 41,
+        "lines_removed": 5,
+        "test_lines_changed": 0,
+        "code_lines_changed": 46,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": false,
+        "hidden_test_score": 0.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 0.5,
+        "public_tests": {
+          "passed": 0,
+          "failed": 0,
+          "error": 2,
+          "skipped": 0,
+          "total": 2
+        },
+        "hidden_tests": {
+          "passed": 0,
+          "failed": 0,
+          "error": 2,
+          "skipped": 0,
+          "total": 2
+        },
+        "scope_violations": [
+          "too_many_lines:46>40"
+        ],
+        "partial_objective_score": 13.88888888888889
+      }
+    },
+    {
+      "run_id": "2026-06-15T05-52-25-359843-00-00_task-saas_loc_01_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "saas_loc_01",
+      "task_category": "multi_file_bug_localization",
+      "hardness_level": "H2",
+      "known_llm_failure_mode": "patches_dashboard_symptom_instead_of_usage_helper",
+      "repo": "saas",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T05:52:25.359843+00:00",
+        "completed_at": "2026-06-15T05:53:41.351052+00:00",
+        "wall_clock_seconds": 75.991,
+        "working_seconds": 74.355,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 14,
+        "output_tokens": 1538,
+        "total_tokens": 198964,
+        "cache_read_tokens": 193770,
+        "cache_write_tokens": 3642,
+        "reasoning_tokens": 192,
+        "estimated_cost_usd": 0.1581675
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 5,
+        "lines_removed": 2,
+        "modified_files": [
+          "src/saasapp/usage.py"
+        ],
+        "api_calls": 7,
+        "tool_calls": 9,
+        "shell_commands": 1,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 7,
+        "file_edits": 1,
+        "retry_count": 2,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "grep": 1,
+          "glob": 2,
+          "read": 4,
+          "edit": 1,
+          "bash": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 5,
+        "lines_removed": 2,
+        "test_lines_changed": 0,
+        "code_lines_changed": 7,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 1,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 1
+        },
+        "hidden_tests": {
+          "passed": 4,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 4
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T05-53-43-266418-00-00_task-saas_state_01_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "saas_state_01",
+      "task_category": "state_machine",
+      "hardness_level": "H5",
+      "known_llm_failure_mode": "adds_state_but_misses_transition_guard_or_audit",
+      "repo": "saas",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T05:53:43.266418+00:00",
+        "completed_at": "2026-06-15T05:54:46.906836+00:00",
+        "wall_clock_seconds": 63.64,
+        "working_seconds": 63.04,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 12,
+        "output_tokens": 1114,
+        "total_tokens": 166064,
+        "cache_read_tokens": 162282,
+        "cache_write_tokens": 2656,
+        "reasoning_tokens": 74,
+        "estimated_cost_usd": 0.125651
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 3,
+        "lines_removed": 0,
+        "modified_files": [
+          "src/saasapp/lifecycle.py"
+        ],
+        "api_calls": 6,
+        "tool_calls": 6,
+        "shell_commands": 1,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 4,
+        "file_edits": 1,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "glob": 2,
+          "read": 2,
+          "edit": 1,
+          "bash": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 3,
+        "lines_removed": 0,
+        "test_lines_changed": 0,
+        "code_lines_changed": 3,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 2,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 2
+        },
+        "hidden_tests": {
+          "passed": 5,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 5
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T05-54-49-225295-00-00_task-saas_state_02_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "saas_state_02",
+      "task_category": "state_machine",
+      "hardness_level": "H5",
+      "known_llm_failure_mode": "allows_illegal_plan_transition",
+      "repo": "saas",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T05:54:49.225295+00:00",
+        "completed_at": "2026-06-15T05:55:40.422254+00:00",
+        "wall_clock_seconds": 51.197,
+        "working_seconds": 50.483,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 10,
+        "output_tokens": 985,
+        "total_tokens": 138441,
+        "cache_read_tokens": 135127,
+        "cache_write_tokens": 2319,
+        "reasoning_tokens": null,
+        "estimated_cost_usd": 0.10673225
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 3,
+        "lines_removed": 1,
+        "modified_files": [
+          "src/saasapp/subscription.py"
+        ],
+        "api_calls": 5,
+        "tool_calls": 6,
+        "shell_commands": 1,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 4,
+        "file_edits": 1,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "glob": 2,
+          "read": 2,
+          "edit": 1,
+          "bash": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 3,
+        "lines_removed": 1,
+        "test_lines_changed": 0,
+        "code_lines_changed": 4,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 2,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 2
+        },
+        "hidden_tests": {
+          "passed": 5,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 5
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T05-55-42-648254-00-00_task-task_001_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "task_001",
+      "task_category": "small_bug_fix",
+      "hardness_level": "H1",
+      "known_llm_failure_mode": "misses_even_length_median_or_empty_input",
+      "repo": "python_package",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T05:55:42.648254+00:00",
+        "completed_at": "2026-06-15T05:56:27.250668+00:00",
+        "wall_clock_seconds": 44.602,
+        "working_seconds": 44.007,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 7,
+        "output_tokens": 1198,
+        "total_tokens": 110286,
+        "cache_read_tokens": 107093,
+        "cache_write_tokens": 1988,
+        "reasoning_tokens": null,
+        "estimated_cost_usd": 0.0959565
+      },
+      "agent_behavior": {
+        "files_modified": 2,
+        "lines_added": 14,
+        "lines_removed": 2,
+        "modified_files": [
+          "src/mathkit/__init__.py",
+          "src/mathkit/stats.py"
+        ],
+        "api_calls": 4,
+        "tool_calls": 5,
+        "shell_commands": 1,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 2,
+        "file_edits": 2,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "read": 2,
+          "edit": 2,
+          "bash": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 2,
+        "hunks": 2,
+        "lines_added": 14,
+        "lines_removed": 2,
+        "test_lines_changed": 0,
+        "code_lines_changed": 16,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 0.5,
+        "patch_entropy": 0.8112781244591328
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 4,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 4
+        },
+        "hidden_tests": {
+          "passed": 5,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 5
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T05-56-29-740389-00-00_task-task_002_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "task_002",
+      "task_category": "small_bug_fix",
+      "hardness_level": "H1",
+      "known_llm_failure_mode": "off_by_one_drops_final_partial_chunk",
+      "repo": "python_package",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T05:56:29.740389+00:00",
+        "completed_at": "2026-06-15T05:57:08.542902+00:00",
+        "wall_clock_seconds": 38.802,
+        "working_seconds": 37.813,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 7,
+        "output_tokens": 862,
+        "total_tokens": 108623,
+        "cache_read_tokens": 106422,
+        "cache_write_tokens": 1332,
+        "reasoning_tokens": null,
+        "estimated_cost_usd": 0.083121
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 1,
+        "lines_removed": 2,
+        "modified_files": [
+          "src/mathkit/sequences.py"
+        ],
+        "api_calls": 4,
+        "tool_calls": 3,
+        "shell_commands": 1,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 1,
+        "file_edits": 1,
+        "retry_count": 2,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "read": 1,
+          "edit": 1,
+          "bash": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 1,
+        "lines_removed": 2,
+        "test_lines_changed": 0,
+        "code_lines_changed": 3,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 3,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 3
+        },
+        "hidden_tests": {
+          "passed": 4,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 4
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T05-57-10-723458-00-00_task-task_003_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "task_003",
+      "task_category": "medium_feature",
+      "hardness_level": "H1",
+      "known_llm_failure_mode": "misses_unicode_or_collapse_edge_cases",
+      "repo": "python_package",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T05:57:10.723458+00:00",
+        "completed_at": "2026-06-15T05:57:55.758860+00:00",
+        "wall_clock_seconds": 45.035,
+        "working_seconds": 44.526,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 9,
+        "output_tokens": 1331,
+        "total_tokens": 137294,
+        "cache_read_tokens": 133805,
+        "cache_write_tokens": 2149,
+        "reasoning_tokens": null,
+        "estimated_cost_usd": 0.11365375
+      },
+      "agent_behavior": {
+        "files_modified": 2,
+        "lines_added": 13,
+        "lines_removed": 6,
+        "modified_files": [
+          "src/mathkit/__init__.py",
+          "src/mathkit/text.py"
+        ],
+        "api_calls": 5,
+        "tool_calls": 7,
+        "shell_commands": 1,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 4,
+        "file_edits": 2,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "read": 4,
+          "edit": 2,
+          "bash": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 2,
+        "hunks": 2,
+        "lines_added": 13,
+        "lines_removed": 6,
+        "test_lines_changed": 0,
+        "code_lines_changed": 19,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 0.5,
+        "patch_entropy": 0.7424875695421236
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 4,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 4
+        },
+        "hidden_tests": {
+          "passed": 5,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 5
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T05-57-57-453879-00-00_task-task_004_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "task_004",
+      "task_category": "multi_file_refactor",
+      "hardness_level": "H2",
+      "known_llm_failure_mode": "duplicates_logic_instead_of_sharing_helper",
+      "repo": "python_package",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T05:57:57.453879+00:00",
+        "completed_at": "2026-06-15T05:59:05.352137+00:00",
+        "wall_clock_seconds": 67.898,
+        "working_seconds": 67.221,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 15,
+        "output_tokens": 1565,
+        "total_tokens": 220324,
+        "cache_read_tokens": 216252,
+        "cache_write_tokens": 2492,
+        "reasoning_tokens": 150,
+        "estimated_cost_usd": 0.162901
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 4,
+        "lines_removed": 4,
+        "modified_files": [
+          "src/mathkit/stats.py"
+        ],
+        "api_calls": 8,
+        "tool_calls": 7,
+        "shell_commands": 2,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 3,
+        "file_edits": 2,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "read": 3,
+          "bash": 2,
+          "write": 1,
+          "edit": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 4,
+        "lines_removed": 4,
+        "test_lines_changed": 0,
+        "code_lines_changed": 8,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 4,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 4
+        },
+        "hidden_tests": {
+          "passed": 5,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 5
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T05-59-07-180227-00-00_task-task_005_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "task_005",
+      "task_category": "security_fix",
+      "hardness_level": "H3",
+      "known_llm_failure_mode": "blocks_visible_exploit_only_misses_encoded_bypass",
+      "repo": "python_package",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T05:59:07.180227+00:00",
+        "completed_at": "2026-06-15T05:59:52.405928+00:00",
+        "wall_clock_seconds": 45.225,
+        "working_seconds": 44.598,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 9,
+        "output_tokens": 1187,
+        "total_tokens": 137106,
+        "cache_read_tokens": 133962,
+        "cache_write_tokens": 1948,
+        "reasoning_tokens": null,
+        "estimated_cost_usd": 0.108876
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 9,
+        "lines_removed": 3,
+        "modified_files": [
+          "src/mathkit/io.py"
+        ],
+        "api_calls": 5,
+        "tool_calls": 6,
+        "shell_commands": 1,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 4,
+        "file_edits": 1,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "read": 3,
+          "glob": 1,
+          "edit": 1,
+          "bash": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 9,
+        "lines_removed": 3,
+        "test_lines_changed": 0,
+        "code_lines_changed": 12,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 3,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 3
+        },
+        "hidden_tests": {
+          "passed": 4,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 4
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T05-59-54-283114-00-00_task-task_006_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "task_006",
+      "task_category": "test_writing",
+      "hardness_level": "H1",
+      "known_llm_failure_mode": "weak_tests_miss_planted_mutants",
+      "repo": "python_package",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T05:59:54.283114+00:00",
+        "completed_at": "2026-06-15T06:00:58.783698+00:00",
+        "wall_clock_seconds": 64.5,
+        "working_seconds": 63.903,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 11,
+        "output_tokens": 1637,
+        "total_tokens": 163780,
+        "cache_read_tokens": 160218,
+        "cache_write_tokens": 1914,
+        "reasoning_tokens": 54,
+        "estimated_cost_usd": 0.1330515
+      },
+      "agent_behavior": {
+        "files_modified": 0,
+        "lines_added": 0,
+        "lines_removed": 0,
+        "modified_files": [],
+        "api_calls": 6,
+        "tool_calls": 5,
+        "shell_commands": 2,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 2,
+        "file_edits": 1,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "read": 2,
+          "bash": 2,
+          "write": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 0,
+        "hunks": 0,
+        "lines_added": 0,
+        "lines_removed": 0,
+        "test_lines_changed": 0,
+        "code_lines_changed": 0,
+        "test_to_code_ratio": null,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 1,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 1
+        },
+        "hidden_tests": {
+          "passed": 3,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 3
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T06-01-00-865343-00-00_task-task_007_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "task_007",
+      "task_category": "long_horizon",
+      "hardness_level": "H2",
+      "known_llm_failure_mode": "incomplete_multi_function_implementation",
+      "repo": "python_package",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T06:01:00.865343+00:00",
+        "completed_at": "2026-06-15T06:02:42.123461+00:00",
+        "wall_clock_seconds": 101.257,
+        "working_seconds": 100.527,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 17,
+        "output_tokens": 2934,
+        "total_tokens": 265055,
+        "cache_read_tokens": 256563,
+        "cache_write_tokens": 5541,
+        "reasoning_tokens": 153,
+        "estimated_cost_usd": 0.23634775000000002
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 12,
+        "lines_removed": 1,
+        "modified_files": [
+          "src/mathkit/__init__.py"
+        ],
+        "api_calls": 9,
+        "tool_calls": 12,
+        "shell_commands": 1,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 8,
+        "file_edits": 3,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "glob": 1,
+          "read": 7,
+          "write": 2,
+          "edit": 1,
+          "bash": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 12,
+        "lines_removed": 1,
+        "test_lines_changed": 0,
+        "code_lines_changed": 13,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 4,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 4
+        },
+        "hidden_tests": {
+          "passed": 6,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 6
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T06-02-43-979607-00-00_task-task_008_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "task_008",
+      "task_category": "dependency_migration",
+      "hardness_level": "H2",
+      "known_llm_failure_mode": "upgrades_unrelated_or_breaks_existing_callers",
+      "repo": "python_package",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T06:02:43.979607+00:00",
+        "completed_at": "2026-06-15T06:03:35.194536+00:00",
+        "wall_clock_seconds": 51.215,
+        "working_seconds": 50.203,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 9,
+        "output_tokens": 1190,
+        "total_tokens": 138722,
+        "cache_read_tokens": 135063,
+        "cache_write_tokens": 2460,
+        "reasoning_tokens": null,
+        "estimated_cost_usd": 0.11270150000000001
+      },
+      "agent_behavior": {
+        "files_modified": 2,
+        "lines_added": 3,
+        "lines_removed": 11,
+        "modified_files": [
+          "src/mathkit/legacy.py",
+          "src/mathkit/report.py"
+        ],
+        "api_calls": 5,
+        "tool_calls": 7,
+        "shell_commands": 1,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 4,
+        "file_edits": 2,
+        "retry_count": 2,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "read": 3,
+          "grep": 1,
+          "edit": 2,
+          "bash": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 2,
+        "hunks": 2,
+        "lines_added": 3,
+        "lines_removed": 11,
+        "test_lines_changed": 0,
+        "code_lines_changed": 14,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 0.5,
+        "patch_entropy": 0.863120568566631
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 0.6666666666666666,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 2,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 2
+        },
+        "hidden_tests": {
+          "passed": 2,
+          "failed": 1,
+          "error": 0,
+          "skipped": 0,
+          "total": 3
+        },
+        "scope_violations": [],
+        "partial_objective_score": 94.44444444444444
+      }
+    },
+    {
+      "run_id": "2026-06-15T06-03-37-236060-00-00_task-task_009_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "task_009",
+      "task_category": "medium_feature",
+      "hardness_level": "H4",
+      "known_llm_failure_mode": "ignores_authoritative_source_in_long_context",
+      "repo": "long_context",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T06:03:37.236060+00:00",
+        "completed_at": "2026-06-15T06:05:37.085310+00:00",
+        "wall_clock_seconds": 119.849,
+        "working_seconds": 119.049,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 19,
+        "output_tokens": 4779,
+        "total_tokens": 325558,
+        "cache_read_tokens": 310365,
+        "cache_write_tokens": 10395,
+        "reasoning_tokens": 596,
+        "estimated_cost_usd": 0.33972125
+      },
+      "agent_behavior": {
+        "files_modified": 0,
+        "lines_added": 0,
+        "lines_removed": 0,
+        "modified_files": [],
+        "api_calls": 10,
+        "tool_calls": 16,
+        "shell_commands": 9,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 6,
+        "file_edits": 1,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "bash": 9,
+          "read": 6,
+          "write": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 0,
+        "hunks": 0,
+        "lines_added": 0,
+        "lines_removed": 0,
+        "test_lines_changed": 0,
+        "code_lines_changed": 0,
+        "test_to_code_ratio": null,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 2,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 2
+        },
+        "hidden_tests": {
+          "passed": 3,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 3
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T06-05-38-614308-00-00_task-task_010_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "task_010",
+      "task_category": "medium_feature",
+      "hardness_level": "H1",
+      "known_llm_failure_mode": "misses_adjacent_or_unsorted_interval_edges",
+      "repo": "python_package",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T06:05:38.614308+00:00",
+        "completed_at": "2026-06-15T06:06:36.486814+00:00",
+        "wall_clock_seconds": 57.872,
+        "working_seconds": 57.226,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 11,
+        "output_tokens": 1785,
+        "total_tokens": 170303,
+        "cache_read_tokens": 164708,
+        "cache_write_tokens": 3799,
+        "reasoning_tokens": 49,
+        "estimated_cost_usd": 0.15077775
+      },
+      "agent_behavior": {
+        "files_modified": 0,
+        "lines_added": 0,
+        "lines_removed": 0,
+        "modified_files": [],
+        "api_calls": 6,
+        "tool_calls": 10,
+        "shell_commands": 2,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 6,
+        "file_edits": 2,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "bash": 2,
+          "read": 6,
+          "write": 2
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 0,
+        "hunks": 0,
+        "lines_added": 0,
+        "lines_removed": 0,
+        "test_lines_changed": 0,
+        "code_lines_changed": 0,
+        "test_to_code_ratio": null,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 3,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 3
+        },
+        "hidden_tests": {
+          "passed": 6,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 6
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T06-06-38-070205-00-00_task-task_011_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "task_011",
+      "task_category": "medium_feature",
+      "hardness_level": "H1",
+      "known_llm_failure_mode": "misses_subtractive_notation_edge_cases",
+      "repo": "python_package",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T06:06:38.070205+00:00",
+        "completed_at": "2026-06-15T06:08:31.230412+00:00",
+        "wall_clock_seconds": 113.159,
+        "working_seconds": 112.484,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 17,
+        "output_tokens": 4155,
+        "total_tokens": 271163,
+        "cache_read_tokens": 260672,
+        "cache_write_tokens": 6319,
+        "reasoning_tokens": 441,
+        "estimated_cost_usd": 0.27378975
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 11,
+        "lines_removed": 1,
+        "modified_files": [
+          "src/mathkit/__init__.py"
+        ],
+        "api_calls": 9,
+        "tool_calls": 12,
+        "shell_commands": 2,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 5,
+        "file_edits": 5,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "bash": 2,
+          "glob": 1,
+          "read": 4,
+          "write": 2,
+          "edit": 3
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 11,
+        "lines_removed": 1,
+        "test_lines_changed": 0,
+        "code_lines_changed": 12,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 2,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 2
+        },
+        "hidden_tests": {
+          "passed": 4,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 4
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T06-08-33-684149-00-00_task-task_012_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "task_012",
+      "task_category": "medium_feature",
+      "hardness_level": "H1",
+      "known_llm_failure_mode": "misses_dotdot_or_trailing_slash_edges",
+      "repo": "python_package",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T06:08:33.684149+00:00",
+        "completed_at": "2026-06-15T06:10:15.295188+00:00",
+        "wall_clock_seconds": 101.61,
+        "working_seconds": 100.89,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 17,
+        "output_tokens": 3988,
+        "total_tokens": 262071,
+        "cache_read_tokens": 252579,
+        "cache_write_tokens": 5487,
+        "reasoning_tokens": 502,
+        "estimated_cost_usd": 0.26036825
+      },
+      "agent_behavior": {
+        "files_modified": 0,
+        "lines_added": 0,
+        "lines_removed": 0,
+        "modified_files": [],
+        "api_calls": 9,
+        "tool_calls": 10,
+        "shell_commands": 6,
+        "failed_shell_commands": 1,
+        "test_runs": 2,
+        "files_read": 0,
+        "file_edits": 4,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "bash": 6,
+          "write": 4
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 0,
+        "hunks": 0,
+        "lines_added": 0,
+        "lines_removed": 0,
+        "test_lines_changed": 0,
+        "code_lines_changed": 0,
+        "test_to_code_ratio": null,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 5,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 5
+        },
+        "hidden_tests": {
+          "passed": 6,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 6
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T06-10-17-085909-00-00_task-task_013_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "task_013",
+      "task_category": "medium_feature",
+      "hardness_level": "H2",
+      "known_llm_failure_mode": "greedy_star_backtracking_errors",
+      "repo": "python_package",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T06:10:17.085909+00:00",
+        "completed_at": "2026-06-15T06:11:32.238527+00:00",
+        "wall_clock_seconds": 75.152,
+        "working_seconds": 74.504,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 11,
+        "output_tokens": 1966,
+        "total_tokens": 169528,
+        "cache_read_tokens": 163939,
+        "cache_write_tokens": 3612,
+        "reasoning_tokens": 57,
+        "estimated_cost_usd": 0.15374949999999998
+      },
+      "agent_behavior": {
+        "files_modified": 0,
+        "lines_added": 0,
+        "lines_removed": 0,
+        "modified_files": [],
+        "api_calls": 6,
+        "tool_calls": 9,
+        "shell_commands": 2,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 5,
+        "file_edits": 2,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "bash": 2,
+          "glob": 1,
+          "read": 4,
+          "write": 2
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 0,
+        "hunks": 0,
+        "lines_added": 0,
+        "lines_removed": 0,
+        "test_lines_changed": 0,
+        "code_lines_changed": 0,
+        "test_to_code_ratio": null,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 4,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 4
+        },
+        "hidden_tests": {
+          "passed": 5,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 5
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T06-11-33-827607-00-00_task-task_014_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "task_014",
+      "task_category": "medium_feature",
+      "hardness_level": "H2",
+      "known_llm_failure_mode": "operator_precedence_or_paren_errors",
+      "repo": "python_package",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T06:11:33.827607+00:00",
+        "completed_at": "2026-06-15T06:12:54.469113+00:00",
+        "wall_clock_seconds": 80.641,
+        "working_seconds": 73.117,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 11,
+        "output_tokens": 2596,
+        "total_tokens": 171009,
+        "cache_read_tokens": 164401,
+        "cache_write_tokens": 4001,
+        "reasoning_tokens": 49,
+        "estimated_cost_usd": 0.17216175
+      },
+      "agent_behavior": {
+        "files_modified": 0,
+        "lines_added": 0,
+        "lines_removed": 0,
+        "modified_files": [],
+        "api_calls": 7,
+        "tool_calls": 8,
+        "shell_commands": 2,
+        "failed_shell_commands": 0,
+        "test_runs": 1,
+        "files_read": 4,
+        "file_edits": 2,
+        "retry_count": 2,
+        "model_errors": 1,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "bash": 2,
+          "glob": 1,
+          "read": 3,
+          "write": 2
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 0,
+        "hunks": 0,
+        "lines_added": 0,
+        "lines_removed": 0,
+        "test_lines_changed": 0,
+        "code_lines_changed": 0,
+        "test_to_code_ratio": null,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 5,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 5
+        },
+        "hidden_tests": {
+          "passed": 6,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 6
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T06-12-56-924486-00-00_task-ts_contract_01_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "ts_contract_01",
+      "task_category": "cross_file_contract",
+      "hardness_level": "H2",
+      "known_llm_failure_mode": "breaks_backward_compatible_alias",
+      "repo": "pricing_ts",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T06:12:56.924486+00:00",
+        "completed_at": "2026-06-15T06:13:43.531839+00:00",
+        "wall_clock_seconds": 46.607,
+        "working_seconds": 46.017,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 10,
+        "output_tokens": 646,
+        "total_tokens": 134445,
+        "cache_read_tokens": 132362,
+        "cache_write_tokens": 1427,
+        "reasoning_tokens": null,
+        "estimated_cost_usd": 0.09129975000000001
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 2,
+        "lines_removed": 2,
+        "modified_files": [
+          "src/receipt.ts"
+        ],
+        "api_calls": 5,
+        "tool_calls": 4,
+        "shell_commands": 1,
+        "failed_shell_commands": 0,
+        "test_runs": 0,
+        "files_read": 2,
+        "file_edits": 1,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "read": 2,
+          "edit": 1,
+          "bash": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 2,
+        "lines_removed": 2,
+        "test_lines_changed": 0,
+        "code_lines_changed": 4,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 1,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 1
+        },
+        "hidden_tests": {
+          "passed": 3,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 3
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T06-13-45-736109-00-00_task-ts_invariant_02_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "ts_invariant_02",
+      "task_category": "hidden_invariant_preservation",
+      "hardness_level": "H3",
+      "known_llm_failure_mode": "applies_discounts_independently_misses_running_clamp",
+      "repo": "pricing_ts",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T06:13:45.736109+00:00",
+        "completed_at": "2026-06-15T06:14:38.744021+00:00",
+        "wall_clock_seconds": 53.005,
+        "working_seconds": 52.417,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 10,
+        "output_tokens": 1544,
+        "total_tokens": 141148,
+        "cache_read_tokens": 136121,
+        "cache_write_tokens": 3473,
+        "reasoning_tokens": 134,
+        "estimated_cost_usd": 0.12841675
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 19,
+        "lines_removed": 0,
+        "modified_files": [
+          "src/discount.ts"
+        ],
+        "api_calls": 5,
+        "tool_calls": 8,
+        "shell_commands": 1,
+        "failed_shell_commands": 0,
+        "test_runs": 0,
+        "files_read": 6,
+        "file_edits": 1,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "read": 5,
+          "glob": 1,
+          "edit": 1,
+          "bash": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 19,
+        "lines_removed": 0,
+        "test_lines_changed": 0,
+        "code_lines_changed": 19,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 0.5,
+        "public_tests": {
+          "passed": 2,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 2
+        },
+        "hidden_tests": {
+          "passed": 5,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 5
+        },
+        "scope_violations": [
+          "too_many_lines:19>18"
+        ],
+        "partial_objective_score": 97.22222222222221
+      }
+    },
+    {
+      "run_id": "2026-06-15T06-14-41-125234-00-00_task-ts_loc_01_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "ts_loc_01",
+      "task_category": "multi_file_bug_localization",
+      "hardness_level": "H2",
+      "known_llm_failure_mode": "patches_summary_symptom_instead_of_rounding_root_cause",
+      "repo": "pricing_ts",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T06:14:41.125234+00:00",
+        "completed_at": "2026-06-15T06:15:33.628338+00:00",
+        "wall_clock_seconds": 52.502,
+        "working_seconds": 51.964,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 10,
+        "output_tokens": 1027,
+        "total_tokens": 137367,
+        "cache_read_tokens": 134114,
+        "cache_write_tokens": 2216,
+        "reasoning_tokens": 91,
+        "estimated_cost_usd": 0.10663199999999999
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 1,
+        "lines_removed": 1,
+        "modified_files": [
+          "src/rounding.ts"
+        ],
+        "api_calls": 5,
+        "tool_calls": 7,
+        "shell_commands": 1,
+        "failed_shell_commands": 0,
+        "test_runs": 0,
+        "files_read": 5,
+        "file_edits": 1,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "read": 4,
+          "glob": 1,
+          "edit": 1,
+          "bash": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 1,
+        "lines_removed": 1,
+        "test_lines_changed": 0,
+        "code_lines_changed": 2,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 1,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 1
+        },
+        "hidden_tests": {
+          "passed": 7,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 7
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T06-15-35-645975-00-00_task-ts_minimal_01_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "ts_minimal_01",
+      "task_category": "minimal_diff_repair",
+      "hardness_level": "H2",
+      "known_llm_failure_mode": "drops_remainder_parts_do_not_sum_to_total",
+      "repo": "pricing_ts",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T06:15:35.645975+00:00",
+        "completed_at": "2026-06-15T06:16:28.976788+00:00",
+        "wall_clock_seconds": 53.33,
+        "working_seconds": 52.69,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 10,
+        "output_tokens": 854,
+        "total_tokens": 134916,
+        "cache_read_tokens": 132542,
+        "cache_write_tokens": 1510,
+        "reasoning_tokens": null,
+        "estimated_cost_usd": 0.0971085
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 2,
+        "lines_removed": 2,
+        "modified_files": [
+          "src/split.ts"
+        ],
+        "api_calls": 5,
+        "tool_calls": 4,
+        "shell_commands": 1,
+        "failed_shell_commands": 0,
+        "test_runs": 0,
+        "files_read": 2,
+        "file_edits": 1,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "read": 2,
+          "edit": 1,
+          "bash": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 2,
+        "lines_removed": 2,
+        "test_lines_changed": 0,
+        "code_lines_changed": 4,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 1,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 1
+        },
+        "hidden_tests": {
+          "passed": 5,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 5
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T06-16-31-358134-00-00_task-ts_security_01_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "ts_security_01",
+      "task_category": "security_fix",
+      "hardness_level": "H3",
+      "known_llm_failure_mode": "trusts_inputs_returns_nan_or_negative_on_adversarial_values",
+      "repo": "pricing_ts",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T06:16:31.358134+00:00",
+        "completed_at": "2026-06-15T06:17:45.430238+00:00",
+        "wall_clock_seconds": 74.072,
+        "working_seconds": 73.509,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 14,
+        "output_tokens": 1670,
+        "total_tokens": 197425,
+        "cache_read_tokens": 192078,
+        "cache_write_tokens": 3663,
+        "reasoning_tokens": 166,
+        "estimated_cost_usd": 0.16075275
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 20,
+        "lines_removed": 0,
+        "modified_files": [
+          "src/discount.ts"
+        ],
+        "api_calls": 7,
+        "tool_calls": 8,
+        "shell_commands": 1,
+        "failed_shell_commands": 0,
+        "test_runs": 0,
+        "files_read": 6,
+        "file_edits": 1,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "read": 4,
+          "glob": 2,
+          "edit": 1,
+          "bash": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 20,
+        "lines_removed": 0,
+        "test_lines_changed": 0,
+        "code_lines_changed": 20,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 3,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 3
+        },
+        "hidden_tests": {
+          "passed": 5,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 5
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T06-17-47-738892-00-00_task-ts_state_01_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "ts_state_01",
+      "task_category": "state_machine",
+      "hardness_level": "H4",
+      "known_llm_failure_mode": "allows_illegal_or_skip_transition_or_mutates_terminal_state",
+      "repo": "pricing_ts",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T06:17:47.738892+00:00",
+        "completed_at": "2026-06-15T06:19:13.511842+00:00",
+        "wall_clock_seconds": 85.772,
+        "working_seconds": 71.767,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 16,
+        "output_tokens": 1484,
+        "total_tokens": 220052,
+        "cache_read_tokens": 215955,
+        "cache_write_tokens": 2597,
+        "reasoning_tokens": 108,
+        "estimated_cost_usd": 0.16138875
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 1,
+        "lines_removed": 0,
+        "modified_files": [
+          "src/index.ts"
+        ],
+        "api_calls": 9,
+        "tool_calls": 9,
+        "shell_commands": 1,
+        "failed_shell_commands": 0,
+        "test_runs": 0,
+        "files_read": 6,
+        "file_edits": 2,
+        "retry_count": 1,
+        "model_errors": 1,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "read": 5,
+          "glob": 1,
+          "write": 1,
+          "edit": 1,
+          "bash": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 1,
+        "lines_removed": 0,
+        "test_lines_changed": 0,
+        "code_lines_changed": 1,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 3,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 3
+        },
+        "hidden_tests": {
+          "passed": 6,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 6
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    },
+    {
+      "run_id": "2026-06-15T06-19-15-520949-00-00_task-ts_task_001_claude-opus-4-8_rep-00",
+      "benchmark_version": "agentdelta-v0.1",
+      "task_id": "ts_task_001",
+      "task_category": "hidden_invariant_preservation",
+      "hardness_level": "H3",
+      "known_llm_failure_mode": "handles_happy_path_misses_invariant_clamp_edges",
+      "repo": "pricing_ts",
+      "agent": "claude_code",
+      "agent_version": null,
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-8",
+      "model_config": {
+        "reasoning_effort": "high"
+      },
+      "mode": "default",
+      "scaffolded": false,
+      "epoch": 0,
+      "execution": {
+        "started_at": "2026-06-15T06:19:15.520949+00:00",
+        "completed_at": "2026-06-15T06:20:02.218052+00:00",
+        "wall_clock_seconds": 46.697,
+        "working_seconds": 46.127,
+        "timeout": false,
+        "error": null,
+        "baseline_pre_ok": true,
+        "invalid": false,
+        "invalid_reason": null
+      },
+      "failure_labels": [],
+      "usage": {
+        "input_tokens": 10,
+        "output_tokens": 873,
+        "total_tokens": 136653,
+        "cache_read_tokens": 133719,
+        "cache_write_tokens": 2051,
+        "reasoning_tokens": null,
+        "estimated_cost_usd": 0.10155324999999998
+      },
+      "agent_behavior": {
+        "files_modified": 1,
+        "lines_added": 2,
+        "lines_removed": 1,
+        "modified_files": [
+          "src/discount.ts"
+        ],
+        "api_calls": 5,
+        "tool_calls": 6,
+        "shell_commands": 1,
+        "failed_shell_commands": 0,
+        "test_runs": 0,
+        "files_read": 4,
+        "file_edits": 1,
+        "retry_count": 1,
+        "model_errors": 0,
+        "time_to_first_edit": null,
+        "time_to_first_test": null,
+        "review_passes": null,
+        "tool_histogram": {
+          "read": 4,
+          "edit": 1,
+          "bash": 1
+        }
+      },
+      "diff_metrics": {
+        "files_touched": 1,
+        "hunks": 1,
+        "lines_added": 2,
+        "lines_removed": 1,
+        "test_lines_changed": 0,
+        "code_lines_changed": 3,
+        "test_to_code_ratio": 0.0,
+        "diff_locality": 1.0,
+        "patch_entropy": 0.0
+      },
+      "scoring": {
+        "verified_success": true,
+        "hidden_test_score": 1.0,
+        "regression_avoidance": 1.0,
+        "scope_control": 1.0,
+        "public_tests": {
+          "passed": 1,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 1
+        },
+        "hidden_tests": {
+          "passed": 4,
+          "failed": 0,
+          "error": 0,
+          "skipped": 0,
+          "total": 4
+        },
+        "scope_violations": [],
+        "partial_objective_score": 100.0
+      }
+    }
+  ],
+  "repro": {
+    "agentdelta_version": "0.1.0",
+    "date": "2026-06-15",
+    "suite": "anthropic-hard50-smoke",
+    "inspect_version": "0.3.239",
+    "inspect_swe_version": "0.2.63",
+    "python_version": "3.14.5",
+    "docker_version": "27.4.0",
+    "host_os": "macOS-26.5.1-arm64-arm-64bit-Mach-O",
+    "agent": "claude_code",
+    "agent_cli_version": "2.1.153",
+    "agent_settings_hash": "sha256:8eafc658ce71d702ab6136c729ebddfe5b6977b67607c4bbfd28383c56ac5a34",
+    "models": [
+      "claude-opus-4-8"
+    ],
+    "tasks": [
+      "go_contract_01",
+      "go_loc_01",
+      "go_task_001",
+      "go_task_002",
+      "hard_task_001",
+      "hard_task_002",
+      "hard_task_003",
+      "hard_task_004",
+      "lc_retrieval_01",
+      "lc_retrieval_02",
+      "mk_contract_01",
+      "mk_invariant_01",
+      "mk_loc_01",
+      "mk_minimal_01",
+      "pay_authz_01",
+      "pay_concurrency_01",
+      "pay_concurrency_02",
+      "pay_invariant_01",
+      "pay_loc_01",
+      "pay_minimal_01",
+      "pay_state_01",
+      "pay_state_02",
+      "saas_authz_01",
+      "saas_concurrency_01",
+      "saas_contract_01",
+      "saas_invariant_01",
+      "saas_loc_01",
+      "saas_state_01",
+      "saas_state_02",
+      "task_001",
+      "task_002",
+      "task_003",
+      "task_004",
+      "task_005",
+      "task_006",
+      "task_007",
+      "task_008",
+      "task_009",
+      "task_010",
+      "task_011",
+      "task_012",
+      "task_013",
+      "task_014",
+      "ts_contract_01",
+      "ts_invariant_02",
+      "ts_loc_01",
+      "ts_minimal_01",
+      "ts_security_01",
+      "ts_state_01",
+      "ts_task_001"
+    ],
+    "sandbox_images": {
+      "go_cli": "sha256:334e949c65c73d2b12feda3b1f62d0387c0907d9bb4285623a06526afa199dea",
+      "long_context": "sha256:678924877232a2b4ef39e8a673b0d10661fee4a4d06f263989f7cf127fa2b827",
+      "payments": "sha256:6f2e8d6e7bd7e65b29bb965a6853a5005cedda616a082a6c4f17681852bd84e1",
+      "pricing_ts": "sha256:00fe273cdc61137a6ced8d8ba0b6c5f756f1f824c16eea47a885b07f81cee34e",
+      "python_package": "sha256:1baa4f06daaf319c3be76350b21c0e0df1abbc74fb28e998690bef087283784d",
+      "saas": "sha256:965c3ba089c4709e45b7fc35aeedeb2e29a49a0975e9bbfcbe38a299b4aa47dc"
+    },
+    "tasks_hash": "sha256:a1db15ea21608e431fce7a7ea77b004790d425ca63baa7d34c9b98bac1bfe386",
+    "scoring_hash": "sha256:73972ebd6646114b768a4b9fd9f7b762ed6b21acee98bd85c9f1e7f51f986f24",
+    "fixtures_hash": "sha256:26618f201a72b9b5c795261c07284baa88f5a3801d91ee85abf563c76c9aec1a",
+    "hidden_tests_hash": "sha256:cadde40f394a1538902ddcf8b5449ac172d80f235d0f689a6098baa09714c3d8",
+    "run_order_seed": 12345,
+    "run_order": [
+      {
+        "rep": 0,
+        "task": "go_contract_01",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "go_loc_01",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "go_task_001",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "go_task_002",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "hard_task_001",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "hard_task_002",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "hard_task_003",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "hard_task_004",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "lc_retrieval_01",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "lc_retrieval_02",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "mk_contract_01",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "mk_invariant_01",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "mk_loc_01",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "mk_minimal_01",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "pay_authz_01",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "pay_concurrency_01",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "pay_concurrency_02",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "pay_invariant_01",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "pay_loc_01",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "pay_minimal_01",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "pay_state_01",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "pay_state_02",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "saas_authz_01",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "saas_concurrency_01",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "saas_contract_01",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "saas_invariant_01",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "saas_loc_01",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "saas_state_01",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "saas_state_02",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "task_001",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "task_002",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "task_003",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "task_004",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "task_005",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "task_006",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "task_007",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "task_008",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "task_009",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "task_010",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "task_011",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "task_012",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "task_013",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "task_014",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "ts_contract_01",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "ts_invariant_02",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "ts_loc_01",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "ts_minimal_01",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "ts_security_01",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "ts_state_01",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      },
+      {
+        "rep": 0,
+        "task": "ts_task_001",
+        "order": [
+          "claude-opus-4-8"
+        ]
+      }
+    ]
+  }
+}
