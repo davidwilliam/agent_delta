@@ -72,15 +72,16 @@ Hardness spans H1 to H5; over half the tasks carry author-written minimal / stro
 - **Docker** (daemon running). Fixture images bundle their own toolchains
   (Python 3.12, Node 20 + TypeScript, Go 1.22), so no host install of Node or Go
   is needed.
-- An **Anthropic API key** for real model runs (task authoring and verification
-  need only Docker, no API). Set `ANTHROPIC_API_KEY` in your environment or `.env`.
+- A **provider API key** for real model runs (task authoring and verification need
+  only Docker, no API): `ANTHROPIC_API_KEY` for the Claude Code agent (default),
+  `OPENAI_API_KEY` for the Codex CLI agent. Set them in your environment or `.env`.
 
 ## Setup
 
 ```bash
 python3 -m venv .venv
 .venv/bin/pip install -e ".[dev]"      # drop [dev] to skip pytest/ruff
-cp .env.example .env                   # then put your real key in .env (ANTHROPIC_API_KEY)
+cp .env.example .env                   # then set your key(s): ANTHROPIC_API_KEY and/or OPENAI_API_KEY
 ```
 
 Build the sandbox image for each fixture once (run-commit avoids BuildKit issues):
