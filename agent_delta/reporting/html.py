@@ -38,6 +38,27 @@ REPORT_SECTIONS: list[tuple[str, str]] = [
     ("about", "About"),
 ]
 
+# Provider identity, used for the JSON export's provider index and the report's
+# provider filter. Treated as a stable public vocabulary.
+PROVIDER_LABELS = {
+    "anthropic": "Anthropic (Claude Code)",
+    "openai": "OpenAI (Codex CLI)",
+    "google": "Google (Gemini CLI)",
+}
+
+
+def model_provider(model_id: str) -> str:
+    """Infer the provider from a model id (claude-* / gpt-* / gemini-*)."""
+    m = (model_id or "").lower()
+    if m.startswith("claude"):
+        return "anthropic"
+    if m.startswith(("gpt", "o1", "o3", "o4")):
+        return "openai"
+    if m.startswith("gemini"):
+        return "google"
+    return "unknown"
+
+
 # Third-party components AgentDelta builds on. Cited with a link and a one-line
 # explanation wherever they appear in the report (the user should never hit an
 # unexplained tool name).
@@ -47,12 +68,19 @@ TOOLS = {
         "task: provisioning the sandbox, invoking the solver, scoring, and writing the eval log."),
     "inspect_swe": ("https://pypi.org/project/inspect-swe/",
         "An Inspect AI extension that runs real software-engineering agents as the solver. "
-        "AgentDelta uses it to run the Claude Code CLI inside the sandbox."),
+        "AgentDelta uses it to run the Claude Code and Codex CLI agents inside the sandbox."),
     "Claude Code": ("https://docs.claude.com/en/docs/claude-code/overview",
-        "Anthropic's agentic coding CLI: the agent under test. It reads files, runs shell "
-        "commands, edits code, and iterates on test feedback autonomously."),
+        "Anthropic's agentic coding CLI (one of the agents under test). It reads files, runs "
+        "shell commands, edits code, and iterates on test feedback autonomously."),
+    "Codex CLI": ("https://developers.openai.com/codex/cli/",
+        "OpenAI's agentic coding CLI (the second agent under test), driven the same way as "
+        "Claude Code and graded by the same hidden tests, selectable per run with --agent."),
     "Anthropic API": ("https://docs.claude.com/en/api/overview",
-        "Serves the pinned Claude models (opus-4-8 / 4-7 / 4-6 and sonnet-4-6) that the agent calls."),
+        "Serves the pinned Claude models (opus-4-8 / 4-7 / 4-6 and sonnet-4-6) the Claude Code agent calls."),
+    "OpenAI API": ("https://developers.openai.com/api/docs/",
+        "Serves the pinned GPT-5 models (gpt-5.4 / 5.1 / 5 / 5-mini) the Codex CLI agent calls."),
+    "Gemini CLI": ("https://github.com/google-gemini/gemini-cli",
+        "Google's agentic coding CLI, available via inspect_swe and planned as a third provider."),
     "Docker": ("https://www.docker.com/",
         "Provides one isolated sandbox container per fixture, pinned by image digest so every "
         "run starts from a byte-identical repository state."),
@@ -131,19 +159,20 @@ def _sum(vals: list) -> float:
 # small HTML builders
 # ---------------------------------------------------------------------------
 def _table(headers: list[str], rows: list[list[str]], *, cls: str = "", scroll: bool = True,
-           aligns: list[str] | None = None) -> str:
+           aligns: list[str] | None = None, row_attrs: list[str] | None = None) -> str:
     aligns = aligns or []
     head = "".join(
         f'<th class="{aligns[i] if i < len(aligns) else ""}">{h}</th>'
         for i, h in enumerate(headers)
     )
     body = []
-    for r in rows:
+    for ri, r in enumerate(rows):
         cells = "".join(
             f'<td class="{aligns[i] if i < len(aligns) else ""}">{c}</td>'
             for i, c in enumerate(r)
         )
-        body.append(f"<tr>{cells}</tr>")
+        attr = f" {row_attrs[ri]}" if row_attrs and ri < len(row_attrs) and row_attrs[ri] else ""
+        body.append(f"<tr{attr}>{cells}</tr>")
     tbl = f'<table class="{cls}"><thead><tr>{head}</tr></thead><tbody>{"".join(body)}</tbody></table>'
     return f'<div class="scroll">{tbl}</div>' if scroll else tbl
 
@@ -377,7 +406,7 @@ def _tab_overview(suites: list[dict], all_records: list[dict], gmodels: dict) ->
                 cells.append(_heat_cell(None))
         gm = gmodels.get(mid, {})
         cells.append(_heat_cell(gm.get("success_rate")))
-        heat_rows.append("<tr>" + "".join(cells) + "</tr>")
+        heat_rows.append(f'<tr data-provider="{model_provider(mid)}">' + "".join(cells) + "</tr>")
     heatmap = (
         '<div class="scroll"><table class="heatmap"><thead><tr>'
         + heat_head + "</tr></thead><tbody>" + "".join(heat_rows) + "</tbody></table></div>"
@@ -481,6 +510,7 @@ def _tab_models(gmodels: dict, suites: list[dict]) -> str:
         rows,
         aligns=["", "num", "center", "num", "num", "num", "num", "num", "num", "num", "num",
                 "num", "num", "num", "num", "num", "num", "num"],
+        row_attrs=[f'data-provider="{model_provider(mid)}"' for mid in models],
     )
 
     # per-model x per-suite cost + time matrices
@@ -616,12 +646,19 @@ def _suite_block(s: dict) -> str:
     return "".join(blocks)
 
 
+def _suite_provider(s: dict) -> str:
+    provs = {r.get("provider") or model_provider(r.get("model_id", "")) for r in s["records"]}
+    provs.discard("unknown")
+    return next(iter(provs)) if len(provs) == 1 else ("mixed" if provs else "unknown")
+
+
 def _tab_suites(suites: list[dict]) -> str:
     nav = " &middot; ".join(
         f'<a href="#" data-jump="suite-{_esc(s["report"]["suite"])}">'
         f'{_esc(s["report"]["suite"].replace("anthropic-v0.1-", ""))}</a>'
         for s in suites)
-    body = "".join(_suite_block(s) for s in suites)
+    body = "".join(f'<div data-provider="{_suite_provider(s)}">{_suite_block(s)}</div>'
+                   for s in suites)
     return f"""
     <section id="suites" class="tab">
       <h1>Per-suite detail</h1>
@@ -780,7 +817,9 @@ def _tab_raw(all_records: list[dict]) -> str:
                 "Working (s)", "Files", "+", "-", "Tools", "Shell", "Failed cmd", "Tests",
                 "Reads", "Edits", "Retries", "Diff loc", "Entropy"}
     aligns = ["num" if h in num_cols else "" for h in headers]
-    table = _table(headers, rows, cls="raw", aligns=aligns)
+    row_attrs = [f'data-provider="{r.get("provider") or model_provider(r.get("model_id", ""))}"'
+                 for r in recs]
+    table = _table(headers, rows, cls="raw", aligns=aligns, row_attrs=row_attrs)
     return f"""
     <section id="raw" class="tab">
       <h1>Raw runs: every metric</h1>
@@ -815,17 +854,19 @@ def _tab_methodology(suites: list[dict]) -> str:
     <section id="methodology" class="tab">
       <h1>Methodology</h1>
       <p class="lede">AgentDelta evaluates a model-plus-agent system, not a model in isolation. Every
-      run is a real coding agent ({_tool("Claude Code")} via {_tool("inspect_swe")}) acting inside a
-      pinned {_tool("Docker")} sandbox on a seeded git repository, graded by tests the agent never sees.
-      The full tech stack is detailed under <a href="#" data-jump="stack-top">Stack &amp; requirements</a>.</p>
+      run is a real coding agent ({_tool("Claude Code")} or {_tool("Codex CLI")}, via
+      {_tool("inspect_swe")}) acting inside a pinned {_tool("Docker")} sandbox on a seeded git repository,
+      graded by tests the agent never sees. The agent is chosen per run with <code>--agent</code>; the
+      full tech stack is under <a href="#" data-jump="stack-top">Stack &amp; requirements</a>.</p>
 
       <h2>Execution</h2>
       <ul>
         <li><strong>Harness:</strong> {_tool("Inspect AI")} drives the task; {_tool("inspect_swe")} runs
-        the {_tool("Claude Code")} CLI as the agent inside a per-fixture {_tool("Docker")} image. The
-        model edits files; nothing else is scripted.</li>
+        the selected agent CLI ({_tool("Claude Code")} or {_tool("Codex CLI")}) inside a per-fixture
+        {_tool("Docker")} image. The model edits files; nothing else is scripted.</li>
         <li><strong>Sandbox:</strong> one image per fixture, pinned by digest. Network is disabled by
-        default and only enabled for real model runs that need {_tool("Anthropic API")} access.</li>
+        default and only enabled for real model runs that need {_tool("Anthropic API")} or
+        {_tool("OpenAI API")} access.</li>
         <li><strong>Reasoning effort</strong> is a recorded, controllable dimension (low to max) so the
         same model can be compared across effort settings.</li>
         <li><strong>Repetitions</strong> per (task, model) with blocked randomization of run order, so
@@ -931,7 +972,7 @@ def _tab_stack(suites: list[dict]) -> str:
         ("inspect_swe_version", "inspect_swe"),
         ("docker_version", "Docker"),
         ("agent", "Agent"),
-        ("agent_cli_version", "Claude Code CLI"),
+        ("agent_cli_version", "Agent CLI"),
         ("host_os", "Host OS (this report)"),
     ]
     vrows = [[_esc(label), f'<code>{_esc(repro.get(key))}</code>']
@@ -948,6 +989,22 @@ def _tab_stack(suites: list[dict]) -> str:
 
       <h2>What it is built on</h2>
       {_tools_table()}
+
+      <h2>Agents and providers</h2>
+      <p>AgentDelta runs the same tasks through interchangeable agent CLIs, selected per run with
+      <code>--agent</code>. Each agent talks to its own provider and a pinned model cohort:</p>
+      <ul>
+        <li><strong>{_tool("Claude Code")}</strong> (<code>--agent claude_code</code>) on the
+        {_tool("Anthropic API")}: <code>claude-opus-4-8</code>, <code>claude-opus-4-7</code>,
+        <code>claude-opus-4-6</code>, <code>claude-sonnet-4-6</code>.</li>
+        <li><strong>{_tool("Codex CLI")}</strong> (<code>--agent codex_cli</code>) on the
+        {_tool("OpenAI API")}: <code>gpt-5.4</code>, <code>gpt-5.1</code>, <code>gpt-5</code>,
+        <code>gpt-5-mini</code>.</li>
+        <li><strong>{_tool("Gemini CLI")}</strong>: planned as a third provider (already exposed by
+        inspect_swe).</li>
+      </ul>
+      <p class="muted">Cohorts and pinned IDs live in <code>configs/models/</code>; pricing (per provider,
+      with source and date) in <code>agent_delta/scoring/cost.py</code>.</p>
 
       <h2>Pinned versions</h2>
       <p class="muted">Captured in each suite's reproducibility manifest; drift is detected by
@@ -971,10 +1028,11 @@ def _tab_stack(suites: list[dict]) -> str:
       <ul>
         <li>A running {_tool("Docker")} daemon (the sandbox images are built and run locally; task
         verification via <code>agentdelta check-task</code> uses Docker only, no model calls, no cost).</li>
-        <li>An {_tool("Anthropic API")} key for real model runs (set <code>ANTHROPIC_API_KEY</code>); the
-        agent reaches the provider from inside the sandbox.</li>
+        <li>A provider API key for real runs: <code>ANTHROPIC_API_KEY</code> for {_tool("Claude Code")},
+        <code>OPENAI_API_KEY</code> for {_tool("Codex CLI")}. The agent reaches its provider from inside
+        the sandbox.</li>
         <li>Python 3.12+ in a virtual environment with {_tool("Inspect AI")}, {_tool("inspect_swe")}, and
-        the Anthropic SDK installed; the {_tool("Claude Code")} CLI pinned to the version above.</li>
+        the Anthropic and OpenAI SDKs installed; the chosen agent CLI is provisioned by inspect_swe.</li>
         <li>Build the per-fixture images once with <code>agentdelta build-sandbox</code>, then
         <code>agentdelta run-matrix</code> drives the task x model x repetition grid with blocked
         randomization, and <code>agentdelta report-html</code> renders this document.</li>
@@ -997,10 +1055,12 @@ def _tab_about() -> str:
 
       <h2>What it is</h2>
       <p>A benchmark that evaluates a <strong>model-plus-agent system</strong> end to end. Each task is a
-      real repository with a planted bug or a missing feature; the agent ({_tool("Claude Code")}) works
-      autonomously inside a pinned {_tool("Docker")} sandbox, and the result is graded by hidden tests the
-      agent never sees, alongside a regression suite and an edit-scope check. Every run records the full
-      resource footprint: tokens, cost, wall-clock time, tool calls, retries, and diff size.</p>
+      real repository with a planted bug or a missing feature; a coding agent ({_tool("Claude Code")} on
+      Anthropic or {_tool("Codex CLI")} on OpenAI) works autonomously inside a pinned {_tool("Docker")}
+      sandbox, and the result is graded by hidden tests the agent never sees, alongside a regression suite
+      and an edit-scope check. The same tasks run across providers, so agents are compared on a level
+      field. Every run records the full resource footprint: tokens, cost, wall-clock time, tool calls,
+      retries, and diff size.</p>
       <p>Scoring is <strong>two-level</strong>. Level 1 ranks systems on objective success and asks which
       gains are <em>material</em> (a meaningful success delta that also survives a Holm-corrected paired
       McNemar test). Level 2, the Agentic Amplification Assessment, takes only the material gains and asks
@@ -1078,7 +1138,14 @@ display:flex;flex-direction:column;overflow-y:auto;z-index:30;}
 border:none;border-left:3px solid transparent;padding:9px 14px;border-radius:0 6px 6px 0;cursor:pointer;}
 .sidebar .nav-item:hover{background:#2a2824;color:#fff;}
 .sidebar .nav-item.active{background:#2a2824;color:#fff;border-left-color:var(--accent);}
-.sidebar .side-foot{margin-top:auto;padding:16px 22px;font-size:12px;color:#8d877c;border-top:1px solid #2f2c27;}
+.sidebar .side-bottom{margin-top:auto;}
+.sidebar .provfilter{padding:14px 16px 8px;border-top:1px solid #2f2c27;}
+.sidebar .pf-label{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:#8d877c;padding:0 6px 6px;}
+.sidebar .pf{font:inherit;font-size:12.5px;color:#cfc9be;background:none;border:1px solid #3a3630;
+border-radius:20px;padding:4px 11px;margin:2px;cursor:pointer;}
+.sidebar .pf:hover{background:#2a2824;color:#fff;}
+.sidebar .pf.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+.sidebar .side-foot{padding:14px 22px 16px;font-size:12px;color:#8d877c;border-top:1px solid #2f2c27;}
 .sidebar .side-foot a{color:#cfc9be;word-break:break-all;}
 .sidebar .side-foot .meta{margin-top:8px;line-height:1.55;}
 main{flex:1 1 auto;margin-left:248px;max-width:1080px;padding:32px 38px 90px;}
@@ -1158,6 +1225,16 @@ _JS = """
         setTimeout(function(){el.scrollIntoView({behavior:'smooth',block:'start'});},60);}
     });
   });
+  function setProvider(p){
+    document.querySelectorAll('.provfilter .pf').forEach(function(b){
+      b.classList.toggle('active', b.dataset.prov===p);});
+    document.querySelectorAll('[data-provider]').forEach(function(el){
+      el.style.display=(p==='all'||el.getAttribute('data-provider')===p||el.getAttribute('data-provider')==='mixed')?'':'none';
+    });
+  }
+  document.querySelectorAll('.provfilter .pf').forEach(function(b){
+    b.addEventListener('click',function(){setProvider(b.dataset.prov);});
+  });
 })();
 """
 
@@ -1187,6 +1264,16 @@ def render_html(suites: list[dict], *, generated_at: str = "") -> str:
             f"{_esc(suites[0]['report'].get('agent')) if suites else '?'}")
     if generated_at:
         meta += f" &middot; generated {_esc(generated_at)}"
+
+    # Provider filter (only when more than one provider is present).
+    provs_present = sorted({model_provider(r["model_id"]) for r in all_records} - {"unknown"})
+    if len(provs_present) > 1:
+        btns = '<button class="pf active" data-prov="all">All</button>' + "".join(
+            f'<button class="pf" data-prov="{p}">{_esc(PROVIDER_LABELS.get(p, p).split(" (")[0])}</button>'
+            for p in provs_present)
+        provider_filter = f'<div class="provfilter"><div class="pf-label">Provider</div>{btns}</div>'
+    else:
+        provider_filter = ""
 
     tabs = REPORT_SECTIONS
     nav = "".join(
@@ -1220,9 +1307,12 @@ def render_html(suites: list[dict], *, generated_at: str = "") -> str:
     <div class="brand">Agent<b>Delta</b></div>
     <div class="tagline">Reproducible coding-agent evaluation</div>
     <nav class="nav">{nav}</nav>
-    <div class="side-foot">
-      <a href="{REPO_URL}" target="_blank" rel="noopener">{repo_label}</a>
-      <div class="meta">{meta}</div>
+    <div class="side-bottom">
+      {provider_filter}
+      <div class="side-foot">
+        <a href="{REPO_URL}" target="_blank" rel="noopener">{repo_label}</a>
+        <div class="meta">{meta}</div>
+      </div>
     </div>
   </aside>
   <main>{body}
