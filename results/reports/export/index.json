@@ -1,0 +1,229 @@
+{
+  "schema_version": 2,
+  "benchmark_version": "agentdelta-v0.1",
+  "generated_at": "2026-06-16 02:37 UTC",
+  "baseline": "claude-opus-4-6",
+  "sections": [
+    {
+      "id": "overview",
+      "label": "Results"
+    },
+    {
+      "id": "models",
+      "label": "Per-model"
+    },
+    {
+      "id": "suites",
+      "label": "Per-suite"
+    },
+    {
+      "id": "stats",
+      "label": "Statistics"
+    },
+    {
+      "id": "raw",
+      "label": "Raw runs"
+    },
+    {
+      "id": "methodology",
+      "label": "Methodology"
+    },
+    {
+      "id": "stack",
+      "label": "Stack & requirements"
+    },
+    {
+      "id": "repro",
+      "label": "Reproducibility"
+    },
+    {
+      "id": "about",
+      "label": "About"
+    }
+  ],
+  "providers": [
+    {
+      "id": "anthropic",
+      "label": "Anthropic (Claude Code)",
+      "suites": [
+        "anthropic-hard50-smoke",
+        "anthropic-hardest5-4x5",
+        "anthropic-statemachine-4x10",
+        "anthropic-v0.1-concurrency",
+        "anthropic-v0.1-eqbudget",
+        "anthropic-v0.1-frontier",
+        "anthropic-v0.1-hard",
+        "anthropic-v0.1-pilot"
+      ],
+      "models": [
+        "claude-opus-4-6",
+        "claude-opus-4-7",
+        "claude-opus-4-8",
+        "claude-sonnet-4-6"
+      ]
+    },
+    {
+      "id": "openai",
+      "label": "OpenAI (Codex CLI)",
+      "suites": [
+        "openai-hardest5-4x5"
+      ],
+      "models": [
+        "gpt-5",
+        "gpt-5-mini-2025-08-07",
+        "gpt-5.1-2025-11-13",
+        "gpt-5.4"
+      ]
+    }
+  ],
+  "models": [
+    {
+      "id": "claude-opus-4-6",
+      "provider": "anthropic"
+    },
+    {
+      "id": "claude-opus-4-7",
+      "provider": "anthropic"
+    },
+    {
+      "id": "claude-opus-4-8",
+      "provider": "anthropic"
+    },
+    {
+      "id": "claude-sonnet-4-6",
+      "provider": "anthropic"
+    },
+    {
+      "id": "gpt-5",
+      "provider": "openai"
+    },
+    {
+      "id": "gpt-5-mini-2025-08-07",
+      "provider": "openai"
+    },
+    {
+      "id": "gpt-5.1-2025-11-13",
+      "provider": "openai"
+    },
+    {
+      "id": "gpt-5.4",
+      "provider": "openai"
+    }
+  ],
+  "suites": [
+    {
+      "suite": "anthropic-hard50-smoke",
+      "provider": "anthropic",
+      "n_runs": 50,
+      "n_models": 1,
+      "models": [
+        "claude-opus-4-8"
+      ],
+      "file": "suites/anthropic-hard50-smoke.json"
+    },
+    {
+      "suite": "anthropic-hardest5-4x5",
+      "provider": "anthropic",
+      "n_runs": 100,
+      "n_models": 4,
+      "models": [
+        "claude-opus-4-6",
+        "claude-opus-4-7",
+        "claude-opus-4-8",
+        "claude-sonnet-4-6"
+      ],
+      "file": "suites/anthropic-hardest5-4x5.json"
+    },
+    {
+      "suite": "anthropic-statemachine-4x10",
+      "provider": "anthropic",
+      "n_runs": 200,
+      "n_models": 4,
+      "models": [
+        "claude-opus-4-6",
+        "claude-opus-4-7",
+        "claude-opus-4-8",
+        "claude-sonnet-4-6"
+      ],
+      "file": "suites/anthropic-statemachine-4x10.json"
+    },
+    {
+      "suite": "anthropic-v0.1-concurrency",
+      "provider": "anthropic",
+      "n_runs": 12,
+      "n_models": 4,
+      "models": [
+        "claude-opus-4-6",
+        "claude-opus-4-7",
+        "claude-opus-4-8",
+        "claude-sonnet-4-6"
+      ],
+      "file": "suites/anthropic-v0.1-concurrency.json"
+    },
+    {
+      "suite": "anthropic-v0.1-eqbudget",
+      "provider": "anthropic",
+      "n_runs": 32,
+      "n_models": 4,
+      "models": [
+        "claude-opus-4-6",
+        "claude-opus-4-7",
+        "claude-opus-4-8",
+        "claude-sonnet-4-6"
+      ],
+      "file": "suites/anthropic-v0.1-eqbudget.json"
+    },
+    {
+      "suite": "anthropic-v0.1-frontier",
+      "provider": "anthropic",
+      "n_runs": 24,
+      "n_models": 4,
+      "models": [
+        "claude-opus-4-6",
+        "claude-opus-4-7",
+        "claude-opus-4-8",
+        "claude-sonnet-4-6"
+      ],
+      "file": "suites/anthropic-v0.1-frontier.json"
+    },
+    {
+      "suite": "anthropic-v0.1-hard",
+      "provider": "anthropic",
+      "n_runs": 24,
+      "n_models": 4,
+      "models": [
+        "claude-opus-4-6",
+        "claude-opus-4-7",
+        "claude-opus-4-8",
+        "claude-sonnet-4-6"
+      ],
+      "file": "suites/anthropic-v0.1-hard.json"
+    },
+    {
+      "suite": "anthropic-v0.1-pilot",
+      "provider": "anthropic",
+      "n_runs": 24,
+      "n_models": 4,
+      "models": [
+        "claude-opus-4-6",
+        "claude-opus-4-7",
+        "claude-opus-4-8",
+        "claude-sonnet-4-6"
+      ],
+      "file": "suites/anthropic-v0.1-pilot.json"
+    },
+    {
+      "suite": "openai-hardest5-4x5",
+      "provider": "openai",
+      "n_runs": 100,
+      "n_models": 4,
+      "models": [
+        "gpt-5",
+        "gpt-5-mini-2025-08-07",
+        "gpt-5.1-2025-11-13",
+        "gpt-5.4"
+      ],
+      "file": "suites/openai-hardest5-4x5.json"
+    }
+  ]
+}
