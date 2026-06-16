@@ -56,6 +56,7 @@ base URL, `index.json` and `suites/<file>` resolve, where `<file>` is exactly th
     { "id": "openai", "label": "OpenAI (Codex CLI)", "suites": ["openai-hardest5-4x5"], "models": ["gpt-5.4", "..."] }
   ],
   "models": [ { "id": "claude-opus-4-8", "provider": "anthropic" }, { "id": "gpt-5.4", "provider": "openai" } ],
+  "cross_provider": { /* the computed Cross-provider panel, see below; null if <2 full-cohort providers */ },
   "suites": [
     {
       "suite": "openai-hardest5-4x5",
@@ -69,6 +70,42 @@ base URL, `index.json` and `suites/<file>` resolve, where `<file>` is exactly th
   ]
 }
 ```
+
+### index.cross_provider (the Cross-provider panel, pre-computed)
+
+The "Cross-provider" section is **pre-computed** here so you do not have to replicate
+the aggregation. It compares providers on the tasks at least two of them ran with a
+full (>=4 model) cohort. `null` until there are two such providers.
+
+```jsonc
+"cross_provider": {
+  "shared_task_count": 22,
+  "shared_tasks": ["hard_task_004", "lc_retrieval_01", "..."],
+  "providers": [
+    { "id": "anthropic", "label": "Anthropic (Claude Code)", "models": ["claude-opus-4-8", "..."],
+      "runs": 435, "verified": 430, "verified_rate": 0.988, "mean_cost_usd": 0.27, "median_time_s": 90 },
+    { "id": "openai", "label": "OpenAI (Codex CLI)", "models": ["gpt-5.4", "..."],
+      "runs": 176, "verified": 174, "verified_rate": 0.989, "mean_cost_usd": 0.08, "median_time_s": 78 }
+  ],
+  "models": [
+    { "model_id": "claude-opus-4-8", "provider": "anthropic", "runs": 110, "verified": 110,
+      "verified_rate": 1.0, "mean_cost_usd": 0.24, "median_time_s": 64 }
+    // ... one per model, both providers
+  ],
+  "per_task": [
+    { "task_id": "lc_retrieval_01", "hardness_level": "H4",
+      "providers": {
+        "anthropic": { "runs": 21, "verified": 16, "verified_rate": 0.76 },
+        "openai":    { "runs": 4,  "verified": 1,  "verified_rate": 0.25 }
+      } }
+    // ... one per shared task
+  ]
+}
+```
+
+This is the exact data the HTML report's Cross-provider tab renders; the HTML and JSON
+come from one function so they cannot drift. `verified_rate` is verified / runs over
+each provider's full cohort (models x repetitions) on the shared set.
 
 ## suites/<suite>.json (a shard)
 
