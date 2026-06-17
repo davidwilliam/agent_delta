@@ -53,9 +53,10 @@ base URL, `index.json` and `suites/<file>` resolve, where `<file>` is exactly th
       "suites": ["anthropic-hardest5-4x5", "..."],
       "models": ["claude-opus-4-8", "..."]
     },
-    { "id": "openai", "label": "OpenAI (Codex CLI)", "suites": ["openai-hardest5-4x5"], "models": ["gpt-5.4", "..."] }
+    { "id": "openai", "label": "OpenAI (Codex CLI)", "suites": ["openai-hardest5-4x5"], "models": ["gpt-5.4", "..."] },
+    { "id": "google", "label": "Google (Gemini CLI)", "suites": ["gemini-full50-4x1"], "models": ["gemini-2.5-pro", "..."] }
   ],
-  "models": [ { "id": "claude-opus-4-8", "provider": "anthropic" }, { "id": "gpt-5.4", "provider": "openai" } ],
+  "models": [ { "id": "claude-opus-4-8", "provider": "anthropic" }, { "id": "gpt-5.4", "provider": "openai" }, { "id": "gemini-2.5-pro", "provider": "google" } ],
   "cross_provider": { /* the computed Cross-provider panel, see below; null if <2 full-cohort providers */ },
   "suites": [
     {
@@ -79,13 +80,15 @@ full (>=4 model) cohort. `null` until there are two such providers.
 
 ```jsonc
 "cross_provider": {
-  "shared_task_count": 22,
+  "shared_task_count": 50,
   "shared_tasks": ["hard_task_004", "lc_retrieval_01", "..."],
   "providers": [
     { "id": "anthropic", "label": "Anthropic (Claude Code)", "models": ["claude-opus-4-8", "..."],
-      "runs": 435, "verified": 430, "verified_rate": 0.988, "mean_cost_usd": 0.27, "median_time_s": 90 },
+      "runs": 476, "verified": 458, "verified_rate": 0.962, "mean_cost_usd": 0.29, "median_time_s": 84 },
     { "id": "openai", "label": "OpenAI (Codex CLI)", "models": ["gpt-5.4", "..."],
-      "runs": 176, "verified": 174, "verified_rate": 0.989, "mean_cost_usd": 0.08, "median_time_s": 78 }
+      "runs": 300, "verified": 293, "verified_rate": 0.977, "mean_cost_usd": 0.08, "median_time_s": 103 },
+    { "id": "google", "label": "Google (Gemini CLI)", "models": ["gemini-2.5-pro", "..."],
+      "runs": 200, "verified": 183, "verified_rate": 0.915, "mean_cost_usd": 0.09, "median_time_s": 88 }
   ],
   "models": [
     { "model_id": "claude-opus-4-8", "provider": "anthropic", "runs": 110, "verified": 110,

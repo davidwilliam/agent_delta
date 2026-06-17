@@ -82,7 +82,7 @@ Hardness spans H1 to H5; over half the tasks carry author-written minimal / stro
 ```bash
 python3 -m venv .venv
 .venv/bin/pip install -e ".[dev]"      # drop [dev] to skip pytest/ruff
-cp .env.example .env                   # then set your key(s): ANTHROPIC_API_KEY and/or OPENAI_API_KEY
+cp .env.example .env                   # then set your key(s): ANTHROPIC_API_KEY, OPENAI_API_KEY, and/or GEMINI_API_KEY
 ```
 
 Build the sandbox image for each fixture once (run-commit avoids BuildKit issues):
@@ -183,9 +183,9 @@ Markdown report (and `report.json`). `--results` defaults from the suite name.
 generates one self-contained HTML report across all suites (results-first overview,
 per-model, cross-provider, per-suite, statistics, raw runs, methodology, stack,
 reproducibility, about). The cross-provider section compares providers like-for-like
-on the tasks both ran with a full model cohort. Multiple providers (Claude Code,
-Codex CLI) appear side by side, with a
-sidebar **provider filter** (All / Anthropic / OpenAI / ...). Suites named `*smoke*`
+on the tasks both ran with a full model cohort. All three providers (Claude Code,
+Codex CLI, Gemini CLI) appear side by side, with a
+sidebar **provider filter** (All / Anthropic / OpenAI / Google). Suites named `*smoke*`
 are excluded unless listed explicitly in `--suites`. On every run it also writes the
 machine-readable exports below, so they never drift from the rendered report.
 
