@@ -49,12 +49,15 @@ def _register_model_costs() -> None:
             ))
 
 
-def _build_agent(agent_name: str):
+def _build_agent(agent_name: str, model_id: str | None = None):
     """Construct the real agent solver for the given agent CLI."""
     cfg = config.load_agent_config(agent_name)
     if agent_name == "codex_cli":
         from agent_delta.runners.codex_cli import build_codex_cli_agent
         return build_codex_cli_agent(cfg)
+    if agent_name == "gemini_cli":
+        from agent_delta.runners.gemini_cli import build_gemini_cli_agent
+        return build_gemini_cli_agent(cfg, model_id)
     return build_claude_code_agent(cfg)
 
 
@@ -110,6 +113,7 @@ def build_task(
     mode: str = "default",
     scaffolded: bool = False,
     effort: str | None = None,
+    model_id: str | None = None,
 ) -> Task:
     limits = mode_limits(task, mode)
     gen_config = GenerateConfig(reasoning_effort=effort) if effort else GenerateConfig()
@@ -131,7 +135,7 @@ def build_task(
     if dry_run:
         agent = reference_solution_solver()
     else:
-        agent = _build_agent(agent_name)
+        agent = _build_agent(agent_name, model_id)
 
     return Task(
         dataset=[sample],
@@ -186,7 +190,7 @@ def run_task(
     log_dir = str(log_dir) if log_dir else str(config.RESULTS_DIR / "logs")
     eval_task = build_task(
         task, fixture, epochs=repetitions, dry_run=dry_run, agent_name=agent_name,
-        mode=mode, scaffolded=scaffolded, effort=None if dry_run else effort,
+        mode=mode, scaffolded=scaffolded, effort=None if dry_run else effort, model_id=model_id,
     )
 
     # In dry-run there is no model; pass a placeholder Inspect accepts via the
