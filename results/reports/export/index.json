@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "benchmark_version": "agentdelta-v0.1",
-  "generated_at": "2026-06-16 19:16 UTC",
+  "generated_at": "2026-06-17 09:48 UTC",
   "baseline": "claude-opus-4-6",
   "sections": [
     {
@@ -50,7 +50,6 @@
       "id": "anthropic",
       "label": "Anthropic (Claude Code)",
       "suites": [
-        "anthropic-hard50-smoke",
         "anthropic-hardest5-4x5",
         "anthropic-longcontext-4x5",
         "anthropic-statemachine-4x10",
@@ -65,6 +64,19 @@
         "claude-opus-4-7",
         "claude-opus-4-8",
         "claude-sonnet-4-6"
+      ]
+    },
+    {
+      "id": "google",
+      "label": "Google (Gemini CLI)",
+      "suites": [
+        "gemini-full50-4x1"
+      ],
+      "models": [
+        "gemini-2.5-flash",
+        "gemini-2.5-pro",
+        "gemini-3.1-flash-lite",
+        "gemini-3.5-flash"
       ]
     },
     {
@@ -100,6 +112,22 @@
       "provider": "anthropic"
     },
     {
+      "id": "gemini-2.5-flash",
+      "provider": "google"
+    },
+    {
+      "id": "gemini-2.5-pro",
+      "provider": "google"
+    },
+    {
+      "id": "gemini-3.1-flash-lite",
+      "provider": "google"
+    },
+    {
+      "id": "gemini-3.5-flash",
+      "provider": "google"
+    },
+    {
       "id": "gpt-5",
       "provider": "openai"
     },
@@ -117,30 +145,58 @@
     }
   ],
   "cross_provider": {
-    "shared_task_count": 22,
+    "shared_task_count": 50,
     "shared_tasks": [
+      "go_contract_01",
+      "go_loc_01",
+      "go_task_001",
+      "go_task_002",
       "hard_task_001",
       "hard_task_002",
       "hard_task_003",
       "hard_task_004",
       "lc_retrieval_01",
       "lc_retrieval_02",
+      "mk_contract_01",
+      "mk_invariant_01",
+      "mk_loc_01",
+      "mk_minimal_01",
+      "pay_authz_01",
       "pay_concurrency_01",
       "pay_concurrency_02",
+      "pay_invariant_01",
+      "pay_loc_01",
+      "pay_minimal_01",
       "pay_state_01",
       "pay_state_02",
+      "saas_authz_01",
       "saas_concurrency_01",
+      "saas_contract_01",
+      "saas_invariant_01",
+      "saas_loc_01",
       "saas_state_01",
       "saas_state_02",
       "task_001",
+      "task_002",
       "task_003",
+      "task_004",
       "task_005",
+      "task_006",
+      "task_007",
+      "task_008",
       "task_009",
       "task_010",
       "task_011",
       "task_012",
       "task_013",
-      "task_014"
+      "task_014",
+      "ts_contract_01",
+      "ts_invariant_02",
+      "ts_loc_01",
+      "ts_minimal_01",
+      "ts_security_01",
+      "ts_state_01",
+      "ts_task_001"
     ],
     "providers": [
       {
@@ -152,11 +208,26 @@
           "claude-opus-4-8",
           "claude-sonnet-4-6"
         ],
-        "runs": 498,
-        "verified": 479,
-        "verified_rate": 0.9618473895582329,
-        "mean_cost_usd": 0.2815096197791165,
-        "median_time_s": 82.5095
+        "runs": 476,
+        "verified": 458,
+        "verified_rate": 0.9621848739495799,
+        "mean_cost_usd": 0.2862534519957983,
+        "median_time_s": 84.39850000000001
+      },
+      {
+        "id": "google",
+        "label": "Google (Gemini CLI)",
+        "models": [
+          "gemini-2.5-flash",
+          "gemini-2.5-pro",
+          "gemini-3.1-flash-lite",
+          "gemini-3.5-flash"
+        ],
+        "runs": 200,
+        "verified": 183,
+        "verified_rate": 0.915,
+        "mean_cost_usd": 0.09177583650000001,
+        "median_time_s": 88.0205
       },
       {
         "id": "openai",
@@ -167,11 +238,11 @@
           "gpt-5.1-2025-11-13",
           "gpt-5.4"
         ],
-        "runs": 188,
-        "verified": 183,
-        "verified_rate": 0.973404255319149,
-        "mean_cost_usd": 0.0884132880319149,
-        "median_time_s": 107.418
+        "runs": 300,
+        "verified": 293,
+        "verified_rate": 0.9766666666666667,
+        "mean_cost_usd": 0.08351218783333333,
+        "median_time_s": 102.92699999999999
       }
     ],
     "models": [
@@ -196,10 +267,10 @@
       {
         "model_id": "claude-opus-4-8",
         "provider": "anthropic",
-        "runs": 141,
-        "verified": 140,
-        "verified_rate": 0.9929078014184397,
-        "mean_cost_usd": 0.24836401418439716,
+        "runs": 119,
+        "verified": 119,
+        "verified_rate": 1.0,
+        "mean_cost_usd": 0.26121158403361344,
         "median_time_s": 61.645
       },
       {
@@ -212,50 +283,175 @@
         "median_time_s": 120.894
       },
       {
+        "model_id": "gemini-2.5-flash",
+        "provider": "google",
+        "runs": 50,
+        "verified": 39,
+        "verified_rate": 0.78,
+        "mean_cost_usd": 0.02221575,
+        "median_time_s": 66.6265
+      },
+      {
+        "model_id": "gemini-2.5-pro",
+        "provider": "google",
+        "runs": 50,
+        "verified": 48,
+        "verified_rate": 0.96,
+        "mean_cost_usd": 0.073026495,
+        "median_time_s": 85.23
+      },
+      {
+        "model_id": "gemini-3.1-flash-lite",
+        "provider": "google",
+        "runs": 50,
+        "verified": 48,
+        "verified_rate": 0.96,
+        "mean_cost_usd": 0.016335594,
+        "median_time_s": 78.352
+      },
+      {
+        "model_id": "gemini-3.5-flash",
+        "provider": "google",
+        "runs": 50,
+        "verified": 48,
+        "verified_rate": 0.96,
+        "mean_cost_usd": 0.255525507,
+        "median_time_s": 131.35250000000002
+      },
+      {
         "model_id": "gpt-5",
         "provider": "openai",
-        "runs": 47,
-        "verified": 46,
-        "verified_rate": 0.9787234042553191,
-        "mean_cost_usd": 0.15334859574468085,
-        "median_time_s": 149.582
+        "runs": 75,
+        "verified": 73,
+        "verified_rate": 0.9733333333333334,
+        "mean_cost_usd": 0.14486545666666667,
+        "median_time_s": 145.275
       },
       {
         "model_id": "gpt-5-mini-2025-08-07",
         "provider": "openai",
-        "runs": 47,
-        "verified": 45,
-        "verified_rate": 0.9574468085106383,
-        "mean_cost_usd": 0.014507779787234042,
-        "median_time_s": 102.917
+        "runs": 75,
+        "verified": 72,
+        "verified_rate": 0.96,
+        "mean_cost_usd": 0.013588598,
+        "median_time_s": 97.959
       },
       {
         "model_id": "gpt-5.1-2025-11-13",
         "provider": "openai",
-        "runs": 47,
-        "verified": 45,
-        "verified_rate": 0.9574468085106383,
-        "mean_cost_usd": 0.0952246489361702,
-        "median_time_s": 128.363
+        "runs": 75,
+        "verified": 73,
+        "verified_rate": 0.9733333333333334,
+        "mean_cost_usd": 0.08653621,
+        "median_time_s": 122.765
       },
       {
         "model_id": "gpt-5.4",
         "provider": "openai",
-        "runs": 47,
-        "verified": 47,
+        "runs": 75,
+        "verified": 75,
         "verified_rate": 1.0,
-        "mean_cost_usd": 0.09057212765957448,
-        "median_time_s": 66.363
+        "mean_cost_usd": 0.08905848666666666,
+        "median_time_s": 65.093
       }
     ],
     "per_task": [
+      {
+        "task_id": "go_contract_01",
+        "hardness_level": "H2",
+        "providers": {
+          "anthropic": {
+            "runs": 0,
+            "verified": 0,
+            "verified_rate": null
+          },
+          "google": {
+            "runs": 4,
+            "verified": 2,
+            "verified_rate": 0.5
+          },
+          "openai": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          }
+        }
+      },
+      {
+        "task_id": "go_loc_01",
+        "hardness_level": "H2",
+        "providers": {
+          "anthropic": {
+            "runs": 0,
+            "verified": 0,
+            "verified_rate": null
+          },
+          "google": {
+            "runs": 4,
+            "verified": 3,
+            "verified_rate": 0.75
+          },
+          "openai": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          }
+        }
+      },
+      {
+        "task_id": "go_task_001",
+        "hardness_level": "H1",
+        "providers": {
+          "anthropic": {
+            "runs": 0,
+            "verified": 0,
+            "verified_rate": null
+          },
+          "google": {
+            "runs": 4,
+            "verified": 3,
+            "verified_rate": 0.75
+          },
+          "openai": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          }
+        }
+      },
+      {
+        "task_id": "go_task_002",
+        "hardness_level": "H1",
+        "providers": {
+          "anthropic": {
+            "runs": 0,
+            "verified": 0,
+            "verified_rate": null
+          },
+          "google": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          },
+          "openai": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          }
+        }
+      },
       {
         "task_id": "hard_task_001",
         "hardness_level": "H3",
         "providers": {
           "anthropic": {
-            "runs": 9,
-            "verified": 9,
+            "runs": 8,
+            "verified": 8,
+            "verified_rate": 1.0
+          },
+          "google": {
+            "runs": 4,
+            "verified": 4,
             "verified_rate": 1.0
           },
           "openai": {
@@ -270,9 +466,14 @@
         "hardness_level": "H5",
         "providers": {
           "anthropic": {
-            "runs": 69,
-            "verified": 63,
-            "verified_rate": 0.9130434782608695
+            "runs": 68,
+            "verified": 62,
+            "verified_rate": 0.9117647058823529
+          },
+          "google": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
           },
           "openai": {
             "runs": 24,
@@ -286,8 +487,13 @@
         "hardness_level": "H2",
         "providers": {
           "anthropic": {
-            "runs": 9,
-            "verified": 9,
+            "runs": 8,
+            "verified": 8,
+            "verified_rate": 1.0
+          },
+          "google": {
+            "runs": 4,
+            "verified": 4,
             "verified_rate": 1.0
           },
           "openai": {
@@ -302,8 +508,13 @@
         "hardness_level": "H5",
         "providers": {
           "anthropic": {
-            "runs": 33,
-            "verified": 33,
+            "runs": 32,
+            "verified": 32,
+            "verified_rate": 1.0
+          },
+          "google": {
+            "runs": 4,
+            "verified": 4,
             "verified_rate": 1.0
           },
           "openai": {
@@ -318,9 +529,14 @@
         "hardness_level": "H4",
         "providers": {
           "anthropic": {
-            "runs": 21,
-            "verified": 16,
-            "verified_rate": 0.7619047619047619
+            "runs": 20,
+            "verified": 15,
+            "verified_rate": 0.75
+          },
+          "google": {
+            "runs": 4,
+            "verified": 3,
+            "verified_rate": 0.75
           },
           "openai": {
             "runs": 4,
@@ -334,9 +550,14 @@
         "hardness_level": "H4",
         "providers": {
           "anthropic": {
-            "runs": 21,
-            "verified": 14,
-            "verified_rate": 0.6666666666666666
+            "runs": 20,
+            "verified": 13,
+            "verified_rate": 0.65
+          },
+          "google": {
+            "runs": 4,
+            "verified": 3,
+            "verified_rate": 0.75
           },
           "openai": {
             "runs": 4,
@@ -346,13 +567,123 @@
         }
       },
       {
+        "task_id": "mk_contract_01",
+        "hardness_level": "H2",
+        "providers": {
+          "anthropic": {
+            "runs": 0,
+            "verified": 0,
+            "verified_rate": null
+          },
+          "google": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          },
+          "openai": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          }
+        }
+      },
+      {
+        "task_id": "mk_invariant_01",
+        "hardness_level": "H3",
+        "providers": {
+          "anthropic": {
+            "runs": 0,
+            "verified": 0,
+            "verified_rate": null
+          },
+          "google": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          },
+          "openai": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          }
+        }
+      },
+      {
+        "task_id": "mk_loc_01",
+        "hardness_level": "H2",
+        "providers": {
+          "anthropic": {
+            "runs": 0,
+            "verified": 0,
+            "verified_rate": null
+          },
+          "google": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          },
+          "openai": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          }
+        }
+      },
+      {
+        "task_id": "mk_minimal_01",
+        "hardness_level": "H2",
+        "providers": {
+          "anthropic": {
+            "runs": 0,
+            "verified": 0,
+            "verified_rate": null
+          },
+          "google": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          },
+          "openai": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          }
+        }
+      },
+      {
+        "task_id": "pay_authz_01",
+        "hardness_level": "H3",
+        "providers": {
+          "anthropic": {
+            "runs": 0,
+            "verified": 0,
+            "verified_rate": null
+          },
+          "google": {
+            "runs": 4,
+            "verified": 2,
+            "verified_rate": 0.5
+          },
+          "openai": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          }
+        }
+      },
+      {
         "task_id": "pay_concurrency_01",
         "hardness_level": "H5",
         "providers": {
           "anthropic": {
-            "runs": 21,
-            "verified": 21,
+            "runs": 20,
+            "verified": 20,
             "verified_rate": 1.0
+          },
+          "google": {
+            "runs": 4,
+            "verified": 3,
+            "verified_rate": 0.75
           },
           "openai": {
             "runs": 24,
@@ -366,8 +697,13 @@
         "hardness_level": "H5",
         "providers": {
           "anthropic": {
-            "runs": 21,
-            "verified": 21,
+            "runs": 20,
+            "verified": 20,
+            "verified_rate": 1.0
+          },
+          "google": {
+            "runs": 4,
+            "verified": 4,
             "verified_rate": 1.0
           },
           "openai": {
@@ -378,13 +714,81 @@
         }
       },
       {
+        "task_id": "pay_invariant_01",
+        "hardness_level": "H3",
+        "providers": {
+          "anthropic": {
+            "runs": 0,
+            "verified": 0,
+            "verified_rate": null
+          },
+          "google": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          },
+          "openai": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          }
+        }
+      },
+      {
+        "task_id": "pay_loc_01",
+        "hardness_level": "H2",
+        "providers": {
+          "anthropic": {
+            "runs": 0,
+            "verified": 0,
+            "verified_rate": null
+          },
+          "google": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          },
+          "openai": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          }
+        }
+      },
+      {
+        "task_id": "pay_minimal_01",
+        "hardness_level": "H2",
+        "providers": {
+          "anthropic": {
+            "runs": 0,
+            "verified": 0,
+            "verified_rate": null
+          },
+          "google": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          },
+          "openai": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          }
+        }
+      },
+      {
         "task_id": "pay_state_01",
         "hardness_level": "H5",
         "providers": {
           "anthropic": {
-            "runs": 41,
+            "runs": 40,
             "verified": 40,
-            "verified_rate": 0.975609756097561
+            "verified_rate": 1.0
+          },
+          "google": {
+            "runs": 4,
+            "verified": 3,
+            "verified_rate": 0.75
           },
           "openai": {
             "runs": 4,
@@ -398,8 +802,13 @@
         "hardness_level": "H5",
         "providers": {
           "anthropic": {
-            "runs": 41,
-            "verified": 41,
+            "runs": 40,
+            "verified": 40,
+            "verified_rate": 1.0
+          },
+          "google": {
+            "runs": 4,
+            "verified": 4,
             "verified_rate": 1.0
           },
           "openai": {
@@ -410,12 +819,38 @@
         }
       },
       {
+        "task_id": "saas_authz_01",
+        "hardness_level": "H3",
+        "providers": {
+          "anthropic": {
+            "runs": 0,
+            "verified": 0,
+            "verified_rate": null
+          },
+          "google": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          },
+          "openai": {
+            "runs": 4,
+            "verified": 3,
+            "verified_rate": 0.75
+          }
+        }
+      },
+      {
         "task_id": "saas_concurrency_01",
         "hardness_level": "H5",
         "providers": {
           "anthropic": {
-            "runs": 21,
-            "verified": 21,
+            "runs": 20,
+            "verified": 20,
+            "verified_rate": 1.0
+          },
+          "google": {
+            "runs": 4,
+            "verified": 4,
             "verified_rate": 1.0
           },
           "openai": {
@@ -426,12 +861,80 @@
         }
       },
       {
+        "task_id": "saas_contract_01",
+        "hardness_level": "H2",
+        "providers": {
+          "anthropic": {
+            "runs": 0,
+            "verified": 0,
+            "verified_rate": null
+          },
+          "google": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          },
+          "openai": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          }
+        }
+      },
+      {
+        "task_id": "saas_invariant_01",
+        "hardness_level": "H3",
+        "providers": {
+          "anthropic": {
+            "runs": 0,
+            "verified": 0,
+            "verified_rate": null
+          },
+          "google": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          },
+          "openai": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          }
+        }
+      },
+      {
+        "task_id": "saas_loc_01",
+        "hardness_level": "H2",
+        "providers": {
+          "anthropic": {
+            "runs": 0,
+            "verified": 0,
+            "verified_rate": null
+          },
+          "google": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          },
+          "openai": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          }
+        }
+      },
+      {
         "task_id": "saas_state_01",
         "hardness_level": "H5",
         "providers": {
           "anthropic": {
-            "runs": 41,
-            "verified": 41,
+            "runs": 40,
+            "verified": 40,
+            "verified_rate": 1.0
+          },
+          "google": {
+            "runs": 4,
+            "verified": 4,
             "verified_rate": 1.0
           },
           "openai": {
@@ -446,8 +949,13 @@
         "hardness_level": "H5",
         "providers": {
           "anthropic": {
-            "runs": 41,
-            "verified": 41,
+            "runs": 40,
+            "verified": 40,
+            "verified_rate": 1.0
+          },
+          "google": {
+            "runs": 4,
+            "verified": 4,
             "verified_rate": 1.0
           },
           "openai": {
@@ -462,8 +970,34 @@
         "hardness_level": "H1",
         "providers": {
           "anthropic": {
-            "runs": 9,
-            "verified": 9,
+            "runs": 8,
+            "verified": 8,
+            "verified_rate": 1.0
+          },
+          "google": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          },
+          "openai": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          }
+        }
+      },
+      {
+        "task_id": "task_002",
+        "hardness_level": "H1",
+        "providers": {
+          "anthropic": {
+            "runs": 0,
+            "verified": 0,
+            "verified_rate": null
+          },
+          "google": {
+            "runs": 4,
+            "verified": 4,
             "verified_rate": 1.0
           },
           "openai": {
@@ -478,8 +1012,34 @@
         "hardness_level": "H1",
         "providers": {
           "anthropic": {
-            "runs": 9,
-            "verified": 9,
+            "runs": 8,
+            "verified": 8,
+            "verified_rate": 1.0
+          },
+          "google": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          },
+          "openai": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          }
+        }
+      },
+      {
+        "task_id": "task_004",
+        "hardness_level": "H2",
+        "providers": {
+          "anthropic": {
+            "runs": 0,
+            "verified": 0,
+            "verified_rate": null
+          },
+          "google": {
+            "runs": 4,
+            "verified": 4,
             "verified_rate": 1.0
           },
           "openai": {
@@ -494,8 +1054,76 @@
         "hardness_level": "H3",
         "providers": {
           "anthropic": {
-            "runs": 9,
-            "verified": 9,
+            "runs": 8,
+            "verified": 8,
+            "verified_rate": 1.0
+          },
+          "google": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          },
+          "openai": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          }
+        }
+      },
+      {
+        "task_id": "task_006",
+        "hardness_level": "H1",
+        "providers": {
+          "anthropic": {
+            "runs": 0,
+            "verified": 0,
+            "verified_rate": null
+          },
+          "google": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          },
+          "openai": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          }
+        }
+      },
+      {
+        "task_id": "task_007",
+        "hardness_level": "H2",
+        "providers": {
+          "anthropic": {
+            "runs": 0,
+            "verified": 0,
+            "verified_rate": null
+          },
+          "google": {
+            "runs": 4,
+            "verified": 3,
+            "verified_rate": 0.75
+          },
+          "openai": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          }
+        }
+      },
+      {
+        "task_id": "task_008",
+        "hardness_level": "H2",
+        "providers": {
+          "anthropic": {
+            "runs": 0,
+            "verified": 0,
+            "verified_rate": null
+          },
+          "google": {
+            "runs": 4,
+            "verified": 4,
             "verified_rate": 1.0
           },
           "openai": {
@@ -510,8 +1138,13 @@
         "hardness_level": "H4",
         "providers": {
           "anthropic": {
-            "runs": 21,
-            "verified": 21,
+            "runs": 20,
+            "verified": 20,
+            "verified_rate": 1.0
+          },
+          "google": {
+            "runs": 4,
+            "verified": 4,
             "verified_rate": 1.0
           },
           "openai": {
@@ -526,9 +1159,14 @@
         "hardness_level": "H1",
         "providers": {
           "anthropic": {
-            "runs": 17,
-            "verified": 17,
+            "runs": 16,
+            "verified": 16,
             "verified_rate": 1.0
+          },
+          "google": {
+            "runs": 4,
+            "verified": 3,
+            "verified_rate": 0.75
           },
           "openai": {
             "runs": 4,
@@ -542,9 +1180,14 @@
         "hardness_level": "H1",
         "providers": {
           "anthropic": {
-            "runs": 17,
-            "verified": 17,
+            "runs": 16,
+            "verified": 16,
             "verified_rate": 1.0
+          },
+          "google": {
+            "runs": 4,
+            "verified": 3,
+            "verified_rate": 0.75
           },
           "openai": {
             "runs": 4,
@@ -558,9 +1201,14 @@
         "hardness_level": "H1",
         "providers": {
           "anthropic": {
-            "runs": 9,
-            "verified": 9,
+            "runs": 8,
+            "verified": 8,
             "verified_rate": 1.0
+          },
+          "google": {
+            "runs": 4,
+            "verified": 3,
+            "verified_rate": 0.75
           },
           "openai": {
             "runs": 4,
@@ -574,9 +1222,14 @@
         "hardness_level": "H2",
         "providers": {
           "anthropic": {
-            "runs": 9,
-            "verified": 9,
+            "runs": 8,
+            "verified": 8,
             "verified_rate": 1.0
+          },
+          "google": {
+            "runs": 4,
+            "verified": 3,
+            "verified_rate": 0.75
           },
           "openai": {
             "runs": 4,
@@ -590,8 +1243,160 @@
         "hardness_level": "H2",
         "providers": {
           "anthropic": {
-            "runs": 9,
-            "verified": 9,
+            "runs": 8,
+            "verified": 8,
+            "verified_rate": 1.0
+          },
+          "google": {
+            "runs": 4,
+            "verified": 3,
+            "verified_rate": 0.75
+          },
+          "openai": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          }
+        }
+      },
+      {
+        "task_id": "ts_contract_01",
+        "hardness_level": "H2",
+        "providers": {
+          "anthropic": {
+            "runs": 0,
+            "verified": 0,
+            "verified_rate": null
+          },
+          "google": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          },
+          "openai": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          }
+        }
+      },
+      {
+        "task_id": "ts_invariant_02",
+        "hardness_level": "H3",
+        "providers": {
+          "anthropic": {
+            "runs": 0,
+            "verified": 0,
+            "verified_rate": null
+          },
+          "google": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          },
+          "openai": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          }
+        }
+      },
+      {
+        "task_id": "ts_loc_01",
+        "hardness_level": "H2",
+        "providers": {
+          "anthropic": {
+            "runs": 0,
+            "verified": 0,
+            "verified_rate": null
+          },
+          "google": {
+            "runs": 4,
+            "verified": 3,
+            "verified_rate": 0.75
+          },
+          "openai": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          }
+        }
+      },
+      {
+        "task_id": "ts_minimal_01",
+        "hardness_level": "H2",
+        "providers": {
+          "anthropic": {
+            "runs": 0,
+            "verified": 0,
+            "verified_rate": null
+          },
+          "google": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          },
+          "openai": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          }
+        }
+      },
+      {
+        "task_id": "ts_security_01",
+        "hardness_level": "H3",
+        "providers": {
+          "anthropic": {
+            "runs": 0,
+            "verified": 0,
+            "verified_rate": null
+          },
+          "google": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          },
+          "openai": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          }
+        }
+      },
+      {
+        "task_id": "ts_state_01",
+        "hardness_level": "H4",
+        "providers": {
+          "anthropic": {
+            "runs": 0,
+            "verified": 0,
+            "verified_rate": null
+          },
+          "google": {
+            "runs": 4,
+            "verified": 4,
+            "verified_rate": 1.0
+          },
+          "openai": {
+            "runs": 4,
+            "verified": 3,
+            "verified_rate": 0.75
+          }
+        }
+      },
+      {
+        "task_id": "ts_task_001",
+        "hardness_level": "H3",
+        "providers": {
+          "anthropic": {
+            "runs": 0,
+            "verified": 0,
+            "verified_rate": null
+          },
+          "google": {
+            "runs": 4,
+            "verified": 4,
             "verified_rate": 1.0
           },
           "openai": {
@@ -604,16 +1409,6 @@
     ]
   },
   "suites": [
-    {
-      "suite": "anthropic-hard50-smoke",
-      "provider": "anthropic",
-      "n_runs": 50,
-      "n_models": 1,
-      "models": [
-        "claude-opus-4-8"
-      ],
-      "file": "suites/anthropic-hard50-smoke.json"
-    },
     {
       "suite": "anthropic-hardest5-4x5",
       "provider": "anthropic",
@@ -717,6 +1512,19 @@
         "claude-sonnet-4-6"
       ],
       "file": "suites/anthropic-v0.1-pilot.json"
+    },
+    {
+      "suite": "gemini-full50-4x1",
+      "provider": "google",
+      "n_runs": 200,
+      "n_models": 4,
+      "models": [
+        "gemini-2.5-flash",
+        "gemini-2.5-pro",
+        "gemini-3.1-flash-lite",
+        "gemini-3.5-flash"
+      ],
+      "file": "suites/gemini-full50-4x1.json"
     },
     {
       "suite": "openai-full50-4x1",
