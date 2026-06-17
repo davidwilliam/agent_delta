@@ -110,7 +110,7 @@ def build_sandbox_cmd(fixture: str, method: str) -> None:
 
 @main.command("run")
 @click.option("--task", "task_id", required=True, help="Task ID, e.g. task_001.")
-@click.option("--agent", "agent_name", type=click.Choice(["claude_code", "codex_cli"]),
+@click.option("--agent", "agent_name", type=click.Choice(["claude_code", "codex_cli", "gemini_cli"]),
               default="claude_code", help="Agent CLI (claude_code -> Anthropic, codex_cli -> OpenAI).")
 @click.option("--model", "model_id", default=None,
               help="Pinned model ID (default: first included model for the agent's provider).")
@@ -169,7 +169,7 @@ def run_cmd(task_id: str, agent_name: str, model_id: str | None, repetitions: in
 
 @main.command("run-matrix")
 @click.option("--suite", required=True, help="Results suite name.")
-@click.option("--agent", "agent_name", type=click.Choice(["claude_code", "codex_cli"]),
+@click.option("--agent", "agent_name", type=click.Choice(["claude_code", "codex_cli", "gemini_cli"]),
               default="claude_code", help="Agent CLI for every run (claude_code / codex_cli).")
 @click.option("--tasks", default=None, help="Comma-separated task IDs (default: all).")
 @click.option("--models", default=None,
