@@ -1,0 +1,57 @@
+provider: google
+access_path: gemini_api
+context_requirement: 200000
+
+# Coding cohort for the Gemini CLI agent. Google's newest pro models
+# (gemini-3.1-pro-preview, gemini-3-pro-preview) are preview-only with no published
+# pricing, so they are listed but excluded (AgentDelta will not run a model whose
+# cost it cannot account for, same policy as the OpenAI gpt-*-pro previews). The
+# included cohort is the strongest stable pro (gemini-2.5-pro), the newest priced
+# model (gemini-3.5-flash), and two cheaper flash tiers. context_window values are
+# best-effort. effort: Gemini effort is set per model; high for parity.
+models:
+  gemini-2.5-pro:
+    include: true
+    family: gemini-pro
+    context_window: 1000000
+    effort: high
+    fallback_allowed: false
+    note: "Strongest stable (non-preview) Gemini coding model; priced (tiered by prompt size)."
+
+  gemini-3.5-flash:
+    include: true
+    family: gemini-flash
+    context_window: 1000000
+    effort: high
+    fallback_allowed: false
+    note: "Newest priced Gemini model."
+
+  gemini-2.5-flash:
+    include: true
+    family: gemini-flash
+    context_window: 1000000
+    effort: high
+    fallback_allowed: false
+
+  gemini-3.1-flash-lite:
+    include: true
+    family: gemini-flash-lite
+    context_window: 1000000
+    effort: high
+    fallback_allowed: false
+
+  gemini-3.1-pro-preview:
+    include: false
+    family: gemini-pro
+    context_window: 1000000
+    effort: high
+    fallback_allowed: false
+    exclusion_reason: "Newest pro, but preview-only with no published pricing."
+
+  gemini-3-pro-preview:
+    include: false
+    family: gemini-pro
+    context_window: 1000000
+    effort: high
+    fallback_allowed: false
+    exclusion_reason: "Preview-only with no published pricing."

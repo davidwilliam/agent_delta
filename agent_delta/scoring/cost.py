@@ -8,10 +8,11 @@ manifest.
 
 from __future__ import annotations
 
-PRICING_DATE = "2026-06-15"
+PRICING_DATE = "2026-06-16"
 PRICING_SOURCE = {
     "anthropic": "https://docs.anthropic.com/en/docs/about-claude/pricing",
     "openai": "https://developers.openai.com/api/docs/pricing",
+    "google": "https://ai.google.dev/gemini-api/docs/pricing",
 }
 CURRENCY = "USD"
 
@@ -35,6 +36,13 @@ PRICING_PER_MTOK: dict[str, dict[str, float]] = {
     "gpt-5.4-pro-2026-03-05": {"input": 30.0, "output": 180.0, "cache_write": 30.0, "cache_read": 30.0},
     "gpt-4o-2024-11-20": {"input": 2.50, "output": 10.0, "cache_write": 2.50, "cache_read": 1.25},
     "gpt-5-nano-2025-08-07": {"input": 0.05, "output": 0.40, "cache_write": 0.05, "cache_read": 0.005},
+    # Google (Gemini CLI agent). Verified from ai.google.dev on PRICING_DATE.
+    # gemini-2.5-pro is tiered by prompt size; the <=200k rate is used (the common
+    # case), so its >200k-token runs (the long-context tasks) are slightly undercounted.
+    "gemini-2.5-pro": {"input": 1.25, "output": 10.0, "cache_write": 1.25, "cache_read": 0.125},
+    "gemini-3.5-flash": {"input": 1.50, "output": 9.0, "cache_write": 1.50, "cache_read": 0.15},
+    "gemini-2.5-flash": {"input": 0.30, "output": 2.50, "cache_write": 0.30, "cache_read": 0.03},
+    "gemini-3.1-flash-lite": {"input": 0.25, "output": 1.50, "cache_write": 0.25, "cache_read": 0.025},
 }
 
 
