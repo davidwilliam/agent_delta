@@ -44,9 +44,9 @@ manufacturing a ranking from noise.
 A **50-task suite** across **6 fixtures** in **3 languages**, evaluated across the
 four 1M-context Anthropic models (`claude-opus-4-8`, `claude-opus-4-7`,
 `claude-opus-4-6`, `claude-sonnet-4-6`). The harness is provider-pluggable: the
-**Anthropic (Claude Code)** and **OpenAI (Codex CLI)** agents are both implemented,
-selectable per run with `--agent`. Each provider declares its own pinned model
-cohort under `configs/models/`.
+**Anthropic (Claude Code)**, **OpenAI (Codex CLI)**, and **Google (Gemini CLI)**
+agents are all implemented, selectable per run with `--agent`. Each provider
+declares its own pinned model cohort under `configs/models/`.
 
 | Fixture | Language | Runner | What it is |
 | --- | --- | --- | --- |
@@ -74,7 +74,8 @@ Hardness spans H1 to H5; over half the tasks carry author-written minimal / stro
   is needed.
 - A **provider API key** for real model runs (task authoring and verification need
   only Docker, no API): `ANTHROPIC_API_KEY` for the Claude Code agent (default),
-  `OPENAI_API_KEY` for the Codex CLI agent. Set them in your environment or `.env`.
+  `OPENAI_API_KEY` for the Codex CLI agent, `GEMINI_API_KEY` for the Gemini CLI
+  agent. Set them in your environment or `.env`.
 
 ## Setup
 
@@ -145,7 +146,7 @@ run record.
 | Option | Meaning |
 | --- | --- |
 | `--task` | Task ID (required), e.g. `hard_task_004` |
-| `--agent` | `claude_code` (Anthropic, default) or `codex_cli` (OpenAI) |
+| `--agent` | `claude_code` (Anthropic, default), `codex_cli` (OpenAI), or `gemini_cli` (Google) |
 | `--model` | Pinned model ID (default: the first included model for the agent's provider) |
 | `--repetitions` | Repeated runs (epochs) |
 | `--suite` | Results suite name |
@@ -161,7 +162,7 @@ blocked randomization of model order.
 | Option | Meaning |
 | --- | --- |
 | `--suite` | Results suite name (required) |
-| `--agent` | `claude_code` (default) or `codex_cli`; sets the provider for every run |
+| `--agent` | `claude_code` (default), `codex_cli`, or `gemini_cli`; sets the provider for every run |
 | `--tasks` | Comma-separated task IDs (default: all) |
 | `--models` | Comma-separated model IDs (default: the agent's provider's included cohort) |
 | `--repetitions` | Repetitions per task per model |
@@ -272,11 +273,13 @@ tests. A result you cannot reproduce is an anecdote.
 
 ## Roadmap
 
-AgentDelta supports the Claude Code (Anthropic) and Codex CLI (OpenAI) agents
-today, selectable with `--agent`, so the same tasks and the same objective scoring
-compare coding agents across providers on a level field. The Gemini CLI is next
-(`inspect_swe` already exposes it). OpenAI model pricing in
-`agent_delta/scoring/cost.py` is verified against the OpenAI developer pricing docs.
+AgentDelta supports the Claude Code (Anthropic), Codex CLI (OpenAI), and Gemini CLI
+(Google) agents today, selectable with `--agent`, so the same tasks and the same
+objective scoring compare coding agents across providers on a level field. Model
+pricing in `agent_delta/scoring/cost.py` is verified against each provider's pricing
+docs. Google's newest pro models are preview-only with no published price, so the
+Gemini cohort uses the strongest priced models (gemini-2.5-pro and the gemini flash
+tiers); the preview pros are listed but excluded until they are priced.
 
 ## Contributing
 

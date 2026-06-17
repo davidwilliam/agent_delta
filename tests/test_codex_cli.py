@@ -40,7 +40,7 @@ def test_openai_pricing_present_and_priced():
     assert estimate_cost_usd("gpt-5.4", input_tokens=1_000_000) == pytest.approx(2.50)
 
 
-def test_ensure_provider_key_missing_raises(monkeypatch):
-    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+def test_ensure_provider_key_missing_raises():
+    # A provider with no key-env mapping (and thus no key) must raise.
     with pytest.raises(RuntimeError):
-        config.ensure_provider_key("google")
+        config.ensure_provider_key("nonexistent_provider")
